@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Stylesheet to reset the default browser styling -->
+    <link rel="stylesheet" href="../src/normalize.css">
+    <!-- The actual stylesheet to style the HTML elements -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h3>Navbar</h3>
+            </div>
+            <div class="links">
+                <a href="/">Home</a>
+                <a href="/profile">Profile</a>
+            </div>
+        </nav>
+    </header>
+    <main class="login-container">
+        <h1 class="login-title">Login Page</h1>
+        <form action="/" class="login-form">
+            <label for="email">
+                Email Address
+                <input type="email" name="email" id="email" title="Alamat Email" placeholder="Masukkan alamat email..."
+                    class="input-field">
+            </label>
+            <label for="password">
+                Password
+                <input type="password" name="password" id="password" title="Alamat Email"
+                    placeholder="Masukkan password..." class="input-field">
+            </label>
+            <input type="submit" value="Submit" class="submit-btn">
+        </form>
+    </main>
+    <footer></footer>
+    <script src="../src/main.js"></script>
+</body>
+
+</html>
