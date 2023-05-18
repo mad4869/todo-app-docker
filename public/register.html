@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Registration</title>
     <!-- Stylesheet to reset the default browser styling -->
     <link rel="stylesheet" href="../src/normalize.css">
     <!-- The actual stylesheet to style the HTML elements -->
@@ -29,9 +29,14 @@
             </div>
         </div>
     </nav>
-    <main class="container login-container">
-        <h1 class="login-title">Login Page</h1>
+    <main class="container register-container">
+        <h1 class="login-title">Registration Page</h1>
         <form action="/" class="form">
+            <label for="name">
+                Full Name
+                <input type="text" name="name" id="name" title="Full Name" placeholder="Input your name..."
+                    class="input-field">
+            </label>
             <label for="email">
                 Email Address
                 <input type="email" name="email" id="email" title="Email Address" placeholder="Input your email..."
@@ -39,8 +44,13 @@
             </label>
             <label for="password">
                 Password
-                <input type="password" name="password" id="password" title="Password"
+                <input type="password" name="password" id="password" title="Alamat Email"
                     placeholder="Input your password..." class="input-field">
+            </label>
+            <label for="confirm-password">
+                Confirm Password
+                <input type="password" name="confirm-password" id="confirm-password" title="Confirm Password"
+                    placeholder="Confirm your password..." class="input-field">
             </label>
             <input type="submit" value="Submit" class="submit-btn">
         </form>
