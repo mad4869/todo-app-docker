@@ -17,14 +17,87 @@ a {
     color: inherit;
 }
 
-.navbar {
+#welcome {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: url('../assets/background.jpg') no-repeat center/cover var(--primary-color);
+}
+
+#logo {
+    width: 300px;
+}
+
+#homepage {
+    display: none;
+}
+
+.progress-bar {
+    width: 200px;
+    height: 20px;
+    background-color: #f3f3f3;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress {
+    width: 0;
+    height: 100%;
+    background-color: var(--bg-color);
+    animation: progress-animation 3s ease-in-out forwards;
+}
+
+@keyframes progress-animation {
+    0% {
+        width: 0;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 100vh;
+    background: url('../assets/background.jpg') no-repeat center/cover var(--primary-color);
+    border-radius: 0 5rem 5rem 0;
+}
+
+#site-description {
+    color: #fff;
+    text-transform: capitalize;
+}
+
+.navbar,
+#footer {
     display: flex;
     justify-content: space-between;
-    position: sticky;
-    top: 0;
-    background-color: var(--primary-color);
+    background: url('../assets/background.jpg') no-repeat center/cover var(--primary-color);
     color: #fff;
     padding: 0 2rem;
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+}
+
+#footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 /* .logo {} */
@@ -82,6 +155,56 @@ a {
     margin: 5rem auto;
 }
 
+.grid-container {
+    display: grid;
+    gap: 1rem;
+    grid-template-areas:
+        'profile-photo profile profile'
+        'task-details task-details task-details'
+        'task-total task-done task-progress';
+    padding: 2rem 2rem;
+}
+
+.profile-photo {
+    grid-area: profile-photo;
+    display: flex;
+    align-items: center;
+}
+
+.profile-photo>img {
+    width: 100%;
+}
+
+.profile {
+    grid-area: profile;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.task-details {
+    grid-area: task-details;
+}
+
+.task-total {
+    grid-area: task-total;
+}
+
+.task-done {
+    grid-area: task-done;
+}
+
+.task-progress {
+    grid-area: task-progress;
+}
+
+.task-details,
+.task-total,
+.task-done,
+.task-progress {
+    text-align: center;
+}
+
 .form {
     display: flex;
     flex-direction: column;
@@ -135,6 +258,56 @@ a {
     -webkit-box-shadow: 1px 1px 5px 0px rgba(0, 0, 0, 0.75) inset;
     -moz-box-shadow: 1px 1px 5px 0px rgba(0, 0, 0, 0.75) inset;
     box-shadow: 1px 1px 5px 0px rgba(0, 0, 0, 0.75) inset;
+}
+
+#todo,
+#add-task {
+    width: 80%;
+    margin: 2rem auto;
+    display: flex;
+}
+
+#todo {
+    gap: 1rem;
+}
+
+#add-task {
+    justify-content: center;
+}
+
+#todos,
+#done,
+#todo-item,
+#done-item {
+    padding: 1rem 2rem;
+    border: 1px solid #000;
+    border-radius: 1rem;
+}
+
+#todos,
+#done {
+    flex: 0.5;
+}
+
+.delete,
+.edit,
+#add-task>button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    color: #fff;
+}
+
+.delete {
+    background-color: red;
+}
+
+.edit {
+    background-color: darkcyan;
+}
+
+#add-task>button {
+    background-color: var(--primary-color);
 }
 
 @media screen and (max-width: 480px) {
