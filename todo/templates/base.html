@@ -13,26 +13,20 @@
 </head>
 
 <body>
-    <nav class="navbar">
-        <div class="logo">
-            <a href="/">
-                <!-- <img src="../src/assets/app/logo.png" alt="Logo TODO" width="64" /> -->
-                LOGO
-            </a>
-        </div>
-        <div class="links">
-            <a href="/">Home</a>
-            <a href="/profile">Profile</a>
-        </div>
-    </nav>
-    <main>
+    <header id="main">
+        {% block header %}
+    
+        {% endblock %}
+    </header>
+    <main id="main">
         {% block content %}
 
         {% endblock %}
     </main>
     <footer id="footer">
-        <h3 id="clock"></h3>
-        <p>&copy; Pacmann 2023</p>
+        {% block footer %}
+
+        {%  endblock %}
     </footer>
     </div>
     <script src="{{ url_for('static', filename='index.js') }}"></script>

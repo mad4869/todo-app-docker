@@ -1,9 +1,17 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block title %}
 TODO - Home
 {% endblock %}
 
+{% block header %}
+{% include "navbar.html" %}
+{% endblock %}
+
 {% block content %}
 <h1>Homepage</h1>
+{% endblock %}
+
+{% block footer %}
+{% include "footer.html" %}
 {% endblock %}
