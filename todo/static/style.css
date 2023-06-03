@@ -1,0 +1,73 @@
+:root {
+    --primary-color: #0d6efd;
+    --hover-color: #0552c6;
+    --bg-color: #73abff;
+    --disabled-color: #d1d2d3;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+#welcome {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: url('../src/assets/app/background.jpg') no-repeat center/cover var(--primary-color);
+}
+
+#logo {
+    width: 300px;
+}
+
+#homepage {
+    display: none;
+}
+
+.progress-bar {
+    width: 200px;
+    height: 20px;
+    background-color: #f3f3f3;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress {
+    width: 0;
+    height: 100%;
+    background-color: var(--bg-color);
+    animation: progress-animation 3s ease-in-out forwards;
+}
+
+@keyframes progress-animation {
+    0% {
+        width: 0;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 100vh;
+    background: url('../src/assets/app/background.jpg') no-repeat center/cover var(--primary-color);
+    border-radius: 0 5rem 5rem 0;
+}
+
+#site-description {
+    color: #fff;
+    text-transform: capitalize;
+}

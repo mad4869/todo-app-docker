@@ -1,18 +1,9 @@
-const script = document.createElement('script');
-script.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js';
-document.body.appendChild(script);
-
 const clock = () => {
     const date = new Date()
     document.getElementById('clock').innerHTML = date.toLocaleTimeString([], { hour12: false })
 }
 
 setInterval(clock, 1000)
-
-// const doneItem = document.getElementById('done-item')
-// if (!doneItem.innerHTML) {
-//     doneItem.setAttribute('style', 'display:none;')
-// }
 
 document.addEventListener('DOMContentLoaded', function () {
     function updateProgressBar() {
