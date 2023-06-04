@@ -6,6 +6,10 @@ Selamat datang di TODO
 
 {% block content %}
 <div id="welcome-page">
-    <img src="{{url_for('static', filename='assets/text-logo.png')}}" alt="Logo" id="text-logo">
+    <div id="lottie-container"></div>
+    <div id="logo-container">
+        <img src="{{url_for('static', filename='assets/text-logo.png')}}" alt="Logo" id="text-logo">
+        <h2>A Simple Todo App</h2>
+    </div>
 </div>
 {% endblock %}

@@ -4,10 +4,10 @@ import './style.css'
 
 import Lottie from 'lottie-web';
 
-const welcomePage = document.getElementById('welcome-page')
+const lottieContainer = document.getElementById('lottie-container')
 const animationData = require('./background.json')
 Lottie.loadAnimation({
-    container: welcomePage,
+    container: lottieContainer,
     renderer: 'svg',
     loop: true,
     autoplay: true,
