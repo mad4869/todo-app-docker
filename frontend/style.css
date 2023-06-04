@@ -10,6 +10,18 @@ a {
     color: inherit;
 }
 
+#welcome-page {
+    width: 100vw;
+    height: 100vh;
+}
+
+#text-logo {
+    width: 300px;
+    position: absolute;
+    left: 35%;
+    top: 40%;
+}
+
 /* #welcome {
     position: fixed;
     top: 0;

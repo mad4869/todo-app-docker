@@ -2,6 +2,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import './style.css'
 
+import Lottie from 'lottie-web';
+
+const welcomePage = document.getElementById('welcome-page')
+const animationData = require('./background.json')
+Lottie.loadAnimation({
+    container: welcomePage,
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    animationData
+})
+
 const clock = () => {
     const date = new Date()
     document.getElementById('clock').innerHTML = date.toLocaleTimeString([], { hour12: false })
