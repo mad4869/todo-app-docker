@@ -12,3 +12,8 @@ def home_page():
 @todo_bp.route("/login")
 def login_page():
     return render_template("login.html")
+
+
+@todo_bp.route("/welcome")
+def welcome_page():
+    return render_template("welcome.html")
