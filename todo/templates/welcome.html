@@ -8,8 +8,11 @@ Selamat datang di TODO
 <div id="welcome-page">
     <div id="lottie-container"></div>
     <div id="logo-container">
-        <img src="{{url_for('static', filename='assets/text-logo.png')}}" alt="Logo" id="text-logo">
-        <h2>A Simple Todo App</h2>
+        <div id="image-container">
+            <img src="{{url_for('static', filename='assets/logo.png')}}" alt="Logo" id="logo">
+            <img src="{{url_for('static', filename='assets/text-logo.svg')}}" alt="Text Logo" id="text-logo">
+        </div>
+        <h1>A Simple Todo App</h1>
     </div>
 </div>
 {% endblock %}

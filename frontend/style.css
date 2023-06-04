@@ -14,26 +14,26 @@ a {
     width: 100vw;
     height: 100vh;
     display: flex;
+    flex-direction: column;
+    justify-content: start;
     align-items: center;
-    padding-left: 10rem;
 }
 
-#lottie-container {
-    height: 50vh;
-}
+/* #lottie-container {
+    /* height: 50vh; */
 
 #logo-container {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 1rem;
     color: var(--primary-color);
+    letter-spacing: 0.3rem;
 }
 
-#logo-container>h2 {
-    margin-left: 80px;
-}
-
-#text-logo {
-    width: 300px;
+#image-container {
+    display: flex;
+    gap: 1rem;
 }
 
 /* #welcome {
