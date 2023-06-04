@@ -4,14 +4,23 @@ import './style.css'
 
 import Lottie from 'lottie-web';
 
-const lottieContainer = document.getElementById('lottie-container')
-const animationData = require('./background.json')
+const backgroundContainer = document.getElementById('background-container')
+const loadingContainer = document.getElementById('loading-container')
+const backgroundData = require('./background.json')
+const loadingData = require('./loading.json')
 Lottie.loadAnimation({
-    container: lottieContainer,
+    container: backgroundContainer,
     renderer: 'svg',
     loop: true,
     autoplay: true,
-    animationData
+    animationData: backgroundData
+})
+Lottie.loadAnimation({
+    container: loadingContainer,
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    animationData: loadingData
 })
 
 const clock = () => {

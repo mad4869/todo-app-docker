@@ -17,23 +17,33 @@ a {
     flex-direction: column;
     justify-content: start;
     align-items: center;
+    gap: 2rem;
 }
 
-/* #lottie-container {
-    /* height: 50vh; */
+#loading-container {
+    height: 20vh;
+}
 
 #logo-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
     color: var(--primary-color);
-    letter-spacing: 0.3rem;
+    letter-spacing: 0.2rem;
+    gap: 1rem;
 }
 
 #image-container {
     display: flex;
     gap: 1rem;
+}
+
+#logo {
+    width: 100px;
+}
+
+#text-logo {
+    width: 200px;
 }
 
 /* #welcome {
