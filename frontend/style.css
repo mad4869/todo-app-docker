@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+
+@layer base {
+    html {
+        @apply font-montserrat
+    }
+}
+
+@layer components {
+    .sidebar {
+        @apply flex flex-col gap-4 justify-center items-center w-1/4 h-screen bg-login bg-cover bg-center bg-no-repeat px-8 rounded-r-3xl drop-shadow-right
+    }
+}
