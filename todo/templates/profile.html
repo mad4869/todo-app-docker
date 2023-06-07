@@ -1,75 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo App</title>
-    <!-- Stylesheet to reset the default browser styling -->
-    <link rel="stylesheet" href="../src/normalize.css">
-    <!-- The actual stylesheet to style the HTML elements -->
-    <link rel="stylesheet" href="style.css">
-</head>
+{% block title %}
+TODO - Home
+{% endblock %}
 
-<body>
-    <nav class="navbar">
-        <div class="logo">
-            <h3>Navbar</h3>
-        </div>
-        <div class="links">
-            <a href="/">Home</a>
-            <a href="/profile">Profile</a>
-        </div>
-        <div class="hidden-menu">
-            <div class="hamburger">
-                <div class="line"></div>
-                <div class="line"></div>
-                <div class="line"></div>
-            </div>
-        </div>
-    </nav>
-    <main class="grid-container">
-        <section class="profile-photo">
-            <img src="https://fujifilm-x.com/wp-content/uploads/2021/01/gfx100s_sample_04_thum-1.jpg"
-                alt="Profile Photo" />
-        </section>
-        <section class="profile">
-            <h1>Hai, nama saya Ridwan!</h1>
-            <p>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Enim, quibusdam rerum aspernatur nostrum
-                harum delectus excepturi at, molestias quia odio repudiandae. Quam facere, ex vero iure esse,
-                provident ipsa quidem eveniet adipisci distinctio quos pariatur praesentium accusantium sapiente.
-                Quae dolores laborum, ab ullam alias asperiores odio aliquid iste itaque nemo.
-            </p>
-        </section>
-        <section class="task-details">
-            <h1>Task Detail</h1>
-        </section>
-        <section class="task-total">
-            <div>
-                <h1>Total Task</h1>
-                <h5>200</h5>
-            </div>
-        </section>
-        <section class="task-done">
-            <div>
-                <h1>Task Done</h1>
-                <h5>200</h5>
-            </div>
-        </section>
-        <section class="task-progress">
-            <div>
-                <h1>Task On Progress</h1>
-                <h5>200</h5>
-            </div>
-        </section>
-    </main>
-    <footer id="footer">
-        <h3 id="clock"></h3>
-        <p>&copy; Pacmann 2023</p>
-    </footer>
-    <script src="../src/main.js"></script>
-</body>
+{% block header %}
+{% include "navbar.html" %}
+{% endblock %}
 
-</html>
+{% block content %}
+<h1>Profile</h1>
+{% endblock %}
+
+{% block footer %}
+{% include "footer.html" %}
+{% endblock %}

@@ -12,6 +12,9 @@ module.exports = {
       },
       dropShadow: {
         'right': '5px 0px 10px rgba(0, 0, 0, 0.3)'
+      },
+      borderRadius: {
+        '4xl': '3rem'
       }
     },
   },

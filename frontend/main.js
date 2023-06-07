@@ -21,12 +21,15 @@ Lottie.loadAnimation({
     animationData: loadingData
 })
 
-const clock = () => {
+const setClock = () => {
     const date = new Date()
-    document.getElementById('clock').innerHTML = date.toLocaleTimeString([], { hour12: false })
+    const clock = document.getElementById('clock')
+    if (clock) {
+        clock.innerHTML = date.toLocaleTimeString([], { hour12: false })
+    }
 }
 
-setInterval(clock, 1000)
+setInterval(setClock, 1000)
 
 // document.addEventListener('DOMContentLoaded', function () {
 //     function updateProgressBar() {
