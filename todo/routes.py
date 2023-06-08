@@ -22,3 +22,8 @@ def register_page():
 @todo_bp.route("/welcome")
 def welcome_page():
     return render_template("welcome.html")
+
+
+@todo_bp.route("/profile")
+def profile_page():
+    return render_template("profile.html")

@@ -13,13 +13,13 @@
     </title>
 </head>
 
-<body>
-    <header id="main">
+<body class="flex flex-col min-h-screen">
+    <header id="header">
         {% block header %}
 
         {% endblock %}
     </header>
-    <main id="main">
+    <main id="content" class="flex-1">
         {% block content %}
 
         {% endblock %}

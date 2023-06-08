@@ -1,10 +1,11 @@
-<nav class="navbar navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">
-      <img src="{{url_for('static', filename='assets/logo.png')}}" alt="App Logo" width="20px"
-        class="d-inline-block align-text-top">
-      <span>It's Tailwind Time!</span>
-    </a>
-    <span class=""></span>
+<nav
+  class="flex justify-between items-center w-screen px-28 py-4 bg-gradient-to-r from-violet-500 to-violet-700 text-white">
+  <div class="flex gap-2">
+    <a href="/"><img src="{{url_for('static', filename='assets/logo.png')}}" alt="Logo" class="h-8"></a>
+    <a href="/"><img src="{{url_for('static', filename='assets/text-logo-white.svg')}}" alt="Text Logo" class="h-8"></a>
+  </div>
+  <div class="flex gap-4">
+    <a href="/" title="Go to homepage" class="hover:text-teal-500">Home</a>
+    <a href="/profile" title="View profile" class="hover:text-teal-500">Profile</a>
   </div>
 </nav>
