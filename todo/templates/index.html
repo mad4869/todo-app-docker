@@ -9,7 +9,172 @@ TODO - Home
 {% endblock %}
 
 {% block content %}
-<h1>Homepage</h1>
+<section class="px-28 py-8">
+    <div title="Choose your project"
+        class="flex justify-between items-center pr-8 py-4 bg-violet-700 text-white text-sm rounded-full shadow-[3px_5px_10px_rgba(0,0,0,0.3)] group cursor-pointer">
+        <div></div>
+        <div class="flex gap-4 items-center">
+            <i class="fa-solid fa-cubes fa-2xl"></i>
+            <span class="text-3xl">Project A</span>
+        </div>
+        <div>
+            <span class="invisible group-hover:visible"><i class="fa-solid fa-circle-chevron-down fa-2xl"></i></span>
+        </div>
+    </div>
+</section>
+<section class="flex gap-16 justify-between px-28">
+    <div class="flex flex-col gap-4 items-center w-1/2">
+        <h1 class="text-3xl text-violet-700 font-bold">Todo</h1>
+        <span class="w-full h-px bg-violet-200"></span>
+        <div
+            class="w-full pb-2 border border-solid border-violet-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden">
+            <div class="flex justify-between items-center px-4 py-2 bg-violet-700">
+                <h1 class="text-xl text-white font-semibold">Heading 1</h1>
+                <span class="px-2 py-1 border border-solid border-white rounded-full">
+                    <h3 class="text-white text-sm">Project A</h3>
+                </span>
+            </div>
+            <div class="px-4 py-2">
+                <p class="text-xs">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore
+                    et dolore magna aliqua.</p>
+            </div>
+            <div class="flex justify-between px-4">
+                <span>
+                    <button
+                        class="px-2 py-px bg-teal-500 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">Edit</button>
+                    <button
+                        class="px-2 py-px bg-rose-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">Delete</button>
+                </span>
+                <span>
+                    <button title="Mark as done"
+                        class="px-4 py-px bg-violet-700 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">
+                        <i class="fa-solid fa-check"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+        <span class="w-full h-px bg-violet-200"></span>
+        <div
+            class="w-full pb-2 border border-solid border-violet-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden">
+            <div class="flex justify-between items-center px-4 py-2 bg-violet-700">
+                <h1 class="text-xl text-white font-semibold">Heading 2</h1>
+                <span class="px-2 py-1 border border-solid border-white rounded-full">
+                    <h3 class="text-white text-sm">Project A</h3>
+                </span>
+            </div>
+            <div class="px-4 py-2">
+                <p class="text-xs">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore
+                    et dolore magna aliqua.</p>
+            </div>
+            <div class="flex justify-between px-4">
+                <span>
+                    <button
+                        class="px-2 py-px bg-teal-500 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">Edit</button>
+                    <button
+                        class="px-2 py-px bg-rose-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">Delete</button>
+                </span>
+                <span>
+                    <button title="Mark as done"
+                        class="px-4 py-px bg-violet-700 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">
+                        <i class="fa-solid fa-check"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+        <span class="w-full h-px bg-violet-200"></span>
+        <div
+            class="w-full pb-2 border border-solid border-violet-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden">
+            <div class="flex justify-between items-center px-4 py-2 bg-violet-700">
+                <h1 class="text-xl text-white font-semibold">Heading 3</h1>
+                <span class="px-2 py-1 border border-solid border-white rounded-full">
+                    <h3 class="text-white text-sm">Project A</h3>
+                </span>
+            </div>
+            <div class="px-4 py-2">
+                <p class="text-xs">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore
+                    et dolore magna aliqua.</p>
+            </div>
+            <div class="flex justify-between px-4">
+                <span>
+                    <button
+                        class="px-2 py-px bg-teal-500 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">Edit</button>
+                    <button
+                        class="px-2 py-px bg-rose-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">Delete</button>
+                </span>
+                <span>
+                    <button title="Mark as done"
+                        class="px-4 py-px bg-violet-700 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">
+                        <i class="fa-solid fa-check"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-col gap-4 items-center w-1/2">
+        <h1 class="text-3xl text-teal-600 font-bold">Done</h1>
+        <span class="w-full h-px bg-teal-200"></span>
+        <div
+            class="w-full pb-2 border border-solid border-teal-600 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden">
+            <div class="flex justify-between items-center px-4 py-2 bg-teal-600">
+                <h1 class="text-xl text-white font-semibold">Heading 4</h1>
+                <span class="px-2 py-1 border border-solid border-white rounded-full">
+                    <h3 class="text-white text-sm">Project A</h3>
+                </span>
+            </div>
+            <div class="px-4 py-2">
+                <p class="text-xs">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore
+                    et dolore magna aliqua.</p>
+            </div>
+            <div class="flex justify-between px-4">
+                <span>
+                    <button
+                        class="px-2 py-px bg-teal-500 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">Edit</button>
+                    <button
+                        class="px-2 py-px bg-rose-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">Delete</button>
+                </span>
+                <span>
+                    <button title="Cancel"
+                        class="px-4 py-px bg-teal-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">
+                        <i class="fa-solid fa-ban"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+        <span class="w-full h-px bg-teal-200"></span>
+        <div
+            class="w-full pb-2 border border-solid border-teal-600 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden">
+            <div class="flex justify-between items-center px-4 py-2 bg-teal-600">
+                <h1 class="text-xl text-white font-semibold">Heading 5</h1>
+                <span class="px-2 py-1 border border-solid border-white rounded-full">
+                    <h3 class="text-white text-sm">Project A</h3>
+                </span>
+            </div>
+            <div class="px-4 py-2">
+                <p class="text-xs">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore
+                    et dolore magna aliqua.</p>
+            </div>
+            <div class="flex justify-between px-4">
+                <span>
+                    <button
+                        class="px-2 py-px bg-teal-500 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">Edit</button>
+                    <button
+                        class="px-2 py-px bg-rose-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">Delete</button>
+                </span>
+                <span>
+                    <button title="Cancel"
+                        class="px-4 py-px bg-teal-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">
+                        <i class="fa-solid fa-ban"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}
 
 {% block footer %}
