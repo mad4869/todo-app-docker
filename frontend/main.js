@@ -31,6 +31,15 @@ const setClock = () => {
 
 setInterval(setClock, 1000)
 
+const showYear = () => {
+    const year = document.getElementById('year')
+    if (year) {
+        year.innerHTML = new Date().getFullYear()
+    }
+}
+
+window.onload = showYear
+
 // document.addEventListener('DOMContentLoaded', function () {
 //     function updateProgressBar() {
 //         const progressBar = document.querySelector('.progress')
