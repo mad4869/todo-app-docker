@@ -9,7 +9,12 @@ TODO - Home
 {% endblock %}
 
 {% block content %}
-<section class="px-28 py-8">
+<button id="show-button"
+    class="fixed bottom-10 right-12 w-10 h-10 rounded-full px-2 py-2 bg-violet-700 text-white shadow-[3px_5px_10px_rgba(0,0,0,0.3)]"
+    title="Add Task">
+    <i class="fa-solid fa-plus"></i>
+</button>
+<section id="project-menu" class="px-28 py-8">
     <div title="Choose your project"
         class="flex justify-between items-center pr-8 py-4 bg-violet-700 text-white text-sm rounded-full shadow-[3px_5px_10px_rgba(0,0,0,0.3)] group cursor-pointer">
         <div></div>
@@ -175,6 +180,9 @@ TODO - Home
         </div>
     </div>
 </section>
+
+{% include "modal.html" %}
+
 {% endblock %}
 
 {% block footer %}

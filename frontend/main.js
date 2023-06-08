@@ -40,6 +40,25 @@ const showYear = () => {
 
 window.onload = showYear
 
+const addTask = document.getElementById('add-task')
+
+const showButton = document.getElementById('show-button')
+showButton.addEventListener('click', function () {
+    addTask.show()
+})
+
+const closeButton = document.getElementById('close-button')
+closeButton.addEventListener('click', function () {
+    addTask.close()
+})
+
+const closeAddTaskModal = () => {
+    const addTask = document.getElementById('add-task')
+    if (addTask.hasAttribute('open')) {
+        addTask.removeAttribute('open')
+    }
+}
+
 // document.addEventListener('DOMContentLoaded', function () {
 //     function updateProgressBar() {
 //         const progressBar = document.querySelector('.progress')
