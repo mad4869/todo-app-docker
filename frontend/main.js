@@ -41,8 +41,8 @@ const showYear = () => {
 window.onload = showYear
 
 const addTaskModal = document.getElementById('add-task')
-const editTask = document.getElementById('edit-task')
-const deleteTask = document.getElementById('delete-task')
+const editTaskModal = document.getElementById('edit-task')
+const deleteTaskModal = document.getElementById('delete-task')
 
 // const box = document.getElementById('box')
 
@@ -59,14 +59,26 @@ showButton.addEventListener('click', function () {
 //     }
 // }
 
+const titleOne = document.getElementById('title-1')
+const descOne = document.getElementById('desc-1')
+const proA = document.getElementById('pro-a')
+
+const editTaskForm = document.getElementById('edit-task-form')
 const editModalButton = document.getElementById('edit-button')
 editModalButton.addEventListener('click', function () {
-    editTask.show()
+    editTaskModal.show()
+
+    editTaskForm.elements['project'].value = proA.innerHTML
+    editTaskForm.elements['title'].value = titleOne.innerHTML
+    editTaskForm.elements['description'].value = descOne.innerHTML
 })
 
 const deleteModalButton = document.getElementById('delete-button')
 deleteModalButton.addEventListener('click', function () {
-    deleteTask.show()
+    deleteTaskModal.show()
+
+    const deletedTask = document.getElementById('deleted-task')
+    deletedTask.innerHTML = titleOne.innerHTML
 })
 
 const closeButton = document.getElementById('close-button')
@@ -76,12 +88,12 @@ closeButton.addEventListener('click', function () {
 
 const closeEdit = document.getElementById('close-edit')
 closeEdit.addEventListener('click', function () {
-    editTask.close()
+    editTaskModal.close()
 })
 
 const closeDelete = document.getElementById('close-delete')
 closeDelete.addEventListener('click', function () {
-    deleteTask.close()
+    deleteTaskModal.close()
 })
 
 const addTaskSubmit = document.getElementById('add-task-submit')
@@ -154,6 +166,34 @@ addTaskSubmit.addEventListener('click', function (e) {
     addTaskModal.close()
 })
 
+const editTaskSubmit = document.getElementById('edit-task-submit')
+editTaskSubmit.addEventListener('click', function (e) {
+    e.preventDefault()
+
+    titleOne.innerHTML = editTaskForm.elements['title'].value
+    descOne.innerHTML = editTaskForm.elements['description'].value
+    proA.innerHTML = editTaskForm.elements['project'].value
+
+    editTaskModal.close()
+})
+
+const deleteBtn = document.getElementById('delete')
+const cancelBtn = document.getElementById('cancel')
+deleteBtn.addEventListener('click', function (e) {
+    e.preventDefault()
+
+    const todosContainer = document.getElementById('todos-container')
+    const todoOne = document.getElementById('todo-1')
+    todosContainer.removeChild(todoOne.previousElementSibling)
+    todosContainer.removeChild(todoOne)
+
+    deleteTaskModal.close()
+})
+cancelBtn.addEventListener('click', function (e) {
+    e.preventDefault()
+
+    deleteTaskModal.close()
+})
 // document.addEventListener('DOMContentLoaded', function () {
 //     function updateProgressBar() {
 //         const progressBar = document.querySelector('.progress')
