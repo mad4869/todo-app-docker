@@ -41,10 +41,32 @@ const showYear = () => {
 window.onload = showYear
 
 const addTask = document.getElementById('add-task')
+const editTask = document.getElementById('edit-task')
+const deleteTask = document.getElementById('delete-task')
+
+// const box = document.getElementById('box')
 
 const showButton = document.getElementById('show-button')
 showButton.addEventListener('click', function () {
     addTask.show()
+    // document.addEventListener('click', outsideClickHandler)
+})
+
+// const outsideClickHandler = (event) => {
+//     if (!box.contains(event.target)) {
+//         addTask.close()
+//         document.removeEventListener('click', outsideClickHandler)
+//     }
+// }
+
+const editButton = document.getElementById('edit-button')
+editButton.addEventListener('click', function () {
+    editTask.show()
+})
+
+const deleteButton = document.getElementById('delete-button')
+deleteButton.addEventListener('click', function () {
+    deleteTask.show()
 })
 
 const closeButton = document.getElementById('close-button')
@@ -52,12 +74,15 @@ closeButton.addEventListener('click', function () {
     addTask.close()
 })
 
-const closeAddTaskModal = () => {
-    const addTask = document.getElementById('add-task')
-    if (addTask.hasAttribute('open')) {
-        addTask.removeAttribute('open')
-    }
-}
+const closeEdit = document.getElementById('close-edit')
+closeEdit.addEventListener('click', function () {
+    editTask.close()
+})
+
+const closeDelete = document.getElementById('close-delete')
+closeDelete.addEventListener('click', function () {
+    deleteTask.close()
+})
 
 // document.addEventListener('DOMContentLoaded', function () {
 //     function updateProgressBar() {

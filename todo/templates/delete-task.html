@@ -1,0 +1,27 @@
+{% extends "base-modal.html" %}
+
+{% block modal_type %}delete-task{% endblock %}
+
+{% block modal_color %}bg-rose-900{% endblock %}
+
+{% block modal_content %}
+<span class="px-28 py-4 bg-rose-600 text-2xl font-bold text-white rounded-t-2xl">
+    <h1>DELETE TASK</h1>
+</span>
+<span class="text-sm">
+    <p>Anda akan menghapus <span class="text-rose-600 font-semibold">Heading 1</span></p>
+</span>
+<span class="flex gap-4 justify-center items-center">
+    <button type="submit"
+        class="px-6 py-1 bg-rose-600 text-white rounded-lg hover:bg-rose-900 active:shadow-[inset_0_2px_5px_rgba(0,0,0,0.6)]">
+        Hapus
+    </button>
+    <button type="submit"
+        class="px-4 py-1 bg-white text-rose-600 border border-solid border-rose-600 rounded-lg hover:text-rose-900 hover:border-rose-900 active:shadow-[inset_0_2px_5px_rgba(0,0,0,0.6)]">
+        Batalkan
+    </button>
+</span>
+<button id="close-delete" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white text-rose-600" title="Cancel">
+    <i class="fa-solid fa-xmark"></i>
+</button>
+{% endblock %}

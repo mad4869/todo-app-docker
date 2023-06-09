@@ -46,9 +46,9 @@ TODO - Home
             </div>
             <div class="flex justify-between px-4">
                 <span>
-                    <button
+                    <button id="edit-button"
                         class="px-2 py-px bg-teal-500 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">Edit</button>
-                    <button
+                    <button id="delete-button"
                         class="px-2 py-px bg-rose-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]">Delete</button>
                 </span>
                 <span>
@@ -181,7 +181,9 @@ TODO - Home
     </div>
 </section>
 
-{% include "modal.html" %}
+{% include "add-task.html" %}
+{% include "edit-task.html" %}
+{% include "delete-task.html" %}
 
 {% endblock %}
 
