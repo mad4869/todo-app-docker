@@ -40,24 +40,51 @@ const showYear = () => {
 
 window.onload = showYear
 
+const dropdownProject = document.getElementById('dropdown-project')
+const dropdownProjectItems = document.getElementById('dropdown-project-items')
+dropdownProject.addEventListener('click', function () {
+    dropdownProjectItems.classList.toggle('invisible')
+    dropdownProjectItems.classList.add('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]')
+})
+
 const addTaskModal = document.getElementById('add-task')
 const editTaskModal = document.getElementById('edit-task')
 const deleteTaskModal = document.getElementById('delete-task')
+const addProjectModal = document.getElementById('add-project')
 
 // const box = document.getElementById('box')
+const showAddOptions = document.getElementById('show-add-options')
+let isModalVisible = false;
+
+const addOptions = document.getElementById('add-options')
+showAddOptions.addEventListener('click', function () {
+    addOptions.classList.remove('translate-y-full')
+    addOptions.classList.add('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]')
+    isModalVisible = true
+})
+
+document.addEventListener('click', function (event) {
+    if (isModalVisible && !addOptions.contains(event.target) && event.target !== showAddOptions) {
+        addOptions.classList.add('translate-y-full');
+        addOptions.classList.remove('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]');
+        isModalVisible = false
+    }
+}
+);
 
 const showButton = document.getElementById('show-button')
 showButton.addEventListener('click', function () {
     addTaskModal.show()
-    // document.addEventListener('click', outsideClickHandler)
+    addOptions.classList.add('translate-y-full')
+    addOptions.classList.remove('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]')
 })
 
-// const outsideClickHandler = (event) => {
-//     if (!box.contains(event.target)) {
-//         addTask.close()
-//         document.removeEventListener('click', outsideClickHandler)
-//     }
-// }
+const showAddProject = document.getElementById('show-add-project')
+showAddProject.addEventListener('click', function () {
+    addProjectModal.show()
+    addOptions.classList.add('translate-y-full')
+    addOptions.classList.remove('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]')
+})
 
 const titleOne = document.getElementById('title-1')
 const descOne = document.getElementById('desc-1')
@@ -94,6 +121,21 @@ closeEdit.addEventListener('click', function () {
 const closeDelete = document.getElementById('close-delete')
 closeDelete.addEventListener('click', function () {
     deleteTaskModal.close()
+})
+
+const closeProject = document.getElementById('close-project')
+closeProject.addEventListener('click', function () {
+    addProjectModal.close()
+})
+
+const addProjectSubmit = document.getElementById('add-project-submit')
+addProjectSubmit.addEventListener('click', function (e) {
+    e.preventDefault()
+
+    const addProjectForm = document.getElementById('add-project-form')
+
+    addProjectForm.reset()
+    addProjectModal.close()
 })
 
 const addTaskSubmit = document.getElementById('add-task-submit')

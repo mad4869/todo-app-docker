@@ -27,3 +27,8 @@ def welcome_page():
 @todo_bp.route("/profile")
 def profile_page():
     return render_template("profile.html")
+
+
+@todo_bp.route("/test")
+def test():
+    return render_template("test.html")
