@@ -30,10 +30,9 @@ TODO - Home
     <div id="dropdown-project-items"
         class="absolute flex flex-col items-center mt-2 w-4/5 text-3xl bg-violet-700 text-white rounded-2xl cursor-pointer invisible">
         <span
-            class="w-full text-center border-b border-solid border-violet-500 py-2 hover:bg-teal-600 hover:rounded-lg">Project
+            class="w-full text-center border-b border-solid border-violet-500 py-2 hover:bg-teal-600 hover:rounded-t-2xl">Project
             B</span>
-        <span
-            class="w-full text-center border-b border-solid border-violet-500 py-2 hover:bg-teal-600 hover:rounded-lg">Project
+        <span class="w-full text-center py-2 hover:bg-teal-600 hover:rounded-b-2xl">Project
             C</span>
     </div>
 </section>
@@ -188,16 +187,18 @@ TODO - Home
         </div>
     </div>
 </section>
+<section>{{ users }}</section>
 <div id="add-options"
     class="fixed flex gap-16 justify-center items-center left-0 right-0 bottom-0 py-4 bg-white rounded-t-full transition-transform duration-300 translate-y-full">
-    <button type="button" id="show-button" class="px-4 py- 1 bg-violet-700 rounded-lg">
-        <i class="fa-sharp fa-solid fa-bars-progress text-white"></i>
-        <span class="ml-2 text-lg text-white font-medium">Add Task</span>
+    <button type="button" id="show-button" class="px-4 py- 1 border border-solid border-violet-700 bg-white rounded-lg">
+        <i class="fa-sharp fa-solid fa-bars-progress text-violet-700"></i>
+        <span class="ml-2 text-lg text-violet-700 font-medium">Add Task</span>
     </button>
     <img src="{{url_for('static', filename='assets/logo.png')}}" alt="Logo" class="h-8">
-    <button type="button" id="show-add-project" class="px-4 py- 1 bg-teal-600 rounded-lg">
-        <i class="fa-solid fa-cubes text-white"></i>
-        <span class="ml-2 text-lg text-white font-medium">Add Project</span>
+    <button type="button" id="show-add-project"
+        class="px-4 py- 1 bg-white border border-solid border-teal-700 rounded-lg">
+        <i class="fa-solid fa-cubes text-teal-700"></i>
+        <span class="ml-2 text-lg text-teal-700 font-medium">Add Project</span>
     </button>
 </div>
 

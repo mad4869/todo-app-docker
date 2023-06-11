@@ -1,5 +1,5 @@
 // webpack.config.js
-const path = require('path');
+import path from 'path'
 
 module.exports = {
     mode: 'development',

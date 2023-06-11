@@ -1,12 +1,16 @@
 from flask import Blueprint, render_template
 
+from .models import *
+from .form import RegisterForm
+
 todo_bp = Blueprint("todo", __name__)
 
 
 @todo_bp.route("/")
 @todo_bp.route("/home")
 def home_page():
-    return render_template("index.html")
+    users = Users.query.all()
+    return render_template("index.html", users=users)
 
 
 @todo_bp.route("/login")
@@ -16,6 +20,7 @@ def login_page():
 
 @todo_bp.route("/register")
 def register_page():
+    form = RegisterForm()
     return render_template("register.html")
 
 
