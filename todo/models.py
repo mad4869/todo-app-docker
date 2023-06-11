@@ -1,4 +1,6 @@
+from datetime import datetime
 from passlib.hash import bcrypt
+
 from . import db
 
 
@@ -9,7 +11,7 @@ class Users(db.Model):
     role = db.Column(db.String(length=50), nullable=False)
     email = db.Column(db.String(length=50), unique=True, nullable=False)
     password_hash = db.Column(db.String(length=100), nullable=False)
-    created_at = db.Column(db.DateTime(), nullable=False)
+    created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
     projects = db.Relationship("Projects", backref="user", lazy=True)
 
     def set_password(self, password):

@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, redirect, url_for
 
 from .models import *
 from .form import RegisterForm
+from . import db
 
 todo_bp = Blueprint("todo", __name__)
 
@@ -18,10 +19,23 @@ def login_page():
     return render_template("login.html")
 
 
-@todo_bp.route("/register")
+@todo_bp.route("/register", methods=["GET", "POST"])
 def register_page():
     form = RegisterForm()
-    return render_template("register.html")
+    if form.validate_on_submit():
+        user = Users(
+            name=form.name.data,
+            role=form.role.data,
+            email=form.email.data,
+            password_hash=form.password.data,
+        )
+
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect(url_for("todo.login_page"))
+
+    return render_template("register.html", form=form)
 
 
 @todo_bp.route("/welcome")
