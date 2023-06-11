@@ -34,6 +34,9 @@ def register_page():
         db.session.commit()
 
         return redirect(url_for("todo.login_page"))
+    if form.errors != {}:
+        for error in form.errors.values():
+            print(error)
 
     return render_template("register.html", form=form)
 
