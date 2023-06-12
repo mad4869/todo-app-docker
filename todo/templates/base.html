@@ -14,7 +14,7 @@
 </head>
 
 <body class="flex flex-col min-h-screen">
-    {% with messages = get_flashed_messages(with_categories=False) %}
+    {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}
     {% for message in messages %}
     <span class="w-full bg-rose-700 text-center text-white py-2 rounded-full">

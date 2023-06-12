@@ -12,7 +12,14 @@ todo_bp = Blueprint("todo", __name__)
 @todo_bp.route("/")
 @todo_bp.route("/home")
 def home_page():
+    if not current_user.is_authenticated:
+        return redirect(url_for("todo.landing_page"))
     return render_template("index.html")
+
+
+@todo_bp.route("/landing")
+def landing_page():
+    return render_template("landing.html")
 
 
 @todo_bp.route("/login", methods=["GET", "POST"])
@@ -24,10 +31,12 @@ def login_page():
             password_input=form.password.data
         ):
             login_user(email_registered)
-            flash(f"Welcome back, {email_registered.name}!")
+            flash(f"Welcome back, {email_registered.name}!", category="success")
             return redirect(url_for("todo.home_page"))
         else:
-            flash("Email and password are not match! Please try again.")
+            flash(
+                "Email and password are not match! Please try again.", category="error"
+            )
     return render_template("login.html", form=form)
 
 
