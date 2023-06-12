@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, logout_user
 
 from . import db
 from .models import *
@@ -12,8 +12,7 @@ todo_bp = Blueprint("todo", __name__)
 @todo_bp.route("/")
 @todo_bp.route("/home")
 def home_page():
-    users = Users.query.all()
-    return render_template("index.html", users=users)
+    return render_template("index.html")
 
 
 @todo_bp.route("/login", methods=["GET", "POST"])
@@ -31,6 +30,14 @@ def login_page():
         else:
             flash("Email and password are not match! Please try again.")
     return render_template("login.html", form=form)
+
+
+@todo_bp.route("/logout")
+def logout_page():
+    logout_user()
+    flash("You have been logged out!")
+
+    return redirect(url_for("todo.home_page"))
 
 
 @todo_bp.route("/register", methods=["GET", "POST"])
