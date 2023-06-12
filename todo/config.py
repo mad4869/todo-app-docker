@@ -1,8 +1,8 @@
 from os import environ, path
 from dotenv import load_dotenv
 
-basedir = path.abspath(path.dirname(__file__))
-load_dotenv(path.join(basedir, ".env"))
+basedir = path.dirname(__file__)
+load_dotenv(path.join(path.dirname(basedir), ".env"))
 
 ENVIRONMENT = environ.get("ENVIRONMENT")
 FLASK_APP = environ.get("FLASK_APP")
