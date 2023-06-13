@@ -15,7 +15,7 @@ def home_page():
     if not current_user.is_authenticated:
         return redirect(url_for("todo.landing_page"))
 
-    return render_template("index.html", projects=projects)
+    return render_template("index.html")
 
 
 @todo_bp.route("/landing")
@@ -148,7 +148,26 @@ def projects_modal():
     return render_template("add-project.html", form=form)
 
 
-@todo_bp.route("/projects/<int:project_id>", methods=["GET"])
+@todo_bp.route("/todos", methods=["GET", "POST"])
+def todos_modal():
+    form = ProjectForm()
+    if request.method == "POST":
+        if form.validate_on_submit():
+            project = Projects(
+                title=form.title.data,
+                description=form.description.data,
+                user_id=current_user.user_id,
+            )
+
+            db.session.add(project)
+            db.session.commit()
+
+            return redirect(url_for("todo.home_page"))
+
+    return render_template("add-project.html", form=form)
+
+
+@todo_bp.route("/api/projects/<int:project_id>", methods=["GET"])
 def get_project(project_id):
     project = db.session.execute(
         db.select(Projects).filter_by(project_id=project_id)
@@ -163,7 +182,7 @@ def get_project(project_id):
     return jsonify(project_dict)
 
 
-@todo_bp.route("/projects/<int:project_id>/todos", methods=["GET", "POST"])
+@todo_bp.route("/api/projects/<int:project_id>/todos", methods=["GET", "POST"])
 def get_todos(project_id):
     todos = db.session.execute(
         db.select(Todos).filter_by(project_id=project_id).order_by(Todos.todo_id)
@@ -181,7 +200,7 @@ def get_todos(project_id):
     return jsonify(todos_list)
 
 
-@todo_bp.route("/projects/<int:project_id>/todos/<int:todo_id>", methods=["GET"])
+@todo_bp.route("/api/projects/<int:project_id>/todos/<int:todo_id>", methods=["GET"])
 def get_todo(project_id, todo_id):
     todo = db.session.execute(db.select(Todos).filter_by(todo_id=todo_id)).scalar_one()
     todo_dict = {
@@ -194,7 +213,7 @@ def get_todo(project_id, todo_id):
     return jsonify(todo_dict)
 
 
-@todo_bp.route("/projects/<int:project_id>/dones", methods=["GET", "POST"])
+@todo_bp.route("/api/projects/<int:project_id>/dones", methods=["GET", "POST"])
 def get_dones(project_id):
     dones = db.session.execute(
         db.select(Dones)
@@ -215,7 +234,7 @@ def get_dones(project_id):
     return jsonify(dones_list)
 
 
-@todo_bp.route("/projects/<int:project_id>/dones/<int:done_id>", methods=["GET"])
+@todo_bp.route("/api/projects/<int:project_id>/dones/<int:done_id>", methods=["GET"])
 def get_done(project_id, done_id):
     done = db.session.execute(db.select(Dones).filter_by(done_id=done_id)).scalar_one()
     done_dict = {

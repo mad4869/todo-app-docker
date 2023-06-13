@@ -1,4 +1,5 @@
 import './style.css'
+import getProjects from './js/projects';
 
 import Lottie from 'lottie-web';
 
@@ -38,7 +39,10 @@ const showYear = () => {
     }
 }
 
-window.onload = showYear
+window.onload = () => {
+    showYear()
+    getProjects()
+}
 
 let isDropdownProjectItemsVisible = false
 let isModalVisible = false
