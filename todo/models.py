@@ -46,7 +46,7 @@ class Projects(db.Model):
     title = db.Column(db.String(length=100), nullable=False)
     description = db.Column(db.String(length=250))
     user_id = db.Column(db.Integer(), db.ForeignKey("users.user_id"))
-    created_at = db.Column(db.DateTime(), nullable=False)
+    created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
     todos = db.Relationship("Todos", backref="project", lazy=True)
 
     def __repr__(self):

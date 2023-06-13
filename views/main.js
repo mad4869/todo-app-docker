@@ -54,7 +54,6 @@ dropdownProject.addEventListener('click', function () {
 const addTaskModal = document.getElementById('add-task')
 const editTaskModal = document.getElementById('edit-task')
 const deleteTaskModal = document.getElementById('delete-task')
-const addProjectModal = document.getElementById('add-project')
 const addModal = document.querySelector('#add-task > div')
 
 const showAddOptions = document.getElementById('show-add-options')
@@ -93,12 +92,45 @@ document.addEventListener('click', function (event) {
 }
 );
 
+const modalContainer = document.getElementById('content')
+
 const showAddProject = document.getElementById('show-add-project')
 showAddProject.addEventListener('click', function () {
-    addProjectModal.show()
+    history.pushState(null, null, '/projects');
+    fetch('/projects') // Replace with the actual route to fetch the modal HTML
+        .then((response) => response.text())
+        .then((html) => {
+            // Insert the fetched HTML into the modal
+            const tempContainer = document.createElement('section');
+            tempContainer.innerHTML = html;
+            modalContainer.appendChild(tempContainer)
+            const addProjectModal = document.getElementById('add-project')
+            addProjectModal.show()
+
+            const closeProject = document.getElementById('close-project')
+            closeProject.addEventListener('click', function () {
+                addProjectModal.close()
+                history.pushState(null, null, '/');
+            })
+            //   // Show the modal
+            //   modal.style.display = 'block';
+        })
+        .catch((error) => {
+            console.error('Error fetching modal content:', error);
+        });
     addOptions.classList.add('translate-y-full')
     addOptions.classList.remove('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]')
 })
+
+// const addProjectSubmit = document.getElementById('add-project-submit')
+// addProjectSubmit.addEventListener('click', function (e) {
+//     e.preventDefault()
+
+//     const addProjectForm = document.getElementById('add-project-form')
+
+//     addProjectForm.reset()
+//     addProjectModal.close()
+// })
 
 const titleOne = document.getElementById('title-1')
 const descOne = document.getElementById('desc-1')
@@ -135,21 +167,6 @@ closeEdit.addEventListener('click', function () {
 const closeDelete = document.getElementById('close-delete')
 closeDelete.addEventListener('click', function () {
     deleteTaskModal.close()
-})
-
-const closeProject = document.getElementById('close-project')
-closeProject.addEventListener('click', function () {
-    addProjectModal.close()
-})
-
-const addProjectSubmit = document.getElementById('add-project-submit')
-addProjectSubmit.addEventListener('click', function (e) {
-    e.preventDefault()
-
-    const addProjectForm = document.getElementById('add-project-form')
-
-    addProjectForm.reset()
-    addProjectModal.close()
 })
 
 const addTaskSubmit = document.getElementById('add-task-submit')

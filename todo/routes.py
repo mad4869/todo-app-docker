@@ -1,10 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 
 from flask_login import login_user, current_user, logout_user, login_required
 
 from . import db
 from .models import *
-from .form import *
+from .forms import *
 
 todo_bp = Blueprint("todo", __name__)
 
@@ -14,7 +14,8 @@ todo_bp = Blueprint("todo", __name__)
 def home_page():
     if not current_user.is_authenticated:
         return redirect(url_for("todo.landing_page"))
-    return render_template("index.html")
+
+    return render_template("index.html", projects=projects)
 
 
 @todo_bp.route("/landing")
@@ -110,7 +111,7 @@ def get_user(user_id):
     return jsonify(user_dict)
 
 
-@todo_bp.route("/projects", methods=["GET", "POST"])
+@todo_bp.route("/api/projects", methods=["GET"])
 def get_projects():
     projects = db.session.execute(
         db.select(Projects).order_by(Projects.project_id)
@@ -126,6 +127,25 @@ def get_projects():
         projects_list.append(project_dict)
 
     return jsonify(projects_list)
+
+
+@todo_bp.route("/projects", methods=["GET", "POST"])
+def projects_modal():
+    form = ProjectForm()
+    if request.method == "POST":
+        if form.validate_on_submit():
+            project = Projects(
+                title=form.title.data,
+                description=form.description.data,
+                user_id=current_user.user_id,
+            )
+
+            db.session.add(project)
+            db.session.commit()
+
+            return redirect(url_for("todo.home_page"))
+
+    return render_template("add-project.html", form=form)
 
 
 @todo_bp.route("/projects/<int:project_id>", methods=["GET"])

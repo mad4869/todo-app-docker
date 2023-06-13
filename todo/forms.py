@@ -1,5 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, ValidationError
+from wtforms import (
+    StringField,
+    PasswordField,
+    SubmitField,
+    TextAreaField,
+    ValidationError,
+)
 from wtforms.validators import InputRequired, Length, Email, EqualTo
 
 from .models import *
@@ -14,7 +20,7 @@ class RegisterForm(FlaskForm):
             )
 
     name = StringField(
-        label="Nama",
+        label="Name",
         validators=[Length(min=1, max=50), InputRequired()],
     )
     role = StringField(
@@ -46,3 +52,11 @@ class LoginForm(FlaskForm):
         validators=[Length(min=6, max=100), InputRequired()],
     )
     submit = SubmitField(label="LOGIN")
+
+
+class ProjectForm(FlaskForm):
+    title = StringField(
+        label="Title", validators=[Length(min=1, max=100), InputRequired()]
+    )
+    description = TextAreaField(label="Description", validators=[Length(max=250)])
+    submit = SubmitField(label="ADD")

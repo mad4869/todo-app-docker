@@ -201,7 +201,6 @@ TODO - Home
             </span>
             <span class="text-lg font-medium">Add Task</span>
         </button>
-        <!-- <img src="{{url_for('static', filename='assets/logo-carved.png')}}" alt="Logo" class="h-10"> -->
         <button type="button" id="show-add-project" title="Add a new project"
             class="flex flex-col gap-1 px-4 py-2 bg-white border border-solid border-teal-700 text-teal-700 rounded-lg hover:bg-teal-700 hover:text-white">
             <span>
@@ -211,11 +210,11 @@ TODO - Home
         </button>
     </div>
 </section>
+{{ projects.title }}
 
 {% include "add-task.html" %}
 {% include "edit-task.html" %}
 {% include "delete-task.html" %}
-{% include "add-project.html" %}
 
 {% endblock %}
 
