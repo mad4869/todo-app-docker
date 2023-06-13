@@ -40,11 +40,64 @@ const showYear = () => {
     }
 }
 
+const todosContainer = document.getElementById('todos-container')
+const donesContainer = document.getElementById('dones-container')
+
 window.onload = () => {
     showYear()
     getProjects()
     getTodos()
 }
+
+const emptyState = (cat) => {
+    const emptyContainer = document.createElement('div')
+    emptyContainer.className = 'flex flex-col gap-2 justify-center items-center w-full border border-dashed py-10 capitalize text-xl'
+    const emptyText = document.createElement('h3')
+    const illustration = document.createElement('img')
+    illustration.className = 'w-12'
+    illustration.setAttribute('alt', 'Empty state')
+    const separator = document.createElement('span')
+    separator.className = 'w-full h-px'
+
+    if (cat === 'todos') {
+        emptyText.textContent = "You haven't added any tasks yet"
+        emptyContainer.classList.add('border-violet-700', 'text-violet-700')
+        illustration.setAttribute('src', '/static/assets/empty-primary.svg')
+        separator.classList.add('bg-violet-200')
+        const getStarted = document.createElement('button')
+        getStarted.className = 'bg-violet-700 mt-8 px-4 py-1 text-white font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase'
+        getStarted.textContent = 'get started'
+        emptyContainer.append(illustration, emptyText, getStarted)
+        todosContainer.append(separator, emptyContainer)
+    } else {
+        emptyText.textContent = "You haven't finished any tasks yet"
+        emptyContainer.classList.add('border-teal-700', 'text-teal-700')
+        illustration.setAttribute('src', '/static/assets/empty-secondary.svg')
+        separator.classList.add('bg-teal-200')
+        emptyContainer.append(illustration, emptyText)
+        donesContainer.append(separator, emptyContainer)
+    }
+}
+
+const observer = new MutationObserver(() => {
+    console.log(todosContainer.childElementCount)
+    if (todosContainer.childElementCount <= 1) {
+        emptyState('todos')
+    }
+    if (donesContainer.childElementCount <= 1) {
+        console.log(donesContainer.childElementCount)
+        emptyState('dones')
+    }
+});
+// const donesObserver = new MutationObserver(() => {
+//     if (donesContainer.childElementCount <= 1) {
+//         emptyState('dones')
+//     }
+//     console.log(donesContainer.childElementCount)
+// });
+
+observer.observe(todosContainer, { childList: true });
+observer.observe(donesContainer, { childList: true });
 
 let isDropdownProjectItemsVisible = false
 let isModalVisible = false

@@ -11,10 +11,10 @@ TODO - A Simple Todo App
                 alt="Text Logo" class="h-8"></a>
     </div>
     <div>
-        <ul class="flex gap-4 justify-center items-center text-white">
-            <li><a href="{{url_for('todo.login_page')}}">LOGIN</a></li>
+        <ul class="flex gap-4 justify-center items-center text-white uppercase">
+            <li><a href="{{url_for('todo.login_page')}}">login</a></li>
             <li class="bg-teal-500 px-4 py-1 font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)]"><a
-                    href="{{url_for('todo.register_page')}}">CREATE ACCOUNT</a>
+                    href="{{url_for('todo.register_page')}}">create account</a>
             </li>
         </ul>
     </div>
@@ -30,8 +30,8 @@ TODO - A Simple Todo App
             <p class="text-xl">A simple app that would help you managing all your projects and tasks</p>
         </div>
         <a href="{{url_for('todo.register_page')}}"
-            class="w-fit bg-teal-500 px-4 py-1 font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)]">GET
-            STARTED</a>
+            class="w-fit bg-teal-500 px-4 py-1 font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase">get
+            started</a>
     </article>
     <aside>
         <img src="{{url_for('static', filename='assets/hero.png')}}" alt="Hero Image" class="max-w-lg">
