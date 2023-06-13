@@ -1,5 +1,6 @@
 import './style.css'
 import getProjects from './js/projects';
+import getTodos from './js/todos'
 
 import Lottie from 'lottie-web';
 
@@ -42,6 +43,7 @@ const showYear = () => {
 window.onload = () => {
     showYear()
     getProjects()
+    getTodos()
 }
 
 let isDropdownProjectItemsVisible = false
@@ -153,21 +155,21 @@ const proA = document.getElementById('pro-a')
 
 const editTaskForm = document.getElementById('edit-task-form')
 const editModalButton = document.getElementById('edit-button')
-editModalButton.addEventListener('click', function () {
-    editTaskModal.show()
+// editModalButton.addEventListener('click', function () {
+//     editTaskModal.show()
 
-    editTaskForm.elements['project'].value = proA.innerHTML
-    editTaskForm.elements['title'].value = titleOne.innerHTML
-    editTaskForm.elements['description'].value = descOne.innerHTML
-})
+//     editTaskForm.elements['project'].value = proA.innerHTML
+//     editTaskForm.elements['title'].value = titleOne.innerHTML
+//     editTaskForm.elements['description'].value = descOne.innerHTML
+// })
 
 const deleteModalButton = document.getElementById('delete-button')
-deleteModalButton.addEventListener('click', function () {
-    deleteTaskModal.show()
+// deleteModalButton.addEventListener('click', function () {
+//     deleteTaskModal.show()
 
-    const deletedTask = document.getElementById('deleted-task')
-    deletedTask.innerHTML = titleOne.innerHTML
-})
+//     const deletedTask = document.getElementById('deleted-task')
+//     deletedTask.innerHTML = titleOne.innerHTML
+// })
 
 const closeEdit = document.getElementById('close-edit')
 closeEdit.addEventListener('click', function () {

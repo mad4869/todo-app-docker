@@ -47,7 +47,7 @@ class Projects(db.Model):
     description = db.Column(db.String(length=250))
     user_id = db.Column(db.Integer(), db.ForeignKey("users.user_id"))
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
-    todos = db.Relationship("Todos", backref="project", lazy=True)
+    todos = db.relationship("Todos", backref="project", lazy=True)
 
     def __repr__(self):
         return f"{self.title}"
@@ -60,7 +60,7 @@ class Todos(db.Model):
     description = db.Column(db.String(length=250))
     project_id = db.Column(db.Integer(), db.ForeignKey("projects.project_id"))
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
-    dones = db.Relationship("Dones", backref="todo", uselist=False)
+    dones = db.relationship("Dones", backref="todo", uselist=False)
 
     def __repr__(self):
         return f"{self.title}"

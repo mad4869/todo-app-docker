@@ -183,10 +183,12 @@ def get_project(project_id):
     return jsonify(project_dict)
 
 
-@todo_bp.route("/api/projects/<int:project_id>/todos", methods=["GET", "POST"])
-def get_todos(project_id):
+@todo_bp.route("/api/todos", methods=["GET", "POST"])
+def get_todos():
     todos = db.session.execute(
-        db.select(Todos).filter_by(project_id=project_id).order_by(Todos.todo_id)
+        db.select(Todos)
+        .join(Projects, Todos.project_id == Projects.project_id)
+        .order_by(Todos.todo_id)
     ).scalars()
     todos_list = []
     for todo in todos:
@@ -195,6 +197,7 @@ def get_todos(project_id):
             "title": todo.title,
             "description": todo.description,
             "project_id": todo.project_id,
+            "project": todo.project.title,
         }
         todos_list.append(todo_dict)
 
