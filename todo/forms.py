@@ -1,9 +1,11 @@
+from flask import current_app
 from flask_wtf import FlaskForm
 from wtforms import (
     StringField,
     PasswordField,
     SubmitField,
     TextAreaField,
+    SelectField,
     ValidationError,
 )
 from wtforms.validators import InputRequired, Length, Email, EqualTo
@@ -20,43 +22,55 @@ class RegisterForm(FlaskForm):
             )
 
     name = StringField(
-        label="Name",
+        "Name",
         validators=[Length(min=1, max=50), InputRequired()],
     )
     role = StringField(
-        label="Role",
+        "Role",
         validators=[Length(min=1, max=50), InputRequired()],
     )
     email = StringField(
-        label="Email",
+        "Email",
         validators=[Length(min=1, max=50), InputRequired(), Email()],
     )
     password = PasswordField(
-        label="Password",
+        "Password",
         validators=[Length(min=6, max=100), InputRequired()],
     )
     confirm_password = PasswordField(
-        label="Confirm Password",
+        "Confirm Password",
         validators=[EqualTo("password"), InputRequired()],
     )
-    submit = SubmitField(label="CREATE ACCOUNT")
+    submit = SubmitField("CREATE ACCOUNT")
 
 
 class LoginForm(FlaskForm):
     email = StringField(
-        label="Email",
+        "Email",
         validators=[Length(min=1, max=50), InputRequired(), Email()],
     )
     password = PasswordField(
-        label="Password",
+        "Password",
         validators=[Length(min=6, max=100), InputRequired()],
     )
-    submit = SubmitField(label="LOGIN")
+    submit = SubmitField("LOGIN")
 
 
 class ProjectForm(FlaskForm):
-    title = StringField(
-        label="Title", validators=[Length(min=1, max=100), InputRequired()]
-    )
-    description = TextAreaField(label="Description", validators=[Length(max=250)])
-    submit = SubmitField(label="ADD")
+    title = StringField("Title", validators=[Length(min=1, max=100), InputRequired()])
+    description = TextAreaField("Description", validators=[Length(max=250)])
+    submit = SubmitField("ADD")
+
+
+class TodoForm(FlaskForm):
+    project = SelectField("For which project", coerce=int, validators=[InputRequired()])
+    title = StringField("Title", validators=[Length(min=1, max=100), InputRequired()])
+    description = TextAreaField("Description", validators=[Length(max=250)])
+    submit = SubmitField("ADD")
+
+    def load_choices(self):
+        with current_app.app_context():
+            projects = Projects.query.all()
+            self.project.choices = [
+                (project.project_id, project.title) for project in projects
+            ]

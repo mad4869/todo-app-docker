@@ -70,14 +70,6 @@ showAddOptions.addEventListener('click', function () {
     isAddOptionsVisible = true
 })
 
-const showButton = document.getElementById('show-button')
-showButton.addEventListener('click', function () {
-    addTaskModal.show()
-    addOptions.classList.add('translate-y-full')
-    addOptions.classList.remove('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]')
-    isModalVisible = true
-})
-
 document.addEventListener('click', function (event) {
     if (isAddOptionsVisible && !addOptions.contains(event.target) && event.target !== showAddOptions) {
         addOptions.classList.add('translate-y-full');
@@ -98,11 +90,40 @@ document.addEventListener('click', function (event) {
 
 const modalContainer = document.getElementById('content')
 
+const showButton = document.getElementById('show-button')
+showButton.addEventListener('click', () => {
+    history.pushState(null, null, '/todos');
+    fetch('/todos') // Replace with the actual route to fetch the modal HTML
+        .then((res) => res.text())
+        .then((html) => {
+            // Insert the fetched HTML into the modal
+            const tempContainer = document.createElement('section');
+            tempContainer.innerHTML = html;
+            modalContainer.appendChild(tempContainer)
+            const addTaskModal = document.getElementById('add-task')
+            addTaskModal.show()
+
+            const closeTask = document.getElementById('close-button')
+            closeTask.addEventListener('click', function () {
+                addTaskModal.close()
+                history.pushState(null, null, '/');
+            })
+            //   // Show the modal
+            //   modal.style.display = 'block';
+        })
+        .catch((error) => {
+            console.error('Error fetching modal content:', error);
+        });
+    addOptions.classList.add('translate-y-full')
+    addOptions.classList.remove('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]')
+    // isModalVisible = true
+})
+
 const showAddProject = document.getElementById('show-add-project')
-showAddProject.addEventListener('click', function () {
+showAddProject.addEventListener('click', () => {
     history.pushState(null, null, '/projects');
     fetch('/projects') // Replace with the actual route to fetch the modal HTML
-        .then((response) => response.text())
+        .then((res) => res.text())
         .then((html) => {
             // Insert the fetched HTML into the modal
             const tempContainer = document.createElement('section');
@@ -126,16 +147,6 @@ showAddProject.addEventListener('click', function () {
     addOptions.classList.remove('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]')
 })
 
-// const addProjectSubmit = document.getElementById('add-project-submit')
-// addProjectSubmit.addEventListener('click', function (e) {
-//     e.preventDefault()
-
-//     const addProjectForm = document.getElementById('add-project-form')
-
-//     addProjectForm.reset()
-//     addProjectModal.close()
-// })
-
 const titleOne = document.getElementById('title-1')
 const descOne = document.getElementById('desc-1')
 const proA = document.getElementById('pro-a')
@@ -158,11 +169,6 @@ deleteModalButton.addEventListener('click', function () {
     deletedTask.innerHTML = titleOne.innerHTML
 })
 
-const closeButton = document.getElementById('close-button')
-closeButton.addEventListener('click', function () {
-    addTaskModal.close()
-})
-
 const closeEdit = document.getElementById('close-edit')
 closeEdit.addEventListener('click', function () {
     editTaskModal.close()
@@ -173,75 +179,75 @@ closeDelete.addEventListener('click', function () {
     deleteTaskModal.close()
 })
 
-const addTaskSubmit = document.getElementById('add-task-submit')
-addTaskSubmit.addEventListener('click', function (e) {
-    e.preventDefault()
+// const addTaskSubmit = document.getElementById('add-task-submit')
+// addTaskSubmit.addEventListener('click', function (e) {
+//     e.preventDefault()
 
-    const addTaskForm = document.getElementById('add-task-form')
-    const project = addTaskForm.elements['project'].value
-    const title = addTaskForm.elements['title'].value
-    const description = addTaskForm.elements['description'].value
+//     const addTaskForm = document.getElementById('add-task-form')
+//     const project = addTaskForm.elements['project'].value
+//     const title = addTaskForm.elements['title'].value
+//     const description = addTaskForm.elements['description'].value
 
-    const todoContainer = document.createElement('div')
-    todoContainer.className = 'w-full pb-2 border border-solid border-violet-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden'
+//     const todoContainer = document.createElement('div')
+//     todoContainer.className = 'w-full pb-2 border border-solid border-violet-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden'
 
-    const todoHeading = document.createElement('div')
-    todoHeading.className = 'flex justify-between items-center px-4 py-2 bg-violet-700'
+//     const todoHeading = document.createElement('div')
+//     todoHeading.className = 'flex justify-between items-center px-4 py-2 bg-violet-700'
 
-    const todoTitle = document.createElement('h1')
-    todoTitle.className = 'flex-1 text-xl text-white font-semibold'
-    todoTitle.innerHTML = title
+//     const todoTitle = document.createElement('h1')
+//     todoTitle.className = 'flex-1 text-xl text-white font-semibold'
+//     todoTitle.innerHTML = title
 
-    const todoProjectContainer = document.createElement('span')
-    todoProjectContainer.className = 'px-2 py-1 border border-solid border-white rounded-full'
-    const todoProject = document.createElement('h3')
-    todoProject.className = 'text-white text-sm'
-    todoProject.innerHTML = project
-    todoProjectContainer.appendChild(todoProject)
+//     const todoProjectContainer = document.createElement('span')
+//     todoProjectContainer.className = 'px-2 py-1 border border-solid border-white rounded-full'
+//     const todoProject = document.createElement('h3')
+//     todoProject.className = 'text-white text-sm'
+//     todoProject.innerHTML = project
+//     todoProjectContainer.appendChild(todoProject)
 
-    todoHeading.append(todoTitle, todoProjectContainer)
+//     todoHeading.append(todoTitle, todoProjectContainer)
 
-    const todoDescription = document.createElement('div')
-    todoDescription.className = 'px-4 py-2'
+//     const todoDescription = document.createElement('div')
+//     todoDescription.className = 'px-4 py-2'
 
-    const todoDescriptionContent = document.createElement('p')
-    todoDescriptionContent.className = 'text-xs'
-    todoDescriptionContent.innerHTML = description
-    todoDescription.appendChild(todoDescriptionContent)
+//     const todoDescriptionContent = document.createElement('p')
+//     todoDescriptionContent.className = 'text-xs'
+//     todoDescriptionContent.innerHTML = description
+//     todoDescription.appendChild(todoDescriptionContent)
 
-    const todosContainer = document.getElementById('todos-container')
+//     const todosContainer = document.getElementById('todos-container')
 
-    const separator = document.createElement('span')
-    separator.className = 'w-full h-px bg-violet-200'
+//     const separator = document.createElement('span')
+//     separator.className = 'w-full h-px bg-violet-200'
 
-    const buttonsContainer = document.createElement('div')
-    buttonsContainer.className = 'flex justify-between px-4'
+//     const buttonsContainer = document.createElement('div')
+//     buttonsContainer.className = 'flex justify-between px-4'
 
-    const leftButtons = document.createElement('span')
-    const rightButtons = document.createElement('span')
+//     const leftButtons = document.createElement('span')
+//     const rightButtons = document.createElement('span')
 
-    const editButton = document.createElement('button')
-    editButton.className = 'mr-1 px-2 py-px bg-teal-500 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]'
-    editButton.innerHTML = 'Edit'
-    const deleteButton = document.createElement('button')
-    deleteButton.className = 'px-2 py-px bg-rose-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]'
-    deleteButton.innerHTML = 'Delete'
-    const doneButton = document.createElement('button')
-    doneButton.className = 'px-4 py-px bg-violet-700 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]'
-    doneButton.setAttribute('title', 'Mark as done')
-    doneButton.innerHTML = '<i class="fa-solid fa-check"></i>'
+//     const editButton = document.createElement('button')
+//     editButton.className = 'mr-1 px-2 py-px bg-teal-500 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]'
+//     editButton.innerHTML = 'Edit'
+//     const deleteButton = document.createElement('button')
+//     deleteButton.className = 'px-2 py-px bg-rose-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]'
+//     deleteButton.innerHTML = 'Delete'
+//     const doneButton = document.createElement('button')
+//     doneButton.className = 'px-4 py-px bg-violet-700 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]'
+//     doneButton.setAttribute('title', 'Mark as done')
+//     doneButton.innerHTML = '<i class="fa-solid fa-check"></i>'
 
-    leftButtons.append(editButton, deleteButton)
-    rightButtons.appendChild(doneButton)
-    buttonsContainer.append(leftButtons, rightButtons)
+//     leftButtons.append(editButton, deleteButton)
+//     rightButtons.appendChild(doneButton)
+//     buttonsContainer.append(leftButtons, rightButtons)
 
-    todoContainer.append(todoHeading, todoDescription, buttonsContainer)
+//     todoContainer.append(todoHeading, todoDescription, buttonsContainer)
 
-    todosContainer.append(separator, todoContainer)
+//     todosContainer.append(separator, todoContainer)
 
-    addTaskForm.reset()
-    addTaskModal.close()
-})
+//     addTaskForm.reset()
+//     addTaskModal.close()
+// })
 
 const editTaskSubmit = document.getElementById('edit-task-submit')
 editTaskSubmit.addEventListener('click', function (e) {

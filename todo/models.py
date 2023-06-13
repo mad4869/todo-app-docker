@@ -59,7 +59,7 @@ class Todos(db.Model):
     title = db.Column(db.String(length=100), nullable=False)
     description = db.Column(db.String(length=250))
     project_id = db.Column(db.Integer(), db.ForeignKey("projects.project_id"))
-    created_at = db.Column(db.DateTime(), nullable=False)
+    created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
     dones = db.Relationship("Dones", backref="todo", uselist=False)
 
     def __repr__(self):
@@ -70,4 +70,4 @@ class Dones(db.Model):
     __tablename__ = "dones"
     done_id = db.Column(db.Integer(), primary_key=True)
     todo_id = db.Column(db.Integer(), db.ForeignKey("todos.todo_id"))
-    created_at = db.Column(db.DateTime(), nullable=False)
+    created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())

@@ -150,21 +150,22 @@ def projects_modal():
 
 @todo_bp.route("/todos", methods=["GET", "POST"])
 def todos_modal():
-    form = ProjectForm()
+    form = TodoForm()
+    form.load_choices()
     if request.method == "POST":
         if form.validate_on_submit():
-            project = Projects(
+            todo = Todos(
                 title=form.title.data,
                 description=form.description.data,
-                user_id=current_user.user_id,
+                project_id=form.project.data,
             )
 
-            db.session.add(project)
+            db.session.add(todo)
             db.session.commit()
 
             return redirect(url_for("todo.home_page"))
 
-    return render_template("add-project.html", form=form)
+    return render_template("add-task.html", form=form)
 
 
 @todo_bp.route("/api/projects/<int:project_id>", methods=["GET"])
