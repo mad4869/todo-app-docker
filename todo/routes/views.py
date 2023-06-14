@@ -8,13 +8,13 @@ from ..forms import *
 views_bp = Blueprint("views", __name__)
 
 
-@views_bp.route("/welcome")
+@views_bp.route("/welcome", strict_slashes=False)
 def welcome_page():
     return render_template("welcome.html")
 
 
 @views_bp.route("/")
-@views_bp.route("/home")
+@views_bp.route("/home", strict_slashes=False)
 def home_page():
     if not current_user.is_authenticated:
         return render_template("landing.html")
@@ -22,7 +22,7 @@ def home_page():
     return render_template("index.html")
 
 
-@views_bp.route("/login", methods=["GET", "POST"])
+@views_bp.route("/login", methods=["GET", "POST"], strict_slashes=False)
 def login_page():
     form = LoginForm()
 
@@ -44,7 +44,7 @@ def login_page():
     return render_template("login.html", form=form)
 
 
-@views_bp.route("/logout")
+@views_bp.route("/logout", strict_slashes=False)
 def logout_page():
     logout_user()
     flash("You have been logged out!", category="info")
@@ -52,7 +52,7 @@ def logout_page():
     return redirect(url_for("views.home_page"))
 
 
-@views_bp.route("/register", methods=["GET", "POST"])
+@views_bp.route("/register", methods=["GET", "POST"], strict_slashes=False)
 def register_page():
     form = RegisterForm()
     if request.method == "POST":
@@ -75,13 +75,13 @@ def register_page():
     return render_template("register.html", form=form)
 
 
-@views_bp.route("/profile")
+@views_bp.route("/profile", strict_slashes=False)
 @login_required
 def profile_page():
     return render_template("profile.html")
 
 
-@views_bp.route("/projects", methods=["GET", "POST"])
+@views_bp.route("/projects", methods=["GET", "POST"], strict_slashes=False)
 def projects_modal():
     form = ProjectForm()
     if request.method == "POST":
@@ -100,7 +100,7 @@ def projects_modal():
     return render_template("modals/add-project.html", form=form)
 
 
-@views_bp.route("/todos", methods=["GET", "POST"])
+@views_bp.route("/todos", methods=["GET", "POST"], strict_slashes=False)
 def todos_modal():
     form = TodoForm()
     form.load_choices()

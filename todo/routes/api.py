@@ -6,7 +6,7 @@ from ..models import *
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 
-@api_bp.route("/users", methods=["GET"])
+@api_bp.route("/users", methods=["GET"], strict_slashes=False)
 def get_users():
     users = db.session.execute(db.select(Users).order_by(Users.user_id)).scalars()
     data = [user.serialize() for user in users]
@@ -14,7 +14,7 @@ def get_users():
     return jsonify(data)
 
 
-@api_bp.route("/users/<int:user_id>", methods=["GET"])
+@api_bp.route("/users/<int:user_id>", methods=["GET"], strict_slashes=False)
 def get_user(user_id):
     user = db.session.execute(db.select(Users).filter_by(user_id=user_id)).scalar_one()
     data = user.serialize()
@@ -22,7 +22,7 @@ def get_user(user_id):
     return jsonify(data)
 
 
-@api_bp.route("/projects", methods=["GET"])
+@api_bp.route("/projects", methods=["GET"], strict_slashes=False)
 def get_projects():
     projects = db.session.execute(
         db.select(Projects).order_by(Projects.project_id)
@@ -32,7 +32,7 @@ def get_projects():
     return jsonify(data)
 
 
-@api_bp.route("/projects/<int:project_id>", methods=["GET"])
+@api_bp.route("/projects/<int:project_id>", methods=["GET"], strict_slashes=False)
 def get_project(project_id):
     project = db.session.execute(
         db.select(Projects).filter_by(project_id=project_id)
@@ -42,7 +42,7 @@ def get_project(project_id):
     return jsonify(data)
 
 
-@api_bp.route("/todos", methods=["GET"])
+@api_bp.route("/todos", methods=["GET"], strict_slashes=False)
 def get_todos():
     todos = db.session.execute(db.select(Todos).order_by(Todos.todo_id)).scalars()
     data = [todo.serialize() for todo in todos]
@@ -50,7 +50,7 @@ def get_todos():
     return jsonify(data)
 
 
-@api_bp.route("/todos/<int:todo_id>", methods=["GET"])
+@api_bp.route("/todos/<int:todo_id>", methods=["GET"], strict_slashes=False)
 def get_todo(todo_id):
     todo = db.session.execute(db.select(Todos).filter_by(todo_id=todo_id)).scalar_one()
     data = todo.serialize()
@@ -58,7 +58,7 @@ def get_todo(todo_id):
     return jsonify(data)
 
 
-@api_bp.route("/dones", methods=["GET"])
+@api_bp.route("/dones", methods=["GET"], strict_slashes=False)
 def get_dones():
     dones = db.session.execute(db.select(Dones).order_by(Todos.todo_id)).scalars()
     data = [done.serialize() for done in dones]
@@ -66,7 +66,7 @@ def get_dones():
     return jsonify(data)
 
 
-@api_bp.route("/dones/<int:done_id>", methods=["GET"])
+@api_bp.route("/dones/<int:done_id>", methods=["GET"], strict_slashes=False)
 def get_done(done_id):
     done = db.session.execute(db.select(Dones).filter_by(done_id=done_id)).scalar_one()
     data = done.serialize()
