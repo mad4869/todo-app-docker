@@ -13,10 +13,10 @@ def load_user(user_id):
 class Users(db.Model, UserMixin):
     __tablename__ = "users"
     user_id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(length=50), nullable=False)
-    role = db.Column(db.String(length=50), nullable=False)
-    email = db.Column(db.String(length=50), unique=True, nullable=False)
-    password_hash = db.Column(db.String(length=100), nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+    role = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), unique=True, nullable=False)
+    password_hash = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
     projects = db.Relationship("Projects", backref="user", lazy=True)
 
@@ -43,8 +43,8 @@ class Users(db.Model, UserMixin):
 class Projects(db.Model):
     __tablename__ = "projects"
     project_id = db.Column(db.Integer(), primary_key=True)
-    title = db.Column(db.String(length=100), nullable=False)
-    description = db.Column(db.String(length=250))
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(250))
     user_id = db.Column(db.Integer(), db.ForeignKey("users.user_id"))
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
     todos = db.relationship("Todos", backref="project", lazy=True)
@@ -56,8 +56,8 @@ class Projects(db.Model):
 class Todos(db.Model):
     __tablename__ = "todos"
     todo_id = db.Column(db.Integer(), primary_key=True)
-    title = db.Column(db.String(length=100), nullable=False)
-    description = db.Column(db.String(length=250))
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(250))
     project_id = db.Column(db.Integer(), db.ForeignKey("projects.project_id"))
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
     dones = db.relationship("Dones", backref="todo", uselist=False)
