@@ -1,5 +1,5 @@
 import './style.css'
-import getProjects from './js/projects';
+import getProjects, { selectProject } from './js/projects';
 import getTodos from './js/todos'
 
 import Lottie from 'lottie-web';
@@ -47,7 +47,9 @@ window.onload = () => {
     showYear()
     getProjects()
     getTodos()
+    selectProject()
 }
+
 
 const emptyState = (cat) => {
     const emptyContainer = document.createElement('div')
@@ -80,12 +82,10 @@ const emptyState = (cat) => {
 }
 
 const observer = new MutationObserver(() => {
-    console.log(todosContainer.childElementCount)
     if (todosContainer.childElementCount <= 1) {
         emptyState('todos')
     }
     if (donesContainer.childElementCount <= 1) {
-        console.log(donesContainer.childElementCount)
         emptyState('dones')
     }
 });
