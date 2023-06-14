@@ -20,6 +20,15 @@ class Users(db.Model, UserMixin):
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
     projects = db.Relationship("Projects", backref="user", lazy=True)
 
+    def serialize(self):
+        return {
+            "user_id": self.user_id,
+            "name": self.name,
+            "role": self.role,
+            "email": self.email,
+            "created_at": self.created_at,
+        }
+
     def get_id(self):
         return self.user_id
 
@@ -49,6 +58,15 @@ class Projects(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
     todos = db.relationship("Todos", backref="project", lazy=True)
 
+    def serialize(self):
+        return {
+            "project_id": self.project_id,
+            "title": self.title,
+            "description": self.description,
+            "user_id": self.user_id,
+            "created_at": self.created_at,
+        }
+
     def __repr__(self):
         return f"{self.title}"
 
@@ -62,6 +80,15 @@ class Todos(db.Model):
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
     dones = db.relationship("Dones", backref="todo", uselist=False)
 
+    def serialize(self):
+        return {
+            "todo_id": self.todo_id,
+            "title": self.title,
+            "description": self.description,
+            "project_id": self.project_id,
+            "created_at": self.created_at,
+        }
+
     def __repr__(self):
         return f"{self.title}"
 
@@ -71,3 +98,10 @@ class Dones(db.Model):
     done_id = db.Column(db.Integer(), primary_key=True)
     todo_id = db.Column(db.Integer(), db.ForeignKey("todos.todo_id"))
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
+
+    def serialize(self):
+        return {
+            "done_id": self.done_id,
+            "todo_id": self.todo_id,
+            "created_at": self.created_at,
+        }

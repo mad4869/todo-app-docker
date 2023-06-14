@@ -1,24 +1,19 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_bcrypt import Bcrypt
 
-from flask_login import LoginManager
-
-db = SQLAlchemy()
-migrate = Migrate()
-bcrypt = Bcrypt()
-login_manager = LoginManager()
+from .extensions import *
 
 
 def create_app():
-    from .routes import todo_bp
     from . import models
+    from .config import Config
+    from .routes import api, views
 
     app = Flask(__name__)
 
-    app.config.from_pyfile("config.py")
-    app.register_blueprint(todo_bp)
+    app.config.from_object(Config)
+
+    app.register_blueprint(api.api_bp)
+    app.register_blueprint(views.views_bp)
 
     db.init_app(app)
     migrate.init_app(app, db)

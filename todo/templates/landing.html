@@ -7,14 +7,14 @@ TODO - A Simple Todo App
 {% block header %}
 <nav class="flex justify-between items-center w-screen px-28 py-4 bg-violet-700">
     <div>
-        <a href="{{url_for('todo.home_page')}}"><img src="{{url_for('static', filename='assets/text-logo-white.svg')}}"
+        <a href="{{url_for('views.home_page')}}"><img src="{{url_for('static', filename='assets/text-logo-white.svg')}}"
                 alt="Text Logo" class="h-8"></a>
     </div>
     <div>
         <ul class="flex gap-4 justify-center items-center text-white uppercase">
-            <li><a href="{{url_for('todo.login_page')}}">login</a></li>
+            <li><a href="{{url_for('views.login_page')}}">login</a></li>
             <li class="bg-teal-500 px-4 py-1 font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)]"><a
-                    href="{{url_for('todo.register_page')}}">create account</a>
+                    href="{{url_for('views.register_page')}}">create account</a>
             </li>
         </ul>
     </div>
@@ -29,7 +29,7 @@ TODO - A Simple Todo App
             <h1 class="text-5xl font-bold">All in <span class="text-rose-400">one place</span></h1>
             <p class="text-xl">A simple app that would help you managing all your projects and tasks</p>
         </div>
-        <a href="{{url_for('todo.register_page')}}"
+        <a href="{{url_for('views.register_page')}}"
             class="w-fit bg-teal-500 px-4 py-1 font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase">get
             started</a>
     </article>

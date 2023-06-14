@@ -5,7 +5,7 @@ TODO - Home
 {% endblock %}
 
 {% block header %}
-{% include "navbar.html" %}
+{% include "components/navbar.html" %}
 {% endblock %}
 
 {% block content %}
@@ -63,11 +63,11 @@ TODO - Home
     </div>
 </section>
 
-{% include "edit-task.html" %}
-{% include "delete-task.html" %}
+{% include "modals/edit-task.html" %}
+{% include "modals/delete-task.html" %}
 
 {% endblock %}
 
 {% block footer %}
-{% include "footer.html" %}
+{% include "components/footer.html" %}
 {% endblock %}
