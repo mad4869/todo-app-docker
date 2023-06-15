@@ -3,6 +3,8 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 
+from .asset import Asset
+
 # Database engine
 db = SQLAlchemy()
 
@@ -14,3 +16,6 @@ bcrypt = Bcrypt()
 
 # User authentication manager
 login_manager = LoginManager()
+
+# Asset manager
+asset = Asset()

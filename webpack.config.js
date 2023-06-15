@@ -1,10 +1,11 @@
 const path = require('path')
 const { merge } = require('webpack-merge')
 
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+// const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 const TerserPlugin = require('terser-webpack-plugin')
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 const commonConfig = {
@@ -27,14 +28,16 @@ const commonConfig = {
             }
         ],
     },
+    plugins: [new WebpackManifestPlugin()]
 }
 
 const devConfig = {
     mode: 'development',
     watch: true,
     output: {
-        path: path.resolve(__dirname, 'todo', 'static'),
-        filename: 'main.js'
+        path: path.resolve(__dirname, 'todo', 'static', 'dist'),
+        publicPath: '/static/dist/',
+        filename: 'main.[contenthash].js'
     },
     module: {
         rules: [
@@ -44,10 +47,12 @@ const devConfig = {
             },
         ]
     },
-    plugins: [new HtmlWebpackPlugin({
-        template: 'src/base_template.html',
-        filename: '../templates/base.html'
-    })]
+    plugins: [
+        //     new HtmlWebpackPlugin({
+        //     template: 'base_template.html',
+        //     filename: '../templates/base.html'
+        // })
+    ]
 }
 
 const prodConfig = {
@@ -65,15 +70,17 @@ const prodConfig = {
         ]
     },
     optimization: {
-        minimizer: [new CssMinimizerPlugin(), new TerserPlugin(), new HtmlWebpackPlugin({
-            template: 'src/base_template.html',
-            filename: '../templates/base.html',
-            minify: {
-                removeAttributeQuotes: true,
-                collapseWhitespace: true,
-                removeComments: true
-            }
-        })]
+        minimizer: [new CssMinimizerPlugin(), new TerserPlugin(),
+            //     new HtmlWebpackPlugin({
+            //     template: 'base_template.html',
+            //     filename: '../templates/base.html',
+            //     minify: {
+            //         removeAttributeQuotes: true,
+            //         collapseWhitespace: true,
+            //         removeComments: true
+            //     }
+            // })
+        ]
     },
     plugins: [new CleanWebpackPlugin(), new MiniCssExtractPlugin({
         filename: '[name].[contentHash].css'
