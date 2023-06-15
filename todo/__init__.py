@@ -19,7 +19,7 @@ def create_app():
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     login_manager.init_app(app)
-    asset.init_app(app)
+    static_digest.init_app(app)
 
     return app
 

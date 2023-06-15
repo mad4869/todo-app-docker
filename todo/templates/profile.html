@@ -61,3 +61,7 @@ TODO - Home
 {% block footer %}
 {% include "components/footer.html" %}
 {% endblock %}
+
+{% block script %}
+{{static_url_for('static', filename='dist/js/profile.bundle.js')}}
+{% endblock %}

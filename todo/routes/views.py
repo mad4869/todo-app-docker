@@ -13,13 +13,37 @@ def welcome_page():
     return render_template("welcome.html")
 
 
-@views_bp.route("/")
+@views_bp.route("/", strict_slashes=False)
 @views_bp.route("/home", strict_slashes=False)
 def home_page():
     if not current_user.is_authenticated:
         return render_template("landing.html")
 
-    return render_template("index.html")
+    todo_form = TodoForm()
+    todo_form.load_choices()
+    project_form = ProjectForm()
+
+    if request.method == "POST":
+        if todo_form.validate_on_submit():
+            todo = Todos(
+                title=todo_form.title.data,
+                description=todo_form.description.data,
+                project_id=todo_form.project.data,
+            )
+            db.session.add(todo)
+
+        elif project_form.validate_on_submit():
+            project = Projects(
+                title=project_form.title.data,
+                description=project_form.description.data,
+                user_id=current_user.user_id,
+            )
+            db.session.add(project)
+
+        db.session.commit()
+        return redirect(url_for("views.home_page"))
+
+    return render_template("index.html", todo_form=todo_form, project_form=project_form)
 
 
 @views_bp.route("/login", methods=["GET", "POST"], strict_slashes=False)
@@ -79,42 +103,3 @@ def register_page():
 @login_required
 def profile_page():
     return render_template("profile.html")
-
-
-@views_bp.route("/projects", methods=["GET", "POST"], strict_slashes=False)
-def projects_modal():
-    form = ProjectForm()
-    if request.method == "POST":
-        if form.validate_on_submit():
-            project = Projects(
-                title=form.title.data,
-                description=form.description.data,
-                user_id=current_user.user_id,
-            )
-
-            db.session.add(project)
-            db.session.commit()
-
-            return redirect(url_for("views.home_page"))
-
-    return render_template("modals/add-project.html", form=form)
-
-
-@views_bp.route("/todos", methods=["GET", "POST"], strict_slashes=False)
-def todos_modal():
-    form = TodoForm()
-    form.load_choices()
-    if request.method == "POST":
-        if form.validate_on_submit():
-            todo = Todos(
-                title=form.title.data,
-                description=form.description.data,
-                project_id=form.project.data,
-            )
-
-            db.session.add(todo)
-            db.session.commit()
-
-            return redirect(url_for("views.home_page"))
-
-    return render_template("modals/add-task.html", form=form)

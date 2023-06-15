@@ -1,44 +1,28 @@
 const path = require('path')
 const { merge } = require('webpack-merge')
 
-// const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin")
 const TerserPlugin = require('terser-webpack-plugin')
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 const commonConfig = {
-    entry: './src/js/index.js',
-    module: {
-        rules: [
-            {
-                test: /\.html$/,
-                use: ['html-loader']
-            },
-            {
-                test: /\.(svg|png|jpe?g|gif|ttf|woff2)$/,
-                use: {
-                    loader: 'file-loader',
-                    options: {
-                        name: '[name].[hash].[ext]',
-                        outputPath: './assets'
-                    }
-                }
-            }
-        ],
+    entry: {
+        home: './src/js/home/index.js',
+        welcome: './src/js/welcome/index.js',
+        profile: './src/js/profile/index.js'
     },
-    plugins: [new WebpackManifestPlugin()]
+    output: {
+        path: path.resolve(__dirname, 'todo', 'static', 'dist'),
+        publicPath: '/static/dist/',
+        filename: 'js/[name].bundle.js',
+        chunkFilename: 'js/[name].bundle.js'
+    },
 }
 
 const devConfig = {
     mode: 'development',
     watch: true,
-    output: {
-        path: path.resolve(__dirname, 'todo', 'static', 'dist'),
-        publicPath: '/static/dist/',
-        filename: 'main.[contenthash].js'
-    },
     module: {
         rules: [
             {
@@ -47,20 +31,10 @@ const devConfig = {
             },
         ]
     },
-    plugins: [
-        //     new HtmlWebpackPlugin({
-        //     template: 'base_template.html',
-        //     filename: '../templates/base.html'
-        // })
-    ]
 }
 
 const prodConfig = {
     mode: 'production',
-    output: {
-        path: path.resolve(__dirname, 'todo', 'static'),
-        filename: 'main.[contentHash].js'
-    },
     module: {
         rules: [
             {
@@ -70,20 +44,10 @@ const prodConfig = {
         ]
     },
     optimization: {
-        minimizer: [new CssMinimizerPlugin(), new TerserPlugin(),
-            //     new HtmlWebpackPlugin({
-            //     template: 'base_template.html',
-            //     filename: '../templates/base.html',
-            //     minify: {
-            //         removeAttributeQuotes: true,
-            //         collapseWhitespace: true,
-            //         removeComments: true
-            //     }
-            // })
-        ]
+        minimizer: [new CssMinimizerPlugin(), new TerserPlugin()]
     },
     plugins: [new CleanWebpackPlugin(), new MiniCssExtractPlugin({
-        filename: '[name].[contentHash].css'
+        filename: '[name].css',
     })]
 }
 

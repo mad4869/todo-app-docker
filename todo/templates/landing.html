@@ -7,8 +7,9 @@ TODO - A Simple Todo App
 {% block header %}
 <nav class="flex justify-between items-center w-screen px-28 py-4 bg-violet-700">
     <div>
-        <a href="{{url_for('views.home_page')}}"><img src="{{url_for('static', filename='assets/text-logo-white.svg')}}"
-                alt="Text Logo" class="h-8"></a>
+        <a href="{{url_for('views.home_page')}}"><img
+                src="{{static_url_for('static', filename='dist/img/text-logo-white.svg')}}" alt="Text Logo"
+                class="h-8"></a>
     </div>
     <div>
         <ul class="flex gap-4 justify-center items-center text-white uppercase">
@@ -34,7 +35,11 @@ TODO - A Simple Todo App
             started</a>
     </article>
     <aside>
-        <img src="{{url_for('static', filename='assets/hero.png')}}" alt="Hero Image" class="max-w-lg">
+        <img src="{{static_url_for('static', filename='dist/img/hero.png')}}" alt="Hero Image" class="max-w-lg">
     </aside>
 </section>
+{% endblock %}
+
+{% block script %}
+{{static_url_for('static', filename='dist/js/home.bundle.js')}}
 {% endblock %}
