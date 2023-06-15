@@ -7,9 +7,9 @@ module.exports = {
         'montserrat': ['Montserrat', 'sans-serif']
       },
       backgroundImage: {
-        'login': "url('./src/img/bg-login.png')",
-        'register': "url('./src/img/bg-register.png')",
-        'navbar': "url('./src/img/bg-navbar.png')"
+        'login': "url('../img/bg-login.png')",
+        'register': "url('../img/bg-register.png')",
+        'navbar': "url('../img/bg-navbar.png')"
       },
       dropShadow: {
         'right': '5px 0px 10px rgba(0, 0, 0, 0.3)'

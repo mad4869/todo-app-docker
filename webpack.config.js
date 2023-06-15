@@ -46,7 +46,7 @@ const devConfig = {
     },
     plugins: [new HtmlWebpackPlugin({
         template: 'src/base_template.html',
-        filename: 'todo/templates/base.html'
+        filename: '../templates/base.html'
     })]
 }
 
@@ -67,7 +67,7 @@ const prodConfig = {
     optimization: {
         minimizer: [new CssMinimizerPlugin(), new TerserPlugin(), new HtmlWebpackPlugin({
             template: 'src/base_template.html',
-            filename: 'templates/base.html',
+            filename: '../templates/base.html',
             minify: {
                 removeAttributeQuotes: true,
                 collapseWhitespace: true,
