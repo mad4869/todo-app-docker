@@ -7,9 +7,9 @@ module.exports = {
         'montserrat': ['Montserrat', 'sans-serif']
       },
       backgroundImage: {
-        'login': "url('../todo/static/assets/bg-login.png')",
-        'register': "url('../todo/static/assets/bg-register.png')",
-        'navbar': "url('../todo/static/assets/bg-navbar.png')"
+        'login': "url('./src/img/bg-login.png')",
+        'register': "url('./src/img/bg-register.png')",
+        'navbar': "url('./src/img/bg-navbar.png')"
       },
       dropShadow: {
         'right': '5px 0px 10px rgba(0, 0, 0, 0.3)'

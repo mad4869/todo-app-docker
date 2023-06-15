@@ -1,13 +1,13 @@
-import './style.css'
-import getProjects, { selectProject } from './js/projects';
-import getTodos from './js/todos'
+import '../css/style.css'
+import getProjects, { selectProject } from './projects';
+import getTodos from './todos'
 
 import Lottie from 'lottie-web';
 
 const backgroundContainer = document.getElementById('background-container')
 const loadingContainer = document.getElementById('loading-container')
-const backgroundData = require('./background.json')
-const loadingData = require('./loading.json')
+const backgroundData = require('../animations/background.json')
+const loadingData = require('../animations/loading.json')
 Lottie.loadAnimation({
     container: backgroundContainer,
     renderer: 'svg',
