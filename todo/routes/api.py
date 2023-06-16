@@ -22,10 +22,10 @@ def get_user(user_id):
     return jsonify(data)
 
 
-@api_bp.route("/projects", methods=["GET"], strict_slashes=False)
-def get_projects():
+@api_bp.route("/users/<int:user_id>/projects", methods=["GET"], strict_slashes=False)
+def get_projects(user_id):
     projects = db.session.execute(
-        db.select(Projects).order_by(Projects.project_id)
+        db.select(Projects).filter_by(user_id=user_id).order_by(Projects.project_id)
     ).scalars()
     data = [project.serialize() for project in projects]
 
@@ -42,9 +42,18 @@ def get_project(project_id):
     return jsonify(data)
 
 
-@api_bp.route("/todos", methods=["GET"], strict_slashes=False)
-def get_todos():
-    todos = db.session.execute(db.select(Todos).order_by(Todos.todo_id)).scalars()
+@api_bp.route(
+    "/users/<int:user_id>/projects/<int:project_id>/todos",
+    methods=["GET"],
+    strict_slashes=False,
+)
+def get_todos(user_id, project_id):
+    todos = db.session.execute(
+        db.select(Todos)
+        .join(Projects, Todos.project_id == Projects.project_id)
+        .filter_by(user_id=user_id, project_id=project_id)
+        .order_by(Todos.todo_id)
+    ).scalars()
     data = [todo.serialize() for todo in todos]
 
     return jsonify(data)
