@@ -11,8 +11,11 @@ TODO - Register
             class="w-32 drop-shadow-lg" />
         <p class="text-white text-4xl text-center font-medium">A Simple Todo App</p>
     </div>
-    <div class="flex-1 flex flex-col gap-8 justify-center items-center px-28">
-        <img src="{{static_url_for('static', filename='dist/img/logo.png')}}" alt="Logo" class="w-24 drop-shadow-2xl">
+    <div class="flex-1 flex flex-col gap-2 justify-center items-center px-28">
+        <a href="{{url_for('views.home_page')}}">
+            <img src="{{static_url_for('static', filename='dist/img/logo.svg')}}" alt="Logo"
+                class="w-24 drop-shadow-2xl">
+        </a>
         <h1 class="text-4xl font-bold text-violet-700">REGISTER</h1>
         <form method="post" id="form" class="flex flex-col gap-4 w-full">
             {{ form.hidden_tag() }}

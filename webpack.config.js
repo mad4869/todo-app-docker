@@ -16,7 +16,8 @@ const commonConfig = {
         path: path.resolve(__dirname, 'todo', 'static', 'dist'),
         publicPath: '/static/dist/',
         filename: 'js/[name].bundle.js',
-        chunkFilename: 'js/[name].bundle.js'
+        chunkFilename: 'js/[name].bundle.js',
+        compareBeforeEmit: true
     },
 }
 

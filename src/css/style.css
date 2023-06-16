@@ -15,4 +15,16 @@
     .sidebar {
         @apply flex flex-col gap-4 justify-center items-center w-1/4 h-screen bg-cover bg-center bg-no-repeat px-8 rounded-r-4xl drop-shadow-right
     }
+
+    .success {
+        @apply bg-green-600
+    }
+
+    .error {
+        @apply bg-red-600
+    }
+
+    .info {
+        @apply bg-blue-600
+    }
 }

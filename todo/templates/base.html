@@ -16,10 +16,12 @@
 <body class="flex flex-col min-h-screen">
   {% with messages = get_flashed_messages(with_categories=True) %}
   {% if messages %}
-  {% for message in messages %}
-  <span class="w-full bg-rose-700 text-center text-white py-2 rounded-full">
-    {{ message }}
-  </span>
+  {% for category, message in messages %}
+  <div id="notice" class="flex justify-between absolute w-full z-10 px-4 text-center text-white py-2 {{category}}">
+    <span></span>
+    <span>{{ message }}</span>
+    <button id="close-notice" class="text-xl" onclick="closeNotice()">&times;</button>
+  </div>
   {% endfor %}
   {% endif %}
   {% endwith %}
@@ -40,6 +42,12 @@
   </footer>
   </div>
   <script src="{% block script %} {% endblock %}"></script>
+  <script>
+    function closeNotice() {
+      const notice = document.getElementById('notice');
+      notice.classList.add('invisible');
+    }
+  </script>
 </body>
 
 </html>
