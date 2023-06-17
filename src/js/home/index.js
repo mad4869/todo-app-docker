@@ -13,27 +13,49 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
     // List of todos
     const todos = new Todos()
 
-    todos.getList(userId)
+    const todosList = await todos.getList(userId)
+
+    if (todosList.length === 0) {
+        const empty = todos.emptyState()
+        const getStartedButton = empty.lastElementChild
+        getStartedButton.addEventListener('click', () => {
+            todos.showAddTodo()
+        })
+    }
+
+    // List of dones
+    const dones = new Dones()
+
+    const donesList = await dones.getList(userId)
+
+    if (donesList.length === 0) {
+        dones.emptyState()
+    }
 
     // Projects dropdown
     const projects = new Projects()
 
     const options = await projects.getOptions(userId)
 
-    projects.dropdown.addEventListener('click', () => {
-        projects.showOptions()
-    })
-
-    // Filter todos by projects
-    options.forEach((option) => {
-        option.addEventListener('click', async () => {
-            projects.selected.textContent = option.textContent
-            projects.closeOptions()
-
-            const todosData = await todos.getData(userId)
-            todos.filterByProjects(todosData, option.dataset.value)
+    if (options) {
+        projects.dropdown.addEventListener('click', () => {
+            projects.showOptions()
         })
-    })
+
+        // Filter todos by projects
+        options.forEach((option) => {
+            option.addEventListener('click', async () => {
+                projects.selected.textContent = option.textContent
+                projects.closeOptions()
+
+                const todosData = await todos.getData(userId)
+                todos.filterByProjects(todosData, option.dataset.value)
+            })
+        })
+    } else {
+        console.log('Empty State for projects.')
+    }
+
 
     // Sliding menu
     const menu = new Menu()
@@ -69,7 +91,8 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
             projects.closeOptions();
         }
 
-        const addTodoModalClicked = todos.addTodo.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target)
+        const getStartedButton = document.getElementById('home-todos-get-started')
+        const addTodoModalClicked = todos.addTodo.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target) || getStartedButton.contains(e.target)
         if (!addTodoModalClicked) {
             todos.closeAddTodo()
         }
@@ -80,28 +103,12 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
         }
     });
 
-    // const dones = new Dones()
-
-    // if (todos.todosContainer.childElementCount <= 1) {
-    //     todos.emptyState()
-    // }
-    // if (dones.donesContainer.childElementCount <= 1) {
-    //     dones.emptyState()
-    // }
-
     // Footer
+    const footer = document.getElementById('footer')
+    if (footer.hasChildNodes) {
+        footer.classList.add('mt-8')
+    }
+
     setInterval(setClock, 1000)
     showYear()
 }
-
-// const observer = new MutationObserver(() => {
-//     if (todosContainer.childElementCount <= 1) {
-//         emptyState('todos')
-//     }
-//     if (donesContainer.childElementCount <= 1) {
-//         emptyState('dones')
-//     }
-// });
-
-// observer.observe(todosContainer, { childList: true });
-// observer.observe(donesContainer, { childList: true });

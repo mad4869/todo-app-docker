@@ -51,13 +51,13 @@ def get_all_todos(user_id):
     todos = db.session.execute(
         db.select(Todos)
         .join(Projects, Todos.project_id == Projects.project_id)
-        .filter_by(user_id=user_id)
+        .filter(Projects.user_id == user_id)
         .order_by(Todos.todo_id)
     ).scalars()
     data = []
     for todo in todos:
         serial = todo.serialize()
-        serial.update({"project_title": todo.project.title})
+        serial.update({"project_title": todo.projects.title})
         data.append(serial)
 
     return jsonify(data)
@@ -72,13 +72,13 @@ def get_todos(user_id, project_id):
     todos = db.session.execute(
         db.select(Todos)
         .join(Projects, Todos.project_id == Projects.project_id)
-        .filter_by(user_id=user_id, project_id=project_id)
+        .filter(Projects.user_id == user_id, Todos.project_id == project_id)
         .order_by(Todos.todo_id)
     ).scalars()
     data = []
     for todo in todos:
         serial = todo.serialize()
-        serial.update({"project_title": todo.project.title})
+        serial.update({"project_title": todo.projects.title})
         data.append(serial)
 
     return jsonify(data)
@@ -86,23 +86,55 @@ def get_todos(user_id, project_id):
 
 @api_bp.route("/todos/<int:todo_id>", methods=["GET"], strict_slashes=False)
 def get_todo(todo_id):
-    todo = db.session.execute(db.select(Todos).filter_by(todo_id=todo_id)).scalar_one()
+    todo = db.session.execute(
+        db.select(Todos).filter(Todos.todo_id == todo_id)
+    ).scalar_one()
     data = todo.serialize()
 
     return jsonify(data)
 
 
-@api_bp.route("/dones", methods=["GET"], strict_slashes=False)
-def get_dones():
-    dones = db.session.execute(db.select(Dones).order_by(Todos.todo_id)).scalars()
-    data = [done.serialize() for done in dones]
+@api_bp.route(
+    "/users/<int:user_id>/dones",
+    methods=["GET"],
+    strict_slashes=False,
+)
+def get_all_dones(user_id):
+    dones = db.session.execute(
+        db.select(Todos)
+        .join(Projects, Todos.project_id == Projects.project_id)
+        .filter(Todos.is_done == True)
+        .order_by(Todos.todo_id)
+    ).scalars()
+    data = []
+    for done in dones:
+        serial = done.serialize()
+        serial.update({"project_title": done.projects.title})
+        data.append(serial)
 
     return jsonify(data)
 
 
-@api_bp.route("/dones/<int:done_id>", methods=["GET"], strict_slashes=False)
-def get_done(done_id):
-    done = db.session.execute(db.select(Dones).filter_by(done_id=done_id)).scalar_one()
-    data = done.serialize()
+@api_bp.route(
+    "/users/<int:user_id>/projects/<int:project_id>/dones",
+    methods=["GET"],
+    strict_slashes=False,
+)
+def get_dones(user_id, project_id):
+    dones = db.session.execute(
+        db.select(Todos)
+        .join(Projects, Todos.project_id == Projects.project_id)
+        .filter(
+            Projects.user_id == user_id,
+            Todos.project_id == project_id,
+            Todos.is_done == True,
+        )
+        .order_by(Todos.todo_id)
+    ).scalars()
+    data = []
+    for done in dones:
+        serial = done.serialize()
+        serial.update({"project_title": done.projects.title})
+        data.append(serial)
 
     return jsonify(data)

@@ -2,7 +2,6 @@ const emptyState = (cat) => {
     const container = document.createElement('div')
     const text = document.createElement('h3')
     const illustration = document.createElement('img')
-    const button = document.createElement('button')
 
     container.className = 'flex flex-col gap-2 justify-center items-center w-full border border-dashed py-10 text-xl capitalize'
 
@@ -14,6 +13,9 @@ const emptyState = (cat) => {
             container.classList.add('border-violet-700', 'text-violet-700')
             illustration.setAttribute('src', '/static/dist/img/empty-primary.svg')
             text.textContent = "you haven't added any tasks yet"
+
+            const button = document.createElement('button')
+            button.setAttribute('id', 'home-todos-get-started')
             button.textContent = 'get started'
             button.className = 'bg-violet-700 mt-8 px-4 py-1 text-white font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase'
 

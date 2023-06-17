@@ -31,6 +31,7 @@ def home_page():
                 project_id=todo_form.project.data,
             )
             db.session.add(todo)
+            flash(f"Your new task has been added to the list!", category="success")
 
         elif project_form.validate_on_submit():
             project = Projects(
@@ -39,6 +40,7 @@ def home_page():
                 user_id=current_user.user_id,
             )
             db.session.add(project)
+            flash(f"Your new project has been added to the list!", category="success")
 
         db.session.commit()
         return redirect(url_for("views.home_page"))
@@ -90,6 +92,11 @@ def register_page():
 
             db.session.add(user)
             db.session.commit()
+
+            flash(
+                f"Congratulation, {form.name.data}! Your account has been successfully registered. Please login to continue.",
+                category="success",
+            )
 
             return redirect(url_for("views.login_page"))
         if form.errors != {}:

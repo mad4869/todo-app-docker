@@ -48,12 +48,14 @@ class Todos {
 
                 this.container.append(separator, card)
             }
+
+            return data
         } catch (err) {
             console.error(err)
         }
     }
 
-    filterByProjects(todos, project) {
+    filterByProjects(todos, projectId) {
         while (this.container.hasChildNodes()) {
             this.container.removeChild(this.container.firstChild)
         }
@@ -61,7 +63,7 @@ class Todos {
         this.container.appendChild(this.heading)
 
         const filtered = todos.filter((todo) => {
-            return todo.project_id === parseInt(project)
+            return todo.project_id === parseInt(projectId)
         })
 
         for (let i = 0; i < filtered.length; i++) {
@@ -96,6 +98,8 @@ class Todos {
         separator.classList.add('w-full', 'h-px', 'bg-violet-200')
 
         this.container.append(separator, emptyBox)
+
+        return emptyBox
     }
 }
 

@@ -18,7 +18,7 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
-    projects = db.Relationship("Projects", backref="user", lazy=True)
+    projects = db.Relationship("Projects", back_populates="users", lazy=True)
 
     def serialize(self):
         return {
@@ -56,7 +56,8 @@ class Projects(db.Model):
     description = db.Column(db.String(250))
     user_id = db.Column(db.Integer(), db.ForeignKey("users.user_id"))
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
-    todos = db.relationship("Todos", backref="project", lazy=True)
+    users = db.relationship("Users", back_populates="projects")
+    todos = db.relationship("Todos", back_populates="projects", lazy=True)
 
     def serialize(self):
         return {
@@ -77,8 +78,9 @@ class Todos(db.Model):
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(250))
     project_id = db.Column(db.Integer(), db.ForeignKey("projects.project_id"))
+    is_done = db.Column(db.Boolean(), nullable=False, default=False)
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
-    dones = db.relationship("Dones", backref="todo", uselist=False)
+    projects = db.relationship("Projects", back_populates="todos")
 
     def serialize(self):
         return {
@@ -86,22 +88,9 @@ class Todos(db.Model):
             "title": self.title,
             "description": self.description,
             "project_id": self.project_id,
+            "is_done": self.is_done,
             "created_at": self.created_at,
         }
 
     def __repr__(self):
         return f"{self.title}"
-
-
-class Dones(db.Model):
-    __tablename__ = "dones"
-    done_id = db.Column(db.Integer(), primary_key=True)
-    todo_id = db.Column(db.Integer(), db.ForeignKey("todos.todo_id"))
-    created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
-
-    def serialize(self):
-        return {
-            "done_id": self.done_id,
-            "todo_id": self.todo_id,
-            "created_at": self.created_at,
-        }
