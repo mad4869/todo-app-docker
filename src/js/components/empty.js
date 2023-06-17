@@ -1,4 +1,4 @@
-const createEmptyState = (cat) => {
+const emptyState = (cat) => {
     const container = document.createElement('div')
     const text = document.createElement('h3')
     const illustration = document.createElement('img')
@@ -33,4 +33,4 @@ const createEmptyState = (cat) => {
     return container
 }
 
-export default createEmptyState
+export default emptyState

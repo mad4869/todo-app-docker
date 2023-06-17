@@ -20,7 +20,7 @@
   <div id="notice" class="flex justify-between absolute w-full z-10 px-4 text-center text-white py-2 {{category}}">
     <span></span>
     <span>{{ message }}</span>
-    <button id="close-notice" class="text-xl" onclick="closeNotice()">&times;</button>
+    <button id="close-notice" class="text-xl" onclick="closeNotice(event, this)">&times;</button>
   </div>
   {% endfor %}
   {% endif %}
@@ -43,9 +43,8 @@
   </div>
   <script src="{% block script %} {% endblock %}"></script>
   <script>
-    function closeNotice() {
-      const notice = document.getElementById('notice');
-      notice.classList.add('invisible');
+    function closeNotice(event) {
+      event.target.parentElement.classList.add('hidden')
     }
   </script>
 </body>

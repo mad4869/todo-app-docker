@@ -43,6 +43,27 @@ def get_project(project_id):
 
 
 @api_bp.route(
+    "/users/<int:user_id>/todos",
+    methods=["GET"],
+    strict_slashes=False,
+)
+def get_all_todos(user_id):
+    todos = db.session.execute(
+        db.select(Todos)
+        .join(Projects, Todos.project_id == Projects.project_id)
+        .filter_by(user_id=user_id)
+        .order_by(Todos.todo_id)
+    ).scalars()
+    data = []
+    for todo in todos:
+        serial = todo.serialize()
+        serial.update({"project_title": todo.project.title})
+        data.append(serial)
+
+    return jsonify(data)
+
+
+@api_bp.route(
     "/users/<int:user_id>/projects/<int:project_id>/todos",
     methods=["GET"],
     strict_slashes=False,
@@ -54,7 +75,11 @@ def get_todos(user_id, project_id):
         .filter_by(user_id=user_id, project_id=project_id)
         .order_by(Todos.todo_id)
     ).scalars()
-    data = [todo.serialize() for todo in todos]
+    data = []
+    for todo in todos:
+        serial = todo.serialize()
+        serial.update({"project_title": todo.project.title})
+        data.append(serial)
 
     return jsonify(data)
 

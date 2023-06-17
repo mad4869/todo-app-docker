@@ -1,7 +1,5 @@
 import '../../css/style.css'
 
-// import getProjects, { selectProject } from '../projects';
-// import getTodos from '../todos'
 import Menu from './menu'
 import Projects from './projects'
 import Todos from './todos'
@@ -10,18 +8,39 @@ import setClock from '../components/clock'
 import showYear from '../components/year'
 
 if (window.location.pathname == '/' || window.location.pathname == '/home') {
+    const userId = document.getElementById('current-user').dataset.user
+
+    // List of todos
+    const todos = new Todos()
+    todos.getList(userId)
+
     // Projects dropdown
     const projects = new Projects()
-    projects.projectsDropdown.addEventListener('click', () => {
-        projects.showProjectOptions()
+
+    const options = await projects.getOptions(userId)
+
+    projects.dropdown.addEventListener('click', () => {
+        projects.showOptions()
     })
+
+    // Filter todos by projects
+    Array.from(options).forEach((option) => {
+        option.addEventListener('click', async () => {
+            projects.selected.textContent = option.textContent
+            projects.closeOptions()
+
+            const todosData = await todos.getData(userId)
+            todos.filterByProjects(todosData, option.dataset.value)
+        })
+    })
+
     // Sliding menu
     const menu = new Menu()
     menu.showMenuButton.addEventListener('click', () => {
         menu.showMenu()
     })
+
     // Add task modal
-    const todos = new Todos()
     todos.addTodoShowButton.addEventListener('click', () => {
         todos.showAddTodo()
     })
@@ -36,12 +55,13 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
         projects.closeAddProject()
     })
 
+    // Closing modal if clicked outside
     document.addEventListener('click', (e) => {
         if (!menu.menu.contains(e.target) && e.target !== menu.showMenuButton) {
             menu.closeMenu()
-            // isAddOptionsVisible = false
-        } else if (!projects.projectsOptions.contains(e.target) && e.target !== projects.projectsDropdown) {
-            projects.closeProjectOptions()
+        }
+        if (!projects.optionsContainer.contains(e.target) && e.target !== projects.dropdown) {
+            projects.closeOptions()
         }
         // else if (isModalVisible && !addModal.contains(event.target) && event.target !== showButton) {
         //     console.log('Woah')
@@ -49,14 +69,14 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
         // isModalVisible = false
     });
 
-    const dones = new Dones()
+    // const dones = new Dones()
 
-    if (todos.todosContainer.childElementCount <= 1) {
-        todos.emptyState()
-    }
-    if (dones.donesContainer.childElementCount <= 1) {
-        dones.emptyState()
-    }
+    // if (todos.todosContainer.childElementCount <= 1) {
+    //     todos.emptyState()
+    // }
+    // if (dones.donesContainer.childElementCount <= 1) {
+    //     dones.emptyState()
+    // }
 
     // Footer
     setInterval(setClock, 1000)

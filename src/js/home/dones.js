@@ -1,19 +1,19 @@
-import createEmptyState from '../components/empty'
+import emptyState from '../components/empty'
 
 class Dones {
     constructor() {
         this.name = 'dones'
 
-        this.donesContainer = document.getElementById('home-dones-container')
-
-        this.separator = document.createElement('span')
+        this.container = document.getElementById('home-dones-container')
     }
 
-    emptyState() {
-        const container = createEmptyState(this.name)
+    createEmptyState() {
+        const container = emptyState(this.name)
 
-        this.separator.className = 'w-full h-px bg-teal-200'
-        this.donesContainer.append(this.separator, container)
+        const separator = document.createElement('span')
+        separator.className = 'w-full h-px bg-teal-200'
+
+        this.container.append(this.separator, container)
     }
 }
 
