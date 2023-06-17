@@ -20,7 +20,7 @@ def home_page():
         return render_template("landing.html")
 
     todo_form = TodoForm()
-    todo_form.load_choices()
+    todo_form.load_choices(current_user.user_id)
     project_form = ProjectForm()
 
     if request.method == "POST":

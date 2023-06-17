@@ -1,8 +1,9 @@
 import Menu from "./menu"
-import Todos from "./todos"
-import makeCard from '../components/card'
+import createEmptyState from '../components/empty'
 class Projects {
     constructor() {
+        this.name = 'projects'
+
         this.dropdown = document.getElementById('home-projects-dropdown')
         this.optionsContainer = document.getElementById('home-projects-options-container')
 
@@ -35,10 +36,9 @@ class Projects {
         try {
             const data = await this.getData(user_id)
 
-
             for (let i = 0; i < data.length; i++) {
                 const options = document.createElement('li')
-                options.className = "w-full text-center border-b border-solid border-violet-500 py-2 hover:bg-teal-600"
+                options.className = "w-full text-center border-b border-solid border-violet-500 py-2 cursor-pointer hover:bg-teal-600"
                 options.textContent = JSON.stringify(data[i].title).split('"').join('')
                 options.setAttribute('data-value', data[i].project_id)
 
@@ -75,6 +75,14 @@ class Projects {
 
     closeAddProject() {
         this.addProject.classList.add('hidden')
+    }
+
+    emptyState() {
+        const emptyBox = createEmptyState(this.name)
+
+        this.optionsContainer.appendChild(emptyBox)
+
+        return emptyBox
     }
 }
 

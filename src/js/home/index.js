@@ -35,14 +35,14 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
     // Projects dropdown
     const projects = new Projects()
 
+    projects.dropdown.addEventListener('click', () => {
+        projects.showOptions()
+    })
+
     const options = await projects.getOptions(userId)
 
+    // Filter todos by projects
     if (options) {
-        projects.dropdown.addEventListener('click', () => {
-            projects.showOptions()
-        })
-
-        // Filter todos by projects
         options.forEach((option) => {
             option.addEventListener('click', async () => {
                 projects.selected.textContent = option.textContent
@@ -53,7 +53,12 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
             })
         })
     } else {
-        console.log('Empty State for projects.')
+        const empty = projects.emptyState()
+        const getStartedButton = empty.lastElementChild
+        getStartedButton.addEventListener('click', () => {
+            projects.showAddProject()
+            projects.closeOptions()
+        })
     }
 
 
@@ -86,18 +91,20 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
             menu.closeMenu()
         }
 
-        const projectDropdownClicked = projects.dropdown.contains(e.target)
+
+        const projectDropdownClicked = projects.dropdown.contains(e.target) || projects.optionsContainer.contains(e.target)
         if (!projectDropdownClicked) {
             projects.closeOptions();
         }
 
-        const getStartedButton = document.getElementById('home-todos-get-started')
-        const addTodoModalClicked = todos.addTodo.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target) || getStartedButton.contains(e.target)
+        const todosGetStartedButton = document.getElementById('home-todos-get-started')
+        const addTodoModalClicked = todos.addTodo.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target) || todosGetStartedButton.contains(e.target)
         if (!addTodoModalClicked) {
             todos.closeAddTodo()
         }
 
-        const addProjectClicked = projects.addProject.firstElementChild.contains(e.target) || projects.addProjectShowButton.contains(e.target)
+        const projectsGetStartedButton = document.getElementById('home-projects-get-started')
+        const addProjectClicked = projects.addProject.firstElementChild.contains(e.target) || projects.addProjectShowButton.contains(e.target) || projectsGetStartedButton.contains(e.target)
         if (!addProjectClicked) {
             projects.closeAddProject()
         }

@@ -72,9 +72,9 @@ class TodoForm(FlaskForm):
     todo_description = TextAreaField("Description", validators=[Length(max=250)])
     submit = SubmitField("ADD")
 
-    def load_choices(self):
+    def load_choices(self, user_id):
         with current_app.app_context():
-            projects = Projects.query.all()
+            projects = Projects.query.filter(Projects.user_id == user_id)
             self.project.choices = [
                 (project.project_id, project.title) for project in projects
             ]
