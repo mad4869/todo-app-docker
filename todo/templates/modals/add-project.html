@@ -10,15 +10,15 @@
 </div>
 <form method="post" id="form-add-project" class="flex flex-col gap-4 w-full px-8">
     {{ project_form.hidden_tag() }}
-    <label for="title" class="block w-full">
-        <h6 class="text-indigo-700">{{ project_form.title.label }}</h6>
-        {{ project_form.title(type="text", id="title", title="Judul Task",
+    <label for="project_title" class="block w-full">
+        <h6 class="text-indigo-700">{{ project_form.project_title.label }}</h6>
+        {{ project_form.project_title(title="Judul Task",
         class="block border-b border-solid border-slate-500 focus:border-slate-900 w-full mt-2 text-xs text-slate-500
         focus:text-slate-900 focus:outline-none") }}
     </label>
-    <label for="description" class="block w-full">
-        <h6 class="text-indigo-700">{{ project_form.description.label }}</h6>
-        {{ project_form.description(id="description", rows='4', title="Description",
+    <label for="project_description" class="block w-full">
+        <h6 class="text-indigo-700">{{ project_form.project_description.label }}</h6>
+        {{ project_form.project_description(rows='4', title="Description",
         class="w-full text-xs text-slate-500 border-b border-solid border-slate-500 focus:border-slate-900
         focus:text-slate-900 focus:outline-none") }}
     </label>

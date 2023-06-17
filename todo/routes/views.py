@@ -13,8 +13,8 @@ def welcome_page():
     return render_template("welcome.html")
 
 
-@views_bp.route("/", strict_slashes=False)
-@views_bp.route("/home", strict_slashes=False)
+@views_bp.route("/", methods=["GET", "POST"], strict_slashes=False)
+@views_bp.route("/home", methods=["GET", "POST"], strict_slashes=False)
 def home_page():
     if not current_user.is_authenticated:
         return render_template("landing.html")
@@ -26,16 +26,16 @@ def home_page():
     if request.method == "POST":
         if todo_form.validate_on_submit():
             todo = Todos(
-                title=todo_form.title.data,
-                description=todo_form.description.data,
+                title=todo_form.todo_title.data,
+                description=todo_form.todo_description.data,
                 project_id=todo_form.project.data,
             )
             db.session.add(todo)
 
         elif project_form.validate_on_submit():
             project = Projects(
-                title=project_form.title.data,
-                description=project_form.description.data,
+                title=project_form.project_title.data,
+                description=project_form.project_description.data,
                 user_id=current_user.user_id,
             )
             db.session.add(project)

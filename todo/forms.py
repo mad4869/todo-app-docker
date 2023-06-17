@@ -57,15 +57,19 @@ class LoginForm(FlaskForm):
 
 
 class ProjectForm(FlaskForm):
-    title = StringField("Title", validators=[Length(min=1, max=100), InputRequired()])
-    description = TextAreaField("Description", validators=[Length(max=250)])
+    project_title = StringField(
+        "Title", validators=[Length(min=1, max=100), InputRequired()]
+    )
+    project_description = TextAreaField("Description", validators=[Length(max=250)])
     submit = SubmitField("ADD")
 
 
 class TodoForm(FlaskForm):
-    project = SelectField("For which project", coerce=int, validators=[InputRequired()])
-    title = StringField("Title", validators=[Length(min=1, max=100), InputRequired()])
-    description = TextAreaField("Description", validators=[Length(max=250)])
+    project = SelectField("Choose project:", coerce=int, validators=[InputRequired()])
+    todo_title = StringField(
+        "Title", validators=[Length(min=1, max=100), InputRequired()]
+    )
+    todo_description = TextAreaField("Description", validators=[Length(max=250)])
     submit = SubmitField("ADD")
 
     def load_choices(self):

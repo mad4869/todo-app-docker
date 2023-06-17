@@ -51,30 +51,30 @@ class Projects {
             bottomOption.classList.add('hover:rounded-b-2xl')
             bottomOption.classList.remove('border-b')
 
-            return this.optionsContainer.children
+            return this.optionsContainer.childNodes
         } catch (err) {
             console.error(err)
         }
     }
 
     showOptions() {
-        this.optionsContainer.classList.remove('invisible')
+        this.optionsContainer.classList.toggle('hidden')
         this.optionsContainer.classList.add('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]')
     }
 
     closeOptions() {
-        this.optionsContainer.classList.add('invisible')
+        this.optionsContainer.classList.add('hidden')
     }
 
     showAddProject() {
-        this.addProject.show()
+        this.addProject.classList.remove('hidden')
 
         const menu = new Menu()
         menu.closeMenu()
     }
 
     closeAddProject() {
-        this.addProject.close()
+        this.addProject.classList.add('hidden')
     }
 }
 

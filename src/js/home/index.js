@@ -12,6 +12,7 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
 
     // List of todos
     const todos = new Todos()
+
     todos.getList(userId)
 
     // Projects dropdown
@@ -24,7 +25,7 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
     })
 
     // Filter todos by projects
-    Array.from(options).forEach((option) => {
+    options.forEach((option) => {
         option.addEventListener('click', async () => {
             projects.selected.textContent = option.textContent
             projects.closeOptions()
@@ -47,6 +48,7 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
     todos.addTodoCloseButton.addEventListener('click', () => {
         todos.closeAddTodo()
     })
+
     // Add project modal
     projects.addProjectShowButton.addEventListener('click', () => {
         projects.showAddProject()
@@ -57,16 +59,25 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
 
     // Closing modal if clicked outside
     document.addEventListener('click', (e) => {
-        if (!menu.menu.contains(e.target) && e.target !== menu.showMenuButton) {
+        const menuClicked = menu.menu.contains(e.target) || menu.showMenuButton.contains(e.target)
+        if (!menuClicked) {
             menu.closeMenu()
         }
-        if (!projects.optionsContainer.contains(e.target) && e.target !== projects.dropdown) {
-            projects.closeOptions()
+
+        const projectDropdownClicked = projects.dropdown.contains(e.target)
+        if (!projectDropdownClicked) {
+            projects.closeOptions();
         }
-        // else if (isModalVisible && !addModal.contains(event.target) && event.target !== showButton) {
-        //     console.log('Woah')
-        // addTaskModal.close()
-        // isModalVisible = false
+
+        const addTodoModalClicked = todos.addTodo.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target)
+        if (!addTodoModalClicked) {
+            todos.closeAddTodo()
+        }
+
+        const addProjectClicked = projects.addProject.firstElementChild.contains(e.target) || projects.addProjectShowButton.contains(e.target)
+        if (!addProjectClicked) {
+            projects.closeAddProject()
+        }
     });
 
     // const dones = new Dones()

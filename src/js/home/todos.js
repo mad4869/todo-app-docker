@@ -79,14 +79,14 @@ class Todos {
     }
 
     showAddTodo() {
-        this.addTodo.show()
+        this.addTodo.classList.remove('hidden')
 
         const menu = new Menu()
         menu.closeMenu()
     }
 
     closeAddTodo() {
-        this.addTodo.close()
+        this.addTodo.classList.add('hidden')
     }
 
     emptyState() {
