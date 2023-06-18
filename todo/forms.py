@@ -111,7 +111,7 @@ class EditTodoForm(FlaskForm):
     description = TextAreaField(
         "Description", validators=[Length(max=250)], id="form-edit-todo-description"
     )
-    submit = SubmitField("ADD", id="form-edit-todo-submit")
+    submit = SubmitField("UPDATE", id="form-edit-todo-submit")
 
     def load_choices(self, user_id):
         with current_app.app_context():

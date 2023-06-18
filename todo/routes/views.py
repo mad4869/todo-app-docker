@@ -13,8 +13,8 @@ def welcome_page():
     return render_template("welcome.html")
 
 
-@views_bp.route("/", methods=["GET", "POST", "PUT", "DELETE"], strict_slashes=False)
-@views_bp.route("/home", methods=["GET", "POST", "PUT", "DELETE"], strict_slashes=False)
+@views_bp.route("/", methods=["GET", "POST", "PUT"], strict_slashes=False)
+@views_bp.route("/home", methods=["GET", "POST", "PUT"], strict_slashes=False)
 def home_page():
     if not current_user.is_authenticated:
         return render_template("landing.html")
@@ -28,6 +28,24 @@ def home_page():
     add_project_form = AddProjectForm()
 
     if request.method == "POST":
+        form = request.form
+        method = form.get("_method", "").upper()
+        if method == "PUT":
+            if edit_todo_form.validate_on_submit():
+                old_todo = db.session.execute(
+                    db.select(Todos).filter(
+                        Todos.todo_id == edit_todo_form.todo_id.data
+                    )
+                ).scalar_one()
+                old_todo.title = edit_todo_form.title.data
+                old_todo.description = edit_todo_form.description.data
+                old_todo.project_id = edit_todo_form.project.data
+
+                flash(f"Your task has been updated!", category="success")
+
+                db.session.commit()
+                return redirect(url_for("views.home_page"))
+
         if add_todo_form.validate_on_submit():
             todo = Todos(
                 title=add_todo_form.title.data,
@@ -45,32 +63,16 @@ def home_page():
             )
             db.session.add(project)
             flash(f"Your new project has been added to the list!", category="success")
-        db.session.commit()
-        return redirect(url_for("views.home_page"))
-
-    elif request.method == "PUT":
-        if edit_todo_form.validate_on_submit():
-            todo = db.session.execute(
-                db.select(Todos).filter(Todos.todo_id == edit_todo_form.todo_id.data)
-            ).scalar_one()
-            todo.title = edit_todo_form.title.data
-            todo.description = edit_todo_form.description.data
-            todo.project_id = edit_todo_form.project.data
-
-            print(todo)
-
-            flash(f"Your task has been updated!", category="success")
 
         db.session.commit()
         return redirect(url_for("views.home_page"))
 
-    else:
-        return render_template(
-            "index.html",
-            add_todo_form=add_todo_form,
-            add_project_form=add_project_form,
-            edit_todo_form=edit_todo_form,
-        )
+    return render_template(
+        "index.html",
+        add_todo_form=add_todo_form,
+        add_project_form=add_project_form,
+        edit_todo_form=edit_todo_form,
+    )
 
 
 @views_bp.route("/login", methods=["GET", "POST"], strict_slashes=False)

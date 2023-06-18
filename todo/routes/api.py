@@ -6,12 +6,12 @@ from ..models import *
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 
-@api_bp.route("/users", methods=["GET"], strict_slashes=False)
+@api_bp.route("/users", methods=["GET", "POST"], strict_slashes=False)
 def get_users():
     users = db.session.execute(db.select(Users).order_by(Users.user_id)).scalars()
     data = [user.serialize() for user in users]
 
-    return jsonify(data)
+    return jsonify(data), 200
 
 
 @api_bp.route("/users/<int:user_id>", methods=["GET"], strict_slashes=False)
