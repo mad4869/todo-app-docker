@@ -106,15 +106,15 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
         }
 
         const todosGetStartedButton = document.getElementById('home-todos-get-started')
-        let addTodoModalClicked = todos.addTodo.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target)
+        let addTodoModalClicked = todos.addTodoModal.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target)
         if (todosGetStartedButton) {
-            addTodoModalClicked = todos.addTodo.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target) || todosGetStartedButton.contains(e.target)
+            addTodoModalClicked = todos.addTodoModal.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target) || todosGetStartedButton.contains(e.target)
         }
         if (!addTodoModalClicked) {
             todos.closeAddTodo()
         }
 
-        // const editTodoModalClicked = todos.editTodo.firstElementChild.contains(e.target) || Array.from(editTodoButtons).some((edit) => edit.contains(e.target))
+        // const editTodoModalClicked = todos.editTodoModal.firstElementChild.contains(e.target) || Array.from(editTodoButtons).some((edit) => edit.contains(e.target))
         // console.log(editTodoModalClicked)
         // if (!editTodoModalClicked) {
         //     todos.closeEditTodo()

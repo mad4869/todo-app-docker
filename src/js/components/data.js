@@ -16,4 +16,23 @@ const fetchData = (url) => {
     })
 }
 
+const deleteData = (url) => {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+
+        xhr.onload = () => {
+            if (xhr.status === 201) {
+                const res = JSON.parse(xhr.responseText)
+                resolve(res)
+            } else {
+                reject(new Error('Failed to delete data'))
+            }
+        }
+
+        xhr.open('DELETE', url, true)
+        xhr.send()
+    })
+}
+
 export default fetchData
+export { deleteData }

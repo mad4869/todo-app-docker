@@ -62,7 +62,15 @@ const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading) => {
         todos.showDeleteTodo()
 
         const data = await fetchData(`/api/todos/${dataId}`)
-        document.getElementById('modal-delete-todo-deleted').textContent = data.title
+        todos.deleteTodoDeleted.textContent = data.title
+
+        todos.deleteTodoConfirm.addEventListener('click', function () {
+            todos.deleteTodo(dataId)
+        })
+
+        todos.deleteTodoCancel.addEventListener('click', function () {
+            todos.closeDeleteTodo()
+        })
     })
 
     // Create mark as done button

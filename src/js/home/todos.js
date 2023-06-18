@@ -1,5 +1,5 @@
 import Menu from "./menu"
-import fetchData from '../components/data'
+import fetchData, { deleteData } from '../components/data'
 import createList from '../components/list'
 import createSeparator from "../components/separator"
 import createEmptyState from '../components/empty'
@@ -11,14 +11,17 @@ class Todos {
         this.container = document.getElementById('home-todos-container')
         this.heading = document.getElementById('home-todos-heading')
 
-        this.addTodo = document.getElementById('modal-add-todo')
+        this.addTodoModal = document.getElementById('modal-add-todo')
         this.addTodoShowButton = document.getElementById('modal-add-todo-show-button')
         this.addTodoCloseButton = document.getElementById('modal-add-todo-close-button')
 
-        this.editTodo = document.getElementById('modal-edit-todo')
+        this.editTodoModal = document.getElementById('modal-edit-todo')
         this.editTodoCloseButtons = document.getElementById('modal-edit-todo-close-button')
 
-        this.deleteTodo = document.getElementById('modal-delete-todo')
+        this.deleteTodoModal = document.getElementById('modal-delete-todo')
+        this.deleteTodoDeleted = document.getElementById('modal-delete-todo-deleted')
+        this.deleteTodoConfirm = document.getElementById('modal-delete-todo-confirm')
+        this.deleteTodoCancel = document.getElementById('modal-delete-todo-cancel')
         this.deleteTodoCloseButtons = document.getElementById('modal-delete-todo-close-button')
     }
 
@@ -38,6 +41,18 @@ class Todos {
         }
     }
 
+    async deleteTodo(todo_id) {
+        try {
+            const data = await deleteData(`/api/todos/${todo_id}`);
+
+            if (data) {
+                location.reload()
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     filterByProjects(todos, projectId) {
         while (this.container.hasChildNodes()) {
             this.container.removeChild(this.container.firstChild)
@@ -53,30 +68,30 @@ class Todos {
     }
 
     showAddTodo() {
-        this.addTodo.classList.remove('hidden')
+        this.addTodoModal.classList.remove('hidden')
 
         const menu = new Menu()
         menu.closeMenu()
     }
 
     closeAddTodo() {
-        this.addTodo.classList.add('hidden')
+        this.addTodoModal.classList.add('hidden')
     }
 
     showEditTodo() {
-        this.editTodo.classList.remove('hidden')
+        this.editTodoModal.classList.remove('hidden')
     }
 
     closeEditTodo() {
-        this.editTodo.classList.add('hidden')
+        this.editTodoModal.classList.add('hidden')
     }
 
     showDeleteTodo() {
-        this.deleteTodo.classList.remove('hidden')
+        this.deleteTodoModal.classList.remove('hidden')
     }
 
     closeDeleteTodo() {
-        this.deleteTodo.classList.add('hidden')
+        this.deleteTodoModal.classList.add('hidden')
     }
 
     emptyState() {

@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, flash
 
 from ..extensions import db
 from ..models import *
@@ -84,7 +84,11 @@ def get_todos(user_id, project_id):
     return jsonify(data)
 
 
-@api_bp.route("/todos/<int:todo_id>", methods=["GET"], strict_slashes=False)
+@api_bp.route(
+    "/todos/<int:todo_id>",
+    methods=["GET", "POST"],
+    strict_slashes=False,
+)
 def get_todo(todo_id):
     todo = db.session.execute(
         db.select(Todos).filter(Todos.todo_id == todo_id)
@@ -92,6 +96,25 @@ def get_todo(todo_id):
     data = todo.serialize()
 
     return jsonify(data)
+
+
+@api_bp.route(
+    "/todos/<int:todo_id>",
+    methods=["DELETE"],
+    strict_slashes=False,
+)
+def delete_todo(todo_id):
+    todo = db.session.execute(
+        db.select(Todos).filter(Todos.todo_id == todo_id)
+    ).scalar_one()
+    data = todo.serialize()
+
+    db.session.delete(todo)
+    db.session.commit()
+
+    flash(f"Your task has been deleted!", category="error")
+
+    return jsonify(data), 201
 
 
 @api_bp.route(
