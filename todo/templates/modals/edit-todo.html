@@ -9,9 +9,7 @@
     <h1>EDIT TASK</h1>
 </span>
 <form method="post" id="form-edit-todo" class="flex flex-col gap-4 w-full px-8">
-    {{ edit_todo_form.put_method() }}
     {{ edit_todo_form.hidden_tag() }}
-    {{ edit_todo_form.todo_id() }}
     <label for="project" class="block w-full">
         {{ edit_todo_form.project(title="Project",
         class="block w-full px-px py-1 text-teal-600 border border-solid border-teal-600 rounded-md

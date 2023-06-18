@@ -13,8 +13,8 @@ def welcome_page():
     return render_template("welcome.html")
 
 
-@views_bp.route("/", methods=["GET", "POST", "PUT"], strict_slashes=False)
-@views_bp.route("/home", methods=["GET", "POST", "PUT"], strict_slashes=False)
+@views_bp.route("/", methods=["GET", "POST", "PUT", "DELETE"], strict_slashes=False)
+@views_bp.route("/home", methods=["GET", "POST", "PUT", "DELETE"], strict_slashes=False)
 def home_page():
     if not current_user.is_authenticated:
         return render_template("landing.html")
@@ -45,6 +45,8 @@ def home_page():
             )
             db.session.add(project)
             flash(f"Your new project has been added to the list!", category="success")
+        db.session.commit()
+        return redirect(url_for("views.home_page"))
 
     elif request.method == "PUT":
         if edit_todo_form.validate_on_submit():
@@ -57,15 +59,18 @@ def home_page():
 
             print(todo)
 
+            flash(f"Your task has been updated!", category="success")
+
         db.session.commit()
         return redirect(url_for("views.home_page"))
 
-    return render_template(
-        "index.html",
-        add_todo_form=add_todo_form,
-        add_project_form=add_project_form,
-        edit_todo_form=edit_todo_form,
-    )
+    else:
+        return render_template(
+            "index.html",
+            add_todo_form=add_todo_form,
+            add_project_form=add_project_form,
+            edit_todo_form=edit_todo_form,
+        )
 
 
 @views_bp.route("/login", methods=["GET", "POST"], strict_slashes=False)

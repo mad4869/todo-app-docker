@@ -17,6 +17,7 @@ class Users(db.Model, UserMixin):
     role = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(100), nullable=False)
+    bio = db.Column(db.String(1000))
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
     projects = db.Relationship("Projects", back_populates="users", lazy=True)
 
@@ -25,6 +26,7 @@ class Users(db.Model, UserMixin):
             "user_id": self.user_id,
             "name": self.name,
             "role": self.role,
+            "bio": self.bio,
             "email": self.email,
             "created_at": self.created_at,
         }

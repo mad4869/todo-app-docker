@@ -2,12 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap');
 @import '~@fortawesome/fontawesome-free/css/all.min.css';
 
 @layer base {
     html {
-        @apply font-plus-jakarta-sans font-light overflow-x-hidden
+        @apply font-manrope overflow-x-hidden
     }
 }
 

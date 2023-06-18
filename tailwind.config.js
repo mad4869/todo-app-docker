@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'plus-jakarta-sans': ['Plus Jakarta Sans', 'sans-serif']
+        'manrope': ['Manrope', 'sans-serif']
       },
       backgroundImage: {
         'login': "url('../img/bg-login.png')",
