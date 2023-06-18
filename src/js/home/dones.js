@@ -1,5 +1,6 @@
 import fetchData from '../components/data'
-import makeCard from '../components/card'
+import createList from '../components/list'
+import createSeparator from '../components/separator'
 import createEmptyState from '../components/empty'
 
 class Dones {
@@ -18,18 +19,7 @@ class Dones {
         try {
             const data = await this.getData(user_id)
 
-            for (let i = 0; i < data.length; i++) {
-                const title = JSON.stringify(data[i].title).split('"').join('')
-                const project = JSON.stringify(data[i].project_title).split('"').join('')
-                const description = JSON.stringify(data[i].description).split('"').join('')
-
-                const card = makeCard(title, project, description)
-
-                const separator = document.createElement('span')
-                separator.classList.add('w-full', 'h-px', 'bg-teal-200')
-
-                this.container.append(separator, card)
-            }
+            createList(data, this.container, 'teal')
 
             return data
         } catch (err) {
@@ -48,25 +38,13 @@ class Dones {
             return done.project_id === parseInt(projectId)
         })
 
-        for (let i = 0; i < filtered.length; i++) {
-            const title = JSON.stringify(filtered[i].title).split('"').join('')
-            const project = JSON.stringify(filtered[i].project_title).split('"').join('')
-            const description = JSON.stringify(filtered[i].description).split('"').join('')
-
-            const card = makeCard(title, project, description)
-
-            const separator = document.createElement('span')
-            separator.classList.add('w-full', 'h-px', 'bg-teal-200')
-
-            this.container.append(separator, card)
-        }
+        createList(filtered, this.container, 'teal')
     }
 
     emptyState() {
         const emptyBox = createEmptyState(this.name)
 
-        const separator = document.createElement('span')
-        separator.classList.add('w-full', 'h-px', 'bg-teal-200')
+        const separator = createSeparator('teal')
 
         this.container.append(separator, emptyBox)
 

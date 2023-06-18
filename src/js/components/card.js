@@ -1,4 +1,8 @@
-const makeCard = (dataTitle, dataSubtitle, dataSubheading) => {
+import Todos from "../home/todos"
+
+import fetchData from "./data"
+
+const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading) => {
     // Create container of the card
     const container = document.createElement('div')
     container.className = 'w-full pb-2 border border-solid border-slate-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden'
@@ -9,6 +13,7 @@ const makeCard = (dataTitle, dataSubtitle, dataSubheading) => {
 
     // Create the task title
     const title = document.createElement('h1')
+    // title.setAttribute('data-todoId', dataId)
     title.className = 'flex-1 text-xl text-white font-semibold'
     title.textContent = dataTitle
 
@@ -35,13 +40,30 @@ const makeCard = (dataTitle, dataSubtitle, dataSubheading) => {
 
     // Create edit button
     const editButton = document.createElement('button')
-    editButton.className = 'mr-1 px-2 py-px bg-teal-500 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]'
+    editButton.className = 'mr-1 px-2 py-px bg-teal-500 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] edit'
     editButton.textContent = 'Edit'
+    editButton.addEventListener('click', async () => {
+        const todos = new Todos()
+        todos.showEditTodo()
+
+        const data = await fetchData(`/api/todos/${dataId}`)
+        document.getElementById('form-edit-todo-id').value = data.todo_id
+        document.getElementById('form-edit-todo-project').value = data.project_id
+        document.getElementById('form-edit-todo-title').value = data.title
+        document.getElementById('form-edit-todo-description').value = data.description
+    })
 
     // Create delete button
     const deleteButton = document.createElement('button')
-    deleteButton.className = 'px-2 py-px bg-rose-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]'
+    deleteButton.className = 'px-2 py-px bg-rose-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] delete'
     deleteButton.textContent = 'Delete'
+    deleteButton.addEventListener('click', async () => {
+        const todos = new Todos()
+        todos.showDeleteTodo()
+
+        const data = await fetchData(`/api/todos/${dataId}`)
+        document.getElementById('modal-delete-todo-deleted').textContent = data.title
+    })
 
     // Create mark as done button
     const doneButton = document.createElement('button')
@@ -62,4 +84,4 @@ const makeCard = (dataTitle, dataSubtitle, dataSubheading) => {
     return container
 }
 
-export default makeCard
+export default createCard

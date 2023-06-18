@@ -1,6 +1,6 @@
 {% extends "modals/base.html" %}
 
-{% block modal_type %}delete-todo{% endblock %}
+{% block modal_type %}modal-delete-todo{% endblock %}
 
 {% block modal_color %}bg-rose-900{% endblock %}
 
@@ -9,7 +9,8 @@
     <h1>DELETE TASK</h1>
 </span>
 <span class="text-sm">
-    <p>Anda akan menghapus <span id="deleted-task" class="text-rose-600 font-semibold">Heading 1</span></p>
+    <p>Anda akan menghapus <span id="modal-delete-todo-deleted" class="text-rose-600 font-semibold">Heading
+            1</span></p>
 </span>
 <span class="flex gap-4 justify-center items-center">
     <button type="submit" id="delete"
@@ -21,7 +22,8 @@
         Batalkan
     </button>
 </span>
-<button id="close-delete" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white text-rose-600" title="Cancel">
+<button id="modal-delete-todo-close-button" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white text-rose-600"
+    title="Cancel">
     <i class="fa-solid fa-xmark"></i>
 </button>
 {% endblock %}

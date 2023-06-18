@@ -1,6 +1,7 @@
 from flask import current_app
 from flask_wtf import FlaskForm
 from wtforms import (
+    HiddenField,
     StringField,
     PasswordField,
     SubmitField,
@@ -8,7 +9,7 @@ from wtforms import (
     SelectField,
     ValidationError,
 )
-from wtforms.validators import InputRequired, Length, Email, EqualTo
+from wtforms.validators import InputRequired, DataRequired, Length, Email, EqualTo
 
 from .models import *
 
@@ -56,21 +57,61 @@ class LoginForm(FlaskForm):
     submit = SubmitField("LOGIN")
 
 
-class ProjectForm(FlaskForm):
-    project_title = StringField(
-        "Title", validators=[Length(min=1, max=100), InputRequired()]
+class AddProjectForm(FlaskForm):
+    title = StringField(
+        "Title",
+        validators=[Length(min=1, max=100), InputRequired()],
+        id="form-add-project-title",
     )
-    project_description = TextAreaField("Description", validators=[Length(max=250)])
-    submit = SubmitField("ADD")
+    description = TextAreaField(
+        "Description", validators=[Length(max=250)], id="form-add-project-description"
+    )
+    submit = SubmitField("ADD", id="form-add-project-submit")
 
 
-class TodoForm(FlaskForm):
-    project = SelectField("Choose project:", coerce=int, validators=[InputRequired()])
-    todo_title = StringField(
-        "Title", validators=[Length(min=1, max=100), InputRequired()]
+class AddTodoForm(FlaskForm):
+    project = SelectField(
+        "Choose project:",
+        coerce=int,
+        validators=[DataRequired()],
+        id="form-add-todo-project",
     )
-    todo_description = TextAreaField("Description", validators=[Length(max=250)])
-    submit = SubmitField("ADD")
+    title = StringField(
+        "Title",
+        validators=[Length(min=1, max=100), InputRequired()],
+        id="form-add-todo-title",
+    )
+    description = TextAreaField(
+        "Description", validators=[Length(max=250)], id="form-add-todo-description"
+    )
+    submit = SubmitField("ADD", id="form-add-todo-submit")
+
+    def load_choices(self, user_id):
+        with current_app.app_context():
+            projects = Projects.query.filter(Projects.user_id == user_id)
+            self.project.choices = [
+                (project.project_id, project.title) for project in projects
+            ]
+
+
+class EditTodoForm(FlaskForm):
+    put_method = HiddenField(name="_method", default="PUT")
+    todo_id = HiddenField(id="form-edit-todo-id")
+    project = SelectField(
+        "Choose project:",
+        coerce=int,
+        validators=[DataRequired()],
+        id="form-edit-todo-project",
+    )
+    title = StringField(
+        "Title",
+        validators=[Length(min=1, max=100), InputRequired()],
+        id="form-edit-todo-title",
+    )
+    description = TextAreaField(
+        "Description", validators=[Length(max=250)], id="form-edit-todo-description"
+    )
+    submit = SubmitField("ADD", id="form-edit-todo-submit")
 
     def load_choices(self, user_id):
         with current_app.app_context():

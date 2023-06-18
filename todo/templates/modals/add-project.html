@@ -9,21 +9,21 @@
     <h1>ADD NEW PROJECT</h1>
 </div>
 <form method="post" id="form-add-project" class="flex flex-col gap-4 w-full px-8">
-    {{ project_form.hidden_tag() }}
+    {{ add_project_form.hidden_tag() }}
     <label for="project_title" class="block w-full">
-        <h6 class="text-indigo-700">{{ project_form.project_title.label }}</h6>
-        {{ project_form.project_title(title="Judul Task",
+        <h6 class="text-indigo-700">{{ add_project_form.title.label }}</h6>
+        {{ add_project_form.title(title="Judul Task",
         class="block border-b border-solid border-slate-500 focus:border-slate-900 w-full mt-2 text-xs text-slate-500
         focus:text-slate-900 focus:outline-none") }}
     </label>
     <label for="project_description" class="block w-full">
-        <h6 class="text-indigo-700">{{ project_form.project_description.label }}</h6>
-        {{ project_form.project_description(rows='4', title="Description",
+        <h6 class="text-indigo-700">{{ add_project_form.description.label }}</h6>
+        {{ add_project_form.description(rows='4', title="Description",
         class="w-full text-xs text-slate-500 border-b border-solid border-slate-500 focus:border-slate-900
         focus:text-slate-900 focus:outline-none") }}
     </label>
     <div class="flex gap-1">
-        {{ project_form.submit(type="submit", id="add-project-submit", title="Submit form",
+        {{ add_project_form.submit(type="submit", id="form-add-project-submit", title="Submit form",
         class="flex-1 py-1 bg-indigo-700 text-white rounded-lg shadow-[0px_2px_5px_rgba(0,0,0,0.6)] hover:bg-indigo-900
         active:shadow-[inset_0_2px_5px_rgba(0,0,0,0.6)]") }}
         <button type="reset" id="form-add-project-reset" title="Start over"

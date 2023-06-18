@@ -13,39 +13,59 @@ def welcome_page():
     return render_template("welcome.html")
 
 
-@views_bp.route("/", methods=["GET", "POST"], strict_slashes=False)
-@views_bp.route("/home", methods=["GET", "POST"], strict_slashes=False)
+@views_bp.route("/", methods=["GET", "POST", "PUT"], strict_slashes=False)
+@views_bp.route("/home", methods=["GET", "POST", "PUT"], strict_slashes=False)
 def home_page():
     if not current_user.is_authenticated:
         return render_template("landing.html")
 
-    todo_form = TodoForm()
-    todo_form.load_choices(current_user.user_id)
-    project_form = ProjectForm()
+    add_todo_form = AddTodoForm()
+    add_todo_form.load_choices(current_user.user_id)
+
+    edit_todo_form = EditTodoForm()
+    edit_todo_form.load_choices(current_user.user_id)
+
+    add_project_form = AddProjectForm()
 
     if request.method == "POST":
-        if todo_form.validate_on_submit():
+        if add_todo_form.validate_on_submit():
             todo = Todos(
-                title=todo_form.todo_title.data,
-                description=todo_form.todo_description.data,
-                project_id=todo_form.project.data,
+                title=add_todo_form.title.data,
+                description=add_todo_form.description.data,
+                project_id=add_todo_form.project.data,
             )
             db.session.add(todo)
             flash(f"Your new task has been added to the list!", category="success")
 
-        elif project_form.validate_on_submit():
+        elif add_project_form.validate_on_submit():
             project = Projects(
-                title=project_form.project_title.data,
-                description=project_form.project_description.data,
+                title=add_project_form.title.data,
+                description=add_project_form.description.data,
                 user_id=current_user.user_id,
             )
             db.session.add(project)
             flash(f"Your new project has been added to the list!", category="success")
 
+    elif request.method == "PUT":
+        if edit_todo_form.validate_on_submit():
+            todo = db.session.execute(
+                db.select(Todos).filter(Todos.todo_id == edit_todo_form.todo_id.data)
+            ).scalar_one()
+            todo.title = edit_todo_form.title.data
+            todo.description = edit_todo_form.description.data
+            todo.project_id = edit_todo_form.project.data
+
+            print(todo)
+
         db.session.commit()
         return redirect(url_for("views.home_page"))
 
-    return render_template("index.html", todo_form=todo_form, project_form=project_form)
+    return render_template(
+        "index.html",
+        add_todo_form=add_todo_form,
+        add_project_form=add_project_form,
+        edit_todo_form=edit_todo_form,
+    )
 
 
 @views_bp.route("/login", methods=["GET", "POST"], strict_slashes=False)

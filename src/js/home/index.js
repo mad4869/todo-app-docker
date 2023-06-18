@@ -8,6 +8,7 @@ import setClock from '../components/clock'
 import showYear from '../components/year'
 
 if (window.location.pathname == '/' || window.location.pathname == '/home') {
+    // Logged in user
     const userId = document.getElementById('current-user').dataset.user
 
     // List of todos
@@ -22,6 +23,14 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
             todos.showAddTodo()
         })
     }
+
+    todos.editTodoCloseButtons.addEventListener('click', () => {
+        todos.closeEditTodo()
+    })
+
+    todos.deleteTodoCloseButtons.addEventListener('click', () => {
+        todos.closeDeleteTodo()
+    })
 
     // List of dones
     const dones = new Dones()
@@ -61,7 +70,6 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
         })
     }
 
-
     // Sliding menu
     const menu = new Menu()
     menu.showMenuButton.addEventListener('click', () => {
@@ -98,13 +106,25 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
         }
 
         const todosGetStartedButton = document.getElementById('home-todos-get-started')
-        const addTodoModalClicked = todos.addTodo.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target) || todosGetStartedButton.contains(e.target)
+        let addTodoModalClicked = todos.addTodo.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target)
+        if (todosGetStartedButton) {
+            addTodoModalClicked = todos.addTodo.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target) || todosGetStartedButton.contains(e.target)
+        }
         if (!addTodoModalClicked) {
             todos.closeAddTodo()
         }
 
+        // const editTodoModalClicked = todos.editTodo.firstElementChild.contains(e.target) || Array.from(editTodoButtons).some((edit) => edit.contains(e.target))
+        // console.log(editTodoModalClicked)
+        // if (!editTodoModalClicked) {
+        //     todos.closeEditTodo()
+        // }
+
         const projectsGetStartedButton = document.getElementById('home-projects-get-started')
-        const addProjectClicked = projects.addProject.firstElementChild.contains(e.target) || projects.addProjectShowButton.contains(e.target) || projectsGetStartedButton.contains(e.target)
+        let addProjectClicked = projects.addProject.firstElementChild.contains(e.target) || projects.addProjectShowButton.contains(e.target)
+        if (projectsGetStartedButton) {
+            addProjectClicked = projects.addProject.firstElementChild.contains(e.target) || projects.addProjectShowButton.contains(e.target) || projectsGetStartedButton.contains(e.target)
+        }
         if (!addProjectClicked) {
             projects.closeAddProject()
         }
