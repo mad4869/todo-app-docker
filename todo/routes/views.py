@@ -13,6 +13,14 @@ def welcome_page():
     return render_template("welcome.html")
 
 
+@views_bp.route("/", strict_slashes=False)
+def landing_page():
+    if current_user.is_authenticated:
+        return redirect(url_for("views.home_page"))
+
+    return render_template("landing.html")
+
+
 @views_bp.route("/home", methods=["GET", "POST", "PUT"], strict_slashes=False)
 def home_page():
     if not current_user.is_authenticated:
@@ -72,14 +80,6 @@ def home_page():
         add_project_form=add_project_form,
         edit_todo_form=edit_todo_form,
     )
-
-
-@views_bp.route("/", strict_slashes=False)
-def landing_page():
-    if current_user.is_authenticated:
-        return redirect(url_for("views.home_page"))
-
-    return render_template("landing.html")
 
 
 @views_bp.route("/login", methods=["GET", "POST"], strict_slashes=False)

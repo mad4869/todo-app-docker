@@ -2,7 +2,6 @@ class Menu {
     constructor() {
         this.menu = document.getElementById('home-menu')
         this.showMenuButton = document.getElementById('home-show-menu-button')
-        // this.isMenuVisible = false;
     }
 
     showMenu() {

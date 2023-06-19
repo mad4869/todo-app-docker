@@ -3,6 +3,9 @@ import fetchData, { updateData, deleteData } from '../components/data'
 import createList from '../components/list'
 import createSeparator from "../components/separator"
 import createEmptyState from '../components/empty'
+import showNotice from "../components/notice"
+
+import successData from '../../animations/success.json'
 
 class Todos {
     constructor() {
@@ -74,7 +77,7 @@ class Todos {
             const updatedData = await updateData(`/api/todos/${todo_id}`, data)
             if (updatedData) {
                 // Show a notice
-                console.log(updatedData)
+                showNotice('Congratulation, you have finished your task!', 'success', successData)
             }
         } catch (err) {
             console.error(err)

@@ -2,10 +2,10 @@
 module.exports = {
   content: ["./todo/**/*.{html,js}"],
   theme: {
+    fontFamily: {
+      'sans': ['"Open Sans"', '"Noto Sans"', '"Helvetica Neue"', 'sans-serif']
+    },
     extend: {
-      fontFamily: {
-        'manrope': ['Manrope', 'sans-serif']
-      },
       backgroundImage: {
         'login': "url('../img/bg-login.png')",
         'register': "url('../img/bg-register.png')",

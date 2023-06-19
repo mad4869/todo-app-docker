@@ -5,7 +5,7 @@ import fetchData from "./data"
 const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, bgColor) => {
     // Create container of the card
     const container = document.createElement('div')
-    container.className = 'w-full pb-2 border border-solid border-slate-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden'
+    container.className = 'w-full pb-2 bg-white border border-solid border-slate-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden'
     container.setAttribute('draggable', true)
     container.setAttribute('data-id', dataId)
 
@@ -29,12 +29,12 @@ const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, bgColor) =>
 
     // Create container for the description
     const subheading = document.createElement('div')
-    subheading.className = 'px-4 py-2 text-xs'
+    subheading.className = 'bg-white px-4 py-2 text-xs'
     subheading.textContent = dataSubheading
 
     // Create container for the buttons
     const toolbar = document.createElement('div')
-    toolbar.className = 'flex justify-between px-4'
+    toolbar.className = 'flex justify-between bg-white px-4'
 
     // Create subcontainer for the buttons 
     const leftButtons = document.createElement('span')
@@ -42,7 +42,7 @@ const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, bgColor) =>
 
     // Create edit button
     const editButton = document.createElement('button')
-    editButton.className = 'mr-1 px-2 py-px bg-teal-500 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] edit'
+    editButton.className = 'mr-1 px-2 py-px bg-emerald-700 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] edit'
     editButton.textContent = 'Edit'
 
     // Bind event listener to show the edit modal
@@ -60,7 +60,7 @@ const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, bgColor) =>
 
     // Create delete button
     const deleteButton = document.createElement('button')
-    deleteButton.className = 'px-2 py-px bg-rose-600 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] delete'
+    deleteButton.className = 'px-2 py-px bg-rose-700 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] delete'
     deleteButton.textContent = 'Delete'
 
     // Bind event listener to show the delete modal
@@ -87,6 +87,7 @@ const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, bgColor) =>
     const doneButton = document.createElement('button')
     doneButton.className = `px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]`
     doneButton.classList.add(bgColor)
+    doneButton.setAttribute('name', 'done-button')
     doneButton.setAttribute('title', 'Mark as done')
     doneButton.innerHTML = '<i class="fa-solid fa-check"></i>'
 

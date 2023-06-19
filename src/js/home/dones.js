@@ -2,6 +2,9 @@ import fetchData, { updateData } from '../components/data'
 import createList from '../components/list'
 import createSeparator from '../components/separator'
 import createEmptyState from '../components/empty'
+import showNotice from '../components/notice'
+
+import infoData from '../../animations/info.json'
 
 class Dones {
     constructor() {
@@ -49,7 +52,7 @@ class Dones {
             const updatedData = await updateData(`/api/todos/${todo_id}`, data)
             if (updatedData) {
                 // Show a notice
-                console.log(updatedData)
+                showNotice('You have undone your finished task!', 'info', infoData)
             }
         } catch (err) {
             console.error(err)

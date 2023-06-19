@@ -4,6 +4,7 @@ import Menu from './menu'
 import Projects from './projects'
 import Todos from './todos'
 import Dones from './dones'
+import createSeparator from '../components/separator'
 import setClock from '../components/clock'
 import showYear from '../components/year'
 
@@ -95,66 +96,106 @@ if (window.location.pathname == '/home') {
     projects.addProjectCloseButton.addEventListener('click', () => {
         projects.closeAddProject()
     })
-
     // Draggable tasks
+    let originalContainer = null
     const allTasks = document.querySelectorAll('div[draggable="true"]')
     allTasks.forEach((task) => {
         task.addEventListener('dragstart', (e) => {
+            originalContainer = e.target.parentNode
             e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
+
             setTimeout(() => {
                 e.target.classList.add('hidden');
+                e.target.previousElementSibling.classList.add('hidden')
             }, 0);
         })
         task.addEventListener('dragend', (e) => {
             e.target.classList.remove('hidden')
+            e.target.previousElementSibling.classList.remove('hidden')
         })
     })
 
     todos.container.addEventListener('dragenter', (e) => {
         e.preventDefault()
-        todos.container.classList.add('border', 'border-solid', 'border-sky-900')
+        todos.container.classList.add('bg-fuchsia-400')
     })
 
     todos.container.addEventListener('dragover', (e) => {
         e.preventDefault()
-        todos.container.classList.add('border', 'border-solid', 'border-sky-900')
+        todos.container.classList.add('bg-fuchsia-400')
     })
 
     todos.container.addEventListener('dragleave', (e) => {
         e.preventDefault()
-        todos.container.classList.remove('border', 'border-solid', 'border-sky-900')
+        todos.container.classList.remove('bg-fuchsia-400')
     })
 
     todos.container.addEventListener('drop', (e) => {
         e.preventDefault()
-        todos.container.classList.remove('border', 'border-solid', 'border-sky-900')
+        todos.container.classList.remove('bg-fuchsia-400')
+
         const data = e.dataTransfer.getData('text/plain')
+
+        if (originalContainer == todos.container) {
+            return
+        }
+
         const dropped = document.querySelector(`[data-id="${data}"]`)
-        todos.container.appendChild(dropped)
+
+        const heading = dropped.firstElementChild
+        heading.classList.remove('bg-teal-600')
+        heading.classList.add('bg-violet-700')
+
+        const doneButton = dropped.querySelector('button[name="done-button"]')
+        doneButton.classList.remove('bg-teal-600')
+        doneButton.classList.add('bg-violet-700')
+
+        const separator = createSeparator('bg-violet-200')
+
+        todos.container.append(separator, dropped)
+
         dones.dragAsUndone(data)
     })
 
     dones.container.addEventListener('dragenter', (e) => {
         e.preventDefault()
-        dones.container.classList.add('border', 'border-solid', 'border-rose-900')
+        dones.container.classList.add('bg-teal-300')
     })
 
     dones.container.addEventListener('dragover', (e) => {
         e.preventDefault()
-        dones.container.classList.add('border', 'border-solid', 'border-rose-900')
+        dones.container.classList.add('bg-teal-300')
     })
 
     dones.container.addEventListener('dragleave', (e) => {
         e.preventDefault()
-        dones.container.classList.remove('border', 'border-solid', 'border-rose-900')
+        dones.container.classList.remove('bg-teal-300')
     })
 
     dones.container.addEventListener('drop', (e) => {
         e.preventDefault()
-        dones.container.classList.remove('border', 'border-solid', 'border-rose-900')
+        dones.container.classList.remove('bg-teal-300')
+
         const data = e.dataTransfer.getData('text/plain')
+
+        if (originalContainer == dones.container) {
+            return
+        }
+
         const dropped = document.querySelector(`[data-id="${data}"]`)
-        dones.container.appendChild(dropped)
+
+        const heading = dropped.firstElementChild
+        heading.classList.remove('bg-violet-700')
+        heading.classList.add('bg-teal-600')
+
+        const doneButton = dropped.querySelector('button[name="done-button"]')
+        doneButton.classList.remove('bg-violet-700')
+        doneButton.classList.add('bg-teal-600')
+
+        const separator = createSeparator('bg-teal-200')
+
+        dones.container.append(separator, dropped)
+
         todos.dragAsDone(data)
     })
 
