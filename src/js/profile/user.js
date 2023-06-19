@@ -15,8 +15,12 @@ class User {
         return await fetchData(`/api/users/${user_id}`)
     }
 
-    async getTasksData(user_id) {
+    async getTodosData(user_id) {
         return await fetchData(`/api/users/${user_id}/todos`)
+    }
+
+    async getDonesData(user_id) {
+        return await fetchData(`/api/users/${user_id}/dones`)
     }
 
     async getProfile(user_id) {
@@ -37,11 +41,10 @@ class User {
 
     async getTasksStats(user_id) {
         try {
-            const allTasks = await this.getTasksData(user_id)
-            const onprogressTasks = allTasks.filter((task) => task.is_done == false)
-            const doneTasks = allTasks.filter((task) => task.is_done == true)
+            const onprogressTasks = await this.getTodosData(user_id)
+            const doneTasks = await this.getDonesData(user_id)
 
-            this.tasksTotal.textContent = allTasks.length
+            this.tasksTotal.textContent = onprogressTasks.length + doneTasks.length
             this.tasksOnprogress.textContent = onprogressTasks.length
             this.tasksDone.textContent = doneTasks.length
         } catch (err) {

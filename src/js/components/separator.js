@@ -1,6 +1,7 @@
 const createSeparator = (color) => {
     const separator = document.createElement('span')
-    separator.classList.add('w-full', 'h-px', `bg-slate-200`)
+    separator.className = 'w-full h-px'
+    separator.classList.add(color)
 
     return separator
 }

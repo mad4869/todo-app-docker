@@ -96,6 +96,27 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
         projects.closeAddProject()
     })
 
+    // Draggable tasks
+    const allTasks = document.querySelectorAll('div[draggable="true"]')
+    allTasks.forEach((task) => {
+        task.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
+        })
+        task.addEventListener('dragend', (e) => {
+            console.log(e.target)
+        })
+    })
+
+    dones.container.addEventListener('dragover', (e) => {
+        e.preventDefault()
+    })
+    dones.container.addEventListener('drop', (e) => {
+        e.preventDefault()
+        const data = e.dataTransfer.getData('text/plain')
+        const dropped = document.querySelector(`[data-id="${data}"]`)
+        dones.container.appendChild(dropped)
+    })
+
     // Closing modal if clicked outside
     document.addEventListener('click', (e) => {
         const menuClicked = menu.menu.contains(e.target) || menu.showMenuButton.contains(e.target)

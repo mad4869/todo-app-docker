@@ -19,7 +19,7 @@ class Dones {
         try {
             const data = await this.getData(user_id)
 
-            createList(data, this.container, 'teal', 'teal')
+            createList(data, this.container, 'bg-teal-600', 'bg-teal-200')
 
             return data
         } catch (err) {

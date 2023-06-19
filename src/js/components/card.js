@@ -2,14 +2,17 @@ import Todos from "../home/todos"
 
 import fetchData from "./data"
 
-const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, color) => {
+const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, bgColor) => {
     // Create container of the card
     const container = document.createElement('div')
     container.className = 'w-full pb-2 border border-solid border-slate-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden'
+    container.setAttribute('draggable', true)
+    container.setAttribute('data-id', dataId)
 
     // Create container for the task title and the project label
     const heading = document.createElement('div')
-    heading.className = `flex justify-between items-center px-4 py-2 bg-violet-700`
+    heading.className = 'flex justify-between items-center px-4 py-2'
+    heading.classList.add(bgColor) // set background color; violet for todos, teal for dones
 
     // Create the task title
     const title = document.createElement('h1')
@@ -82,7 +85,8 @@ const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, color) => {
 
     // Create mark as done button
     const doneButton = document.createElement('button')
-    doneButton.className = `px-4 py-px bg-violet-700 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]`
+    doneButton.className = `px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]`
+    doneButton.classList.add(bgColor)
     doneButton.setAttribute('title', 'Mark as done')
     doneButton.innerHTML = '<i class="fa-solid fa-check"></i>'
 

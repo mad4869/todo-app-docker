@@ -33,7 +33,7 @@ class Todos {
         try {
             const data = await this.getData(user_id)
 
-            createList(data, this.container, 'rose', 'violet')
+            createList(data, this.container, 'bg-violet-700', 'bg-violet-200')
 
             return data
         } catch (err) {
