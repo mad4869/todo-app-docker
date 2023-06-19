@@ -66,6 +66,21 @@ class Todos {
         }
     }
 
+    async dragAsDone(todo_id) {
+        try {
+            const data = await fetchData(`/api/todos/${todo_id}`)
+            data.is_done = true
+
+            const updatedData = await updateData(`/api/todos/${todo_id}`, data)
+            if (updatedData) {
+                // Show a notice
+                console.log(updatedData)
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
     filterByProjects(todos, projectId) {
         while (this.container.hasChildNodes()) {
             this.container.removeChild(this.container.firstChild)

@@ -7,7 +7,7 @@ import Dones from './dones'
 import setClock from '../components/clock'
 import showYear from '../components/year'
 
-if (window.location.pathname == '/' || window.location.pathname == '/home') {
+if (window.location.pathname == '/home') {
     // Logged in user
     const userId = document.getElementById('current-user').dataset.user
 
@@ -101,20 +101,61 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
     allTasks.forEach((task) => {
         task.addEventListener('dragstart', (e) => {
             e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
+            setTimeout(() => {
+                e.target.classList.add('hidden');
+            }, 0);
         })
         task.addEventListener('dragend', (e) => {
-            console.log(e.target)
+            e.target.classList.remove('hidden')
         })
+    })
+
+    todos.container.addEventListener('dragenter', (e) => {
+        e.preventDefault()
+        todos.container.classList.add('border', 'border-solid', 'border-sky-900')
+    })
+
+    todos.container.addEventListener('dragover', (e) => {
+        e.preventDefault()
+        todos.container.classList.add('border', 'border-solid', 'border-sky-900')
+    })
+
+    todos.container.addEventListener('dragleave', (e) => {
+        e.preventDefault()
+        todos.container.classList.remove('border', 'border-solid', 'border-sky-900')
+    })
+
+    todos.container.addEventListener('drop', (e) => {
+        e.preventDefault()
+        todos.container.classList.remove('border', 'border-solid', 'border-sky-900')
+        const data = e.dataTransfer.getData('text/plain')
+        const dropped = document.querySelector(`[data-id="${data}"]`)
+        todos.container.appendChild(dropped)
+        dones.dragAsUndone(data)
+    })
+
+    dones.container.addEventListener('dragenter', (e) => {
+        e.preventDefault()
+        dones.container.classList.add('border', 'border-solid', 'border-rose-900')
     })
 
     dones.container.addEventListener('dragover', (e) => {
         e.preventDefault()
+        dones.container.classList.add('border', 'border-solid', 'border-rose-900')
     })
+
+    dones.container.addEventListener('dragleave', (e) => {
+        e.preventDefault()
+        dones.container.classList.remove('border', 'border-solid', 'border-rose-900')
+    })
+
     dones.container.addEventListener('drop', (e) => {
         e.preventDefault()
+        dones.container.classList.remove('border', 'border-solid', 'border-rose-900')
         const data = e.dataTransfer.getData('text/plain')
         const dropped = document.querySelector(`[data-id="${data}"]`)
         dones.container.appendChild(dropped)
+        todos.dragAsDone(data)
     })
 
     // Closing modal if clicked outside

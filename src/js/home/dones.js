@@ -1,4 +1,4 @@
-import fetchData from '../components/data'
+import fetchData, { updateData } from '../components/data'
 import createList from '../components/list'
 import createSeparator from '../components/separator'
 import createEmptyState from '../components/empty'
@@ -22,6 +22,35 @@ class Dones {
             createList(data, this.container, 'bg-teal-600', 'bg-teal-200')
 
             return data
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    async markAsUndone(todo_id) {
+        try {
+            const data = await fetchData(`/api/todos/${todo_id}`)
+            data.is_done = false
+
+            const updatedData = await updateData(`/api/todos/${todo_id}`, data)
+            if (updatedData) {
+                location.reload()
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    async dragAsUndone(todo_id) {
+        try {
+            const data = await fetchData(`/api/todos/${todo_id}`)
+            data.is_done = false
+
+            const updatedData = await updateData(`/api/todos/${todo_id}`, data)
+            if (updatedData) {
+                // Show a notice
+                console.log(updatedData)
+            }
         } catch (err) {
             console.error(err)
         }

@@ -104,8 +104,6 @@ def get_todo(todo_id):
         db.session.commit()
         updated_data = todo.serialize()
 
-        flash(f"You have finished your task!", category="success")
-
         return jsonify(updated_data), 201
 
     return jsonify(data), 200
