@@ -1,4 +1,5 @@
-from flask import Blueprint, jsonify, flash
+from flask import Blueprint, request, jsonify, flash
+import json
 
 from ..extensions import db
 from ..models import *
@@ -52,6 +53,7 @@ def get_all_todos(user_id):
         db.select(Todos)
         .join(Projects, Todos.project_id == Projects.project_id)
         .filter(Projects.user_id == user_id)
+        .filter(Todos.is_done == False)
         .order_by(Todos.todo_id)
     ).scalars()
     data = []
@@ -86,7 +88,7 @@ def get_todos(user_id, project_id):
 
 @api_bp.route(
     "/todos/<int:todo_id>",
-    methods=["GET", "POST"],
+    methods=["GET", "POST", "PUT"],
     strict_slashes=False,
 )
 def get_todo(todo_id):
@@ -95,7 +97,18 @@ def get_todo(todo_id):
     ).scalar_one()
     data = todo.serialize()
 
-    return jsonify(data)
+    if request.method == "PUT":
+        updated_data = json.loads(request.get_data(as_text=True))
+        todo.is_done = updated_data["is_done"]
+
+        db.session.commit()
+        updated_data = todo.serialize()
+
+        flash(f"You have finished your task!", category="success")
+
+        return jsonify(updated_data), 201
+
+    return jsonify(data), 200
 
 
 @api_bp.route(
@@ -126,6 +139,7 @@ def get_all_dones(user_id):
     dones = db.session.execute(
         db.select(Todos)
         .join(Projects, Todos.project_id == Projects.project_id)
+        .filter(Projects.user_id == user_id)
         .filter(Todos.is_done == True)
         .order_by(Todos.todo_id)
     ).scalars()

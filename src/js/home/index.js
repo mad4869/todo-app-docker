@@ -59,6 +59,10 @@ if (window.location.pathname == '/' || window.location.pathname == '/home') {
 
                 const todosData = await todos.getData(userId)
                 todos.filterByProjects(todosData, option.dataset.value)
+
+                // Reserved for dones filterbyprojects
+                const donesData = await dones.getData(userId)
+                dones.filterByProjects(donesData, option.dataset.value)
             })
         })
     } else {

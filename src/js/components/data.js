@@ -16,6 +16,24 @@ const fetchData = (url) => {
     })
 }
 
+const updateData = (url, updatedData) => {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+
+        xhr.onload = () => {
+            if (xhr.status === 201) {
+                const res = JSON.parse(xhr.responseText)
+                resolve(res)
+            } else {
+                reject(new Error('Failed to update data'))
+            }
+        }
+
+        xhr.open('PUT', url, true)
+        xhr.send(JSON.stringify(updatedData))
+    })
+}
+
 const deleteData = (url) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
@@ -35,4 +53,4 @@ const deleteData = (url) => {
 }
 
 export default fetchData
-export { deleteData }
+export { updateData, deleteData }

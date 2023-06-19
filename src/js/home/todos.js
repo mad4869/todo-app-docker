@@ -1,5 +1,5 @@
 import Menu from "./menu"
-import fetchData, { deleteData } from '../components/data'
+import fetchData, { updateData, deleteData } from '../components/data'
 import createList from '../components/list'
 import createSeparator from "../components/separator"
 import createEmptyState from '../components/empty'
@@ -33,7 +33,7 @@ class Todos {
         try {
             const data = await this.getData(user_id)
 
-            createList(data, this.container, 'violet')
+            createList(data, this.container, 'rose', 'violet')
 
             return data
         } catch (err) {
@@ -44,12 +44,25 @@ class Todos {
     async deleteTodo(todo_id) {
         try {
             const data = await deleteData(`/api/todos/${todo_id}`);
-
             if (data) {
                 location.reload()
             }
         } catch (err) {
             console.error(err);
+        }
+    }
+
+    async markAsDone(todo_id) {
+        try {
+            const data = await fetchData(`/api/todos/${todo_id}`)
+            data.is_done = true
+
+            const updatedData = await updateData(`/api/todos/${todo_id}`, data)
+            if (updatedData) {
+                location.reload()
+            }
+        } catch (err) {
+            console.error(err)
         }
     }
 
