@@ -9,18 +9,28 @@ TODO - Home
 {% endblock %}
 
 {% block content %}
-<section id="profile-user" class="flex w-4/5 mx-auto mt-8 px-8 py-4 rounded-3xl shadow-[5px_7px_10px_rgba(0,0,0,0.3)]">
+<section class="flex w-4/5 mx-auto mt-8 px-8 py-4 rounded-3xl shadow-[5px_7px_10px_rgba(0,0,0,0.3)]">
     <div class="w-1/4">
         <img src="https://slp-statics.astockcdn.net/static_assets/staging/23winter/home/curated-collections/Card6_564766791.jpg"
             alt="Profile Photo" class="w-full rounded-lg">
     </div>
-    <div id="profile-user-data" class="flex-1 flex flex-col justify-between px-4">
+    <div id="profile-user" class="flex-1 flex flex-col justify-between px-4">
         <div class="flex flex-col gap-1">
-            <h1 id="profile-user-name" class="text-3xl text-violet-700 font-bold" contenteditable="true"></h1>
-            <h3 id="profile-user-role" class="text-lg text-violet-500 font-medium" contenteditable="true"></h3>
+            <h1 id="profile-user-name"
+                class="text-3xl text-violet-700 font-bold focus:outline-none focus:border-b focus:border-solid focus:border-violet-900"
+                contenteditable="true"></h1>
+            <h3 id="profile-user-role"
+                class="text-lg text-violet-500 font-medium focus:outline-none focus:border-b focus:border-solid focus:border-violet-900"
+                contenteditable="true"></h3>
         </div>
         <div>
-            <p id="profile-user-bio" class="text-xs text-slate-800 italic" contenteditable="true"></p>
+            <p id="profile-user-bio"
+                class="text-xs text-slate-800 italic focus:outline-none focus:mb-1 focus:border-b focus:border-solid focus:border-slate-900"
+                contenteditable="true"></p>
+        </div>
+        <div class="text-right">
+            <button id="profile-user-update"
+                class="bg-violet-700 px-4 py-px text-white rounded-lg hidden">UPDATE</button>
         </div>
     </div>
 </section>

@@ -15,10 +15,23 @@ def get_users():
     return jsonify(data), 200
 
 
-@api_bp.route("/users/<int:user_id>", methods=["GET"], strict_slashes=False)
+@api_bp.route("/users/<int:user_id>", methods=["GET", "PUT"], strict_slashes=False)
 def get_user(user_id):
     user = db.session.execute(db.select(Users).filter_by(user_id=user_id)).scalar_one()
     data = user.serialize()
+
+    if request.method == "PUT":
+        updated_data = json.loads(request.get_data(as_text=True))
+        user.name = updated_data["name"]
+        user.role = updated_data["role"]
+        user.bio = updated_data["bio"]
+
+        db.session.commit()
+        updated_data = user.serialize()
+
+        flash("Your profile has been updated", category="success")
+
+        return jsonify(updated_data), 201
 
     return jsonify(data)
 

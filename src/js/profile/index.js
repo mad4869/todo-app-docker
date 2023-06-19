@@ -12,6 +12,16 @@ if (window.location.pathname == '/profile') {
     const user = new User()
     user.getProfile(userId)
 
+    user.profile.addEventListener('focus', (e) => {
+        if (e.target.hasAttribute('contenteditable')) {
+            user.update.classList.remove('hidden')
+        }
+    }, true)
+
+    user.update.addEventListener('click', () => {
+        user.updateProfile(userId)
+    })
+
     // User tasks details
     user.getTasksStats(userId)
 
