@@ -119,3 +119,19 @@ class EditTodoForm(FlaskForm):
             self.project.choices = [
                 (project.project_id, project.title) for project in projects
             ]
+
+
+class EditProjectForm(FlaskForm):
+    put_method = HiddenField(name="_method", default="PUT")
+    project_id = HiddenField(id="form-edit-project-id")
+    title = StringField(
+        "Title",
+        validators=[Length(min=1, max=100), InputRequired()],
+        id="form-edit-project-title",
+    )
+    description = TextAreaField(
+        "Description",
+        validators=[Length(max=250)],
+        id="form-edit-todo-project-description",
+    )
+    submit = SubmitField("UPDATE", id="form-edit-project-submit")

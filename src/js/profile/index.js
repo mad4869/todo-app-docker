@@ -7,6 +7,8 @@ import showYear from '../components/year'
 if (window.location.pathname == '/profile') {
     // Logged in user
     const userId = document.getElementById('current-user').dataset.user
+    const link = document.querySelector('a[href="/profile"]')
+    link.classList.add('text-teal-400')
 
     // User profile
     const user = new User()

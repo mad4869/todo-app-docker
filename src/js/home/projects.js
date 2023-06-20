@@ -1,5 +1,6 @@
 import Menu from "./menu"
 import createEmptyState from '../components/empty'
+import fetchData from "../components/data"
 class Projects {
     constructor() {
         this.name = 'projects'
@@ -14,22 +15,8 @@ class Projects {
         this.addProjectCloseButton = document.getElementById('modal-add-project-close-button')
     }
 
-    getData(user_id) {
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest()
-
-            xhr.onload = () => {
-                if (xhr.status === 200) {
-                    const res = JSON.parse(xhr.responseText)
-                    resolve(res)
-                } else {
-                    reject(new Error('Failed to fetch data'))
-                }
-            }
-
-            xhr.open('GET', `/api/users/${user_id}/projects`, true)
-            xhr.send()
-        })
+    async getData(user_id) {
+        return await fetchData(`/api/users/${user_id}/projects`)
     }
 
     async getOptions(user_id) {

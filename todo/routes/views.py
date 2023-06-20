@@ -144,3 +144,18 @@ def register_page():
 @login_required
 def profile_page():
     return render_template("profile.html")
+
+
+@views_bp.route("/projects", strict_slashes=False)
+@login_required
+def projects_page():
+    add_todo_form = AddTodoForm()
+    add_project_form = AddProjectForm()
+    edit_project_form = EditProjectForm()
+
+    return render_template(
+        "projects.html",
+        add_todo_form=add_todo_form,
+        add_project_form=add_project_form,
+        edit_project_form=edit_project_form,
+    )
