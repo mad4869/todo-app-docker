@@ -34,7 +34,7 @@ class User {
             if (data.bio) {
                 this.bio.textContent = data.bio
             } else {
-                this.bio.textContent = 'Describe yourself...'
+                this.bio.textContent = 'Describe yourself here...'
             }
         } catch (err) {
             console.error(err)

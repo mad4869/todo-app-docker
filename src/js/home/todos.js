@@ -36,7 +36,7 @@ class Todos {
         try {
             const data = await this.getData(user_id)
 
-            createList(data, this.container, 'bg-violet-700', 'bg-violet-200')
+            createList(data, this.name, this.container, 'bg-violet-200')
 
             return data
         } catch (err) {
@@ -62,7 +62,7 @@ class Todos {
 
             const updatedData = await updateData(`/api/todos/${todo_id}`, data)
             if (updatedData) {
-                location.reload()
+                showNotice('Congratulation, you have finished your task!', 'success', successData)
             }
         } catch (err) {
             console.error(err)
@@ -95,7 +95,9 @@ class Todos {
             return todo.project_id === parseInt(projectId)
         })
 
-        createList(filtered, this.container, 'violet')
+        console.log(filtered)
+
+        createList(filtered, this.name, this.container, 'bg-violet-200')
     }
 
     showAddTodo() {

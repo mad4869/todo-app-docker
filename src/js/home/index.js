@@ -4,6 +4,7 @@ import Menu from './menu'
 import Projects from './projects'
 import Todos from './todos'
 import Dones from './dones'
+import createButton from '../components/button'
 import createSeparator from '../components/separator'
 import setClock from '../components/clock'
 import showYear from '../components/year'
@@ -61,7 +62,6 @@ if (window.location.pathname == '/home') {
                 const todosData = await todos.getData(userId)
                 todos.filterByProjects(todosData, option.dataset.value)
 
-                // Reserved for dones filterbyprojects
                 const donesData = await dones.getData(userId)
                 dones.filterByProjects(donesData, option.dataset.value)
             })
@@ -146,9 +146,13 @@ if (window.location.pathname == '/home') {
         heading.classList.remove('bg-teal-600')
         heading.classList.add('bg-violet-700')
 
-        const doneButton = dropped.querySelector('button[name="done-button"]')
-        doneButton.classList.remove('bg-teal-600')
-        doneButton.classList.add('bg-violet-700')
+        const rightButtons = dropped.lastElementChild.lastElementChild
+        const undoneButton = rightButtons.firstElementChild
+        undoneButton.remove()
+        const doneButton = createButton('bg-violet-700', '<i class="fa-solid fa-check"></i>', function () {
+            todos.markAsDone(data)
+        }, 'done-button', 'Mark as done')
+        rightButtons.append(doneButton)
 
         const separator = createSeparator('bg-violet-200')
 
@@ -188,9 +192,13 @@ if (window.location.pathname == '/home') {
         heading.classList.remove('bg-violet-700')
         heading.classList.add('bg-teal-600')
 
-        const doneButton = dropped.querySelector('button[name="done-button"]')
-        doneButton.classList.remove('bg-violet-700')
-        doneButton.classList.add('bg-teal-600')
+        const rightButtons = dropped.lastElementChild.lastElementChild
+        const doneButton = rightButtons.firstElementChild
+        doneButton.remove()
+        const undoneButton = createButton('bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', function () {
+            dones.markAsUndone(data)
+        }, 'undone-button', 'Mark as undone')
+        rightButtons.append(undoneButton)
 
         const separator = createSeparator('bg-teal-200')
 

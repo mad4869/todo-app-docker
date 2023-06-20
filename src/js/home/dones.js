@@ -22,7 +22,7 @@ class Dones {
         try {
             const data = await this.getData(user_id)
 
-            createList(data, this.container, 'bg-teal-600', 'bg-teal-200')
+            createList(data, this.name, this.container, 'bg-teal-200')
 
             return data
         } catch (err) {
@@ -37,7 +37,7 @@ class Dones {
 
             const updatedData = await updateData(`/api/todos/${todo_id}`, data)
             if (updatedData) {
-                location.reload()
+                showNotice('You have undone your finished task!', 'info', infoData)
             }
         } catch (err) {
             console.error(err)
@@ -70,7 +70,7 @@ class Dones {
             return done.project_id === parseInt(projectId)
         })
 
-        createList(filtered, this.container, 'teal')
+        createList(filtered, this.name, this.container, 'bg-teal-200')
     }
 
     emptyState() {

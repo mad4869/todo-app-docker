@@ -17,7 +17,7 @@
   {% with messages = get_flashed_messages(with_categories=True) %}
   {% if messages %}
   {% for category, message in messages %}
-  <div id="notice" class="absolute w-full z-10 px-4 text-center text-white py-2 {{category}}">
+  <div id="flash" class="absolute w-full z-10 px-4 text-center text-white py-2 {{category}}">
     <span>{{ message }}</span>
   </div>
   {% endfor %}
@@ -41,10 +41,10 @@
   </div>
   <script src="{% block script %} {% endblock %}"></script>
   <script>
-    const notice = document.getElementById('notice')
+    const flash = document.getElementById('flash')
     setTimeout(() => {
-      if (notice) {
-        notice.classList.add('hidden')
+      if (flash) {
+        flash.classList.add('hidden')
       }
     }, 3000)
   </script>

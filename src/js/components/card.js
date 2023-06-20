@@ -1,8 +1,11 @@
 import Todos from "../home/todos"
+import Dones from '../home/dones'
 
 import fetchData from "./data"
+import createButton from "./button"
+import createSeparator from "./separator"
 
-const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, bgColor) => {
+const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, category) => {
     // Create container of the card
     const container = document.createElement('div')
     container.className = 'w-full pb-2 bg-white border border-solid border-slate-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden'
@@ -12,7 +15,6 @@ const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, bgColor) =>
     // Create container for the task title and the project label
     const heading = document.createElement('div')
     heading.className = 'flex justify-between items-center px-4 py-2'
-    heading.classList.add(bgColor) // set background color; violet for todos, teal for dones
 
     // Create the task title
     const title = document.createElement('h1')
@@ -41,12 +43,7 @@ const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, bgColor) =>
     const rightButtons = document.createElement('span')
 
     // Create edit button
-    const editButton = document.createElement('button')
-    editButton.className = 'mr-1 px-2 py-px bg-emerald-700 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] edit'
-    editButton.textContent = 'Edit'
-
-    // Bind event listener to show the edit modal
-    editButton.addEventListener('click', async () => {
+    const handleEdit = async () => {
         const todos = new Todos()
         todos.showEditTodo()
 
@@ -56,15 +53,12 @@ const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, bgColor) =>
         document.getElementById('form-edit-todo-project').value = data.project_id
         document.getElementById('form-edit-todo-title').value = data.title
         document.getElementById('form-edit-todo-description').value = data.description
-    })
+    }
+
+    const editButton = createButton('bg-emerald-700', 'Edit', handleEdit)
 
     // Create delete button
-    const deleteButton = document.createElement('button')
-    deleteButton.className = 'px-2 py-px bg-rose-700 text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] delete'
-    deleteButton.textContent = 'Delete'
-
-    // Bind event listener to show the delete modal
-    deleteButton.addEventListener('click', async () => {
+    const handleDelete = async () => {
         const todos = new Todos()
         todos.showDeleteTodo()
 
@@ -81,25 +75,59 @@ const createCard = (dataId, dataTitle, dataSubtitle, dataSubheading, bgColor) =>
         todos.deleteTodoCancel.addEventListener('click', function () {
             todos.closeDeleteTodo()
         })
-    })
+    }
 
-    // Create mark as done button
-    const doneButton = document.createElement('button')
-    doneButton.className = `px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)]`
-    doneButton.classList.add(bgColor)
-    doneButton.setAttribute('name', 'done-button')
-    doneButton.setAttribute('title', 'Mark as done')
-    doneButton.innerHTML = '<i class="fa-solid fa-check"></i>'
+    const deleteButton = createButton('bg-rose-700', 'Delete', handleDelete)
+    deleteButton.classList.add('ml-1')
 
-    // Bind event listener to move the task to the done column
-    doneButton.addEventListener('click', () => {
-        const todos = new Todos()
-        todos.markAsDone(dataId)
-    })
-
-    // Insert the buttons into their containers
     leftButtons.append(editButton, deleteButton)
-    rightButtons.append(doneButton)
+
+    switch (category) {
+        case 'todos':
+            heading.classList.add('bg-violet-700')
+
+            // Create mark as done button
+            const handleDone = () => {
+                const todos = new Todos()
+                todos.markAsDone(dataId)
+
+                container.previousElementSibling.remove()
+                container.remove()
+
+                const newContainer = createCard(dataId, dataTitle, dataSubtitle, dataSubheading, 'dones')
+                const newSeparator = createSeparator('bg-teal-200')
+                const dones = new Dones()
+                dones.container.append(newSeparator, newContainer)
+            }
+
+            const doneButton = createButton('bg-violet-700', '<i class="fa-solid fa-check"></i>', handleDone, 'done-button', 'Mark as done')
+
+            rightButtons.append(doneButton)
+            break
+        case 'dones':
+            heading.classList.add('bg-teal-600')
+
+            // Create mark as undone button
+            const handleUndone = () => {
+                const dones = new Dones()
+                dones.markAsUndone(dataId)
+
+                container.previousElementSibling.remove()
+                container.remove()
+
+                const newContainer = createCard(dataId, dataTitle, dataSubtitle, dataSubheading, 'todos')
+                const newSeparator = createSeparator('bg-violet-200')
+                const todos = new Todos()
+                todos.container.append(newSeparator, newContainer)
+            }
+
+            const undoneButton = createButton('bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', handleUndone, 'undone-button', 'Mark as undone')
+
+            rightButtons.append(undoneButton)
+            break
+        default:
+            return
+    }
 
     // Insert the subcontainers into the container
     toolbar.append(leftButtons, rightButtons)

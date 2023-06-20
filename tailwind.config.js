@@ -6,6 +6,9 @@ module.exports = {
       'sans': ['"Open Sans"', '"Noto Sans"', '"Helvetica Neue"', 'sans-serif']
     },
     extend: {
+      fontFamily: {
+        'quicksand': ['Quicksand', 'sans-serif']
+      },
       backgroundImage: {
         'login': "url('../img/bg-login.png')",
         'register': "url('../img/bg-register.png')",
