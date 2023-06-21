@@ -15,6 +15,26 @@ if (window.location.pathname == '/projects') {
 
     projects.getList(userId)
 
+    projects.addProjectShowButton.addEventListener('click', () => {
+        projects.showAddProject()
+    })
+
+    projects.addProjectCloseButton.addEventListener('click', () => {
+        projects.closeAddProject()
+    })
+
+    projects.editProjectCloseButtons.addEventListener('click', () => {
+        projects.closeEditProject()
+    })
+
+    projects.deleteProjectCloseButtons.addEventListener('click', () => {
+        projects.closeDeleteProject()
+    })
+
+    projects.addTodoCloseButton.addEventListener('click', () => {
+        projects.closeAddTodo()
+    })
+
     // Footer
     const footer = document.getElementById('footer')
     if (footer.hasChildNodes) {

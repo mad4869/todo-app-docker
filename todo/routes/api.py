@@ -46,14 +46,26 @@ def get_projects(user_id):
     return jsonify(data)
 
 
-@api_bp.route("/projects/<int:project_id>", methods=["GET"], strict_slashes=False)
+@api_bp.route(
+    "/projects/<int:project_id>",
+    methods=["GET", "POST", "PUT", "DELETE"],
+    strict_slashes=False,
+)
 def get_project(project_id):
     project = db.session.execute(
         db.select(Projects).filter_by(project_id=project_id)
     ).scalar_one()
     data = project.serialize()
 
-    return jsonify(data)
+    if request.method == "DELETE":
+        db.session.delete(project)
+        db.session.commit()
+
+        flash(f"Your project has been deleted!", category="error")
+
+        return jsonify(data), 201
+
+    return jsonify(data), 200
 
 
 @api_bp.route(

@@ -1,11 +1,12 @@
-import fetchData from "../components/data"
-
-import Todos from '../home/todos'
+import fetchData, { deleteData } from "../components/data"
 
 class Projects {
     constructor() {
         this.container = document.getElementById('projects-container')
         this.counter = document.getElementById('projects-counter')
+
+        this.addTodoModal = document.getElementById('modal-add-todo')
+        this.addTodoCloseButton = document.getElementById('modal-add-todo-close-button')
 
         this.addProjectModal = document.getElementById('modal-add-project')
         this.addProjectShowButton = document.getElementById('modal-add-project-show-button')
@@ -29,6 +30,17 @@ class Projects {
         return await fetchData(`/api/users/${user_id}/projects/${project_id}/todos`)
     }
 
+    async deleteProject(project_id) {
+        try {
+            const data = await deleteData(`/api/projects/${project_id}`);
+            if (data) {
+                location.reload()
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     async createTodosList(user_id, project_id) {
         const data = await this.getTodosData(user_id, project_id)
 
@@ -41,6 +53,11 @@ class Projects {
         const button = document.createElement('button')
         button.className = 'flex gap-2 items-center px-4 py-1 text-indigo-700 font-semibold border border-dashed border-indigo-700 rounded-lg shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase'
         button.innerHTML = '<i class="fa-solid fa-circle-plus fa-sm text-indigo-700"></i><span>add your first task</span>'
+        button.addEventListener('click', () => {
+            this.showAddTodo()
+
+            document.getElementById('form-add-todo-project').value = project_id
+        })
 
         empty.append(button)
 
@@ -76,7 +93,7 @@ class Projects {
         try {
             const projectsData = await this.getProjectsData(user_id)
 
-            this.counter.innerHTML = `You have <span class="text-fuchsia-300 font-bold">${projectsData.length} projects</span> so far`
+            this.counter.innerHTML = `You have <span class="text-teal-300 font-bold">${projectsData.length} projects</span> so far`
 
             for (let i = 0; i < projectsData.length; i++) {
                 const card = document.createElement('div')
@@ -87,7 +104,7 @@ class Projects {
                 heading.className = 'flex justify-between items-center px-4 bg-indigo-700 text-white rounded-t-2xl group'
 
                 const content = document.createElement('div')
-                content.className = 'flex-1 py-2'
+                content.className = 'flex-1 pr-4 py-2'
 
                 const title = document.createElement('p')
                 title.className = 'text-2xl font-semibold'
@@ -107,25 +124,44 @@ class Projects {
                 editButton.className = 'invisible group-hover:visible hover:text-emerald-500'
                 editButton.setAttribute('title', 'Edit this project')
                 editButton.innerHTML = '<i class="fa-solid fa-pen-to-square fa-sm"></i>'
-                editButton.addEventListener('click', () => {
+                editButton.addEventListener('click', async () => {
                     this.showEditProject()
+
+                    const data = await fetchData(`/api/projects/${projectsData[i].project_id}`)
+                    document.getElementById('form-edit-project-id').value = data.project_id
+                    document.getElementById('form-edit-project-title').value = data.title
+                    document.getElementById('form-edit-project-description').value = data.description
                 })
 
                 const deleteButton = document.createElement('button')
                 deleteButton.className = 'invisible group-hover:visible hover:text-rose-500'
                 deleteButton.setAttribute('title', 'Delete this project')
                 deleteButton.innerHTML = '<i class="fa-solid fa-trash fa-sm"></i>'
-                deleteButton.addEventListener('click', () => {
+                deleteButton.addEventListener('click', async () => {
                     this.showDeleteProject()
+
+                    const data = await fetchData(`/api/projects/${projectsData[i].project_id}`)
+                    this.deleteProjectDeleted.textContent = data.title
+
+                    // Bind event listener to the confirm button to execute the deletion process
+                    this.deleteProjectConfirm.addEventListener('click', function () {
+                        this.deleteProject(projectsData[i].project_id)
+                    })
+
+                    // Bind event listener to the cancel button to close the delete modal
+                    this.deleteProjectCancel.addEventListener('click', function () {
+                        this.closeDeleteProject()
+                    })
                 })
 
                 const addButton = document.createElement('button')
-                addButton.className = 'invisible group-hover:visible hover:text-fuchsia-300'
+                addButton.className = 'invisible group-hover:visible hover:text-violet-500'
                 addButton.setAttribute('title', 'Add a new task')
                 addButton.innerHTML = '<i class="fa-solid fa-circle-plus fa-sm">'
-                addButton.addEventListener('click', () => {
-                    const todos = new Todos()
-                    todos.showAddTodo()
+                addButton.addEventListener('click', async () => {
+                    this.showAddTodo()
+
+                    document.getElementById('form-add-todo-project').value = projectsData[i].project_id
                 })
 
                 buttons.append(editButton, deleteButton, addButton)
@@ -140,6 +176,14 @@ class Projects {
         } catch (err) {
             console.error(err)
         }
+    }
+
+    showAddTodo() {
+        this.addTodoModal.classList.remove('hidden')
+    }
+
+    closeAddTodo() {
+        this.addTodoModal.classList.add('hidden')
     }
 
     showAddProject() {

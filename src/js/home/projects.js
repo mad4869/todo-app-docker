@@ -7,9 +7,8 @@ class Projects {
 
         this.dropdown = document.getElementById('home-projects-dropdown')
         this.optionsContainer = document.getElementById('home-projects-options-container')
-
         this.selected = document.getElementById('home-project-selected')
-        // this.isProjectOptionsVisible = false;
+
         this.addProject = document.getElementById('modal-add-project')
         this.addProjectShowButton = document.getElementById('modal-add-project-show-button')
         this.addProjectCloseButton = document.getElementById('modal-add-project-close-button')

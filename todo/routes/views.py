@@ -146,12 +146,55 @@ def profile_page():
     return render_template("profile.html")
 
 
-@views_bp.route("/projects", strict_slashes=False)
+@views_bp.route(
+    "/projects", methods=["GET", "POST", "PUT", "DELETE"], strict_slashes=False
+)
 @login_required
 def projects_page():
     add_todo_form = AddTodoForm()
+    add_todo_form.load_choices(current_user.user_id)
+
     add_project_form = AddProjectForm()
     edit_project_form = EditProjectForm()
+
+    if request.method == "POST":
+        form = request.form
+        method = form.get("_method", "").upper()
+        if method == "PUT":
+            if edit_project_form.validate_on_submit():
+                old_project = db.session.execute(
+                    db.select(Projects).filter(
+                        Projects.project_id == edit_project_form.project_id.data
+                    )
+                ).scalar_one()
+                old_project.title = edit_project_form.title.data
+                old_project.description = edit_project_form.description.data
+
+                flash(f"Your project has been updated!", category="success")
+
+                db.session.commit()
+                return redirect(url_for("views.projects_page"))
+
+        if add_todo_form.validate_on_submit():
+            todo = Todos(
+                title=add_todo_form.title.data,
+                description=add_todo_form.description.data,
+                project_id=add_todo_form.project.data,
+            )
+            db.session.add(todo)
+            flash(f"Your new task has been added to the list!", category="success")
+
+        elif add_project_form.validate_on_submit():
+            project = Projects(
+                title=add_project_form.title.data,
+                description=add_project_form.description.data,
+                user_id=current_user.user_id,
+            )
+            db.session.add(project)
+            flash(f"Your new project has been added to the list!", category="success")
+
+        db.session.commit()
+        return redirect(url_for("views.projects_page"))
 
     return render_template(
         "projects.html",
