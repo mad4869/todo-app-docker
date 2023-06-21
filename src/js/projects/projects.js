@@ -144,12 +144,12 @@ class Projects {
                     this.deleteProjectDeleted.textContent = data.title
 
                     // Bind event listener to the confirm button to execute the deletion process
-                    this.deleteProjectConfirm.addEventListener('click', function () {
+                    this.deleteProjectConfirm.addEventListener('click', () => {
                         this.deleteProject(projectsData[i].project_id)
                     })
 
                     // Bind event listener to the cancel button to close the delete modal
-                    this.deleteProjectCancel.addEventListener('click', function () {
+                    this.deleteProjectCancel.addEventListener('click', () => {
                         this.closeDeleteProject()
                     })
                 })
