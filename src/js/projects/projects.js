@@ -1,5 +1,5 @@
 import { createProjectCard } from "../components/card"
-import fetchData, { deleteData } from "../components/data"
+import { fetchData, deleteData } from "../components/data"
 
 class Projects {
     constructor() {

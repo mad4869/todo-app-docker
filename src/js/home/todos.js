@@ -1,5 +1,5 @@
 import Menu from "./menu"
-import fetchData, { updateData, deleteData } from '../components/data'
+import { fetchData, updateData, deleteData } from '../components/data'
 import createStack from '../components/stack'
 import createSeparator from "../components/separator"
 import { createEmptyState } from '../components/empty'

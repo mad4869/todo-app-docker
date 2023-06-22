@@ -1,4 +1,4 @@
-import fetchData, { updateData } from "../components/data"
+import { fetchData, updateData } from "../components/data"
 
 class User {
     constructor() {

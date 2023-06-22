@@ -52,5 +52,4 @@ const deleteData = (url) => {
     })
 }
 
-export default fetchData
-export { updateData, deleteData }
+export { fetchData, updateData, deleteData }

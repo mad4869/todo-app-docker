@@ -2,7 +2,7 @@ import Todos from "../home/todos"
 import Dones from '../home/dones'
 import Projects from "../projects/projects"
 
-import fetchData from "./data"
+import { fetchData } from "./data"
 import createButton from "./button"
 import createList from "./list"
 import createSeparator from "./separator"
