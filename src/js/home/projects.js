@@ -1,5 +1,5 @@
 import Menu from "./menu"
-import createEmptyState from '../components/empty'
+import { createEmptyState } from '../components/empty'
 import fetchData from "../components/data"
 class Projects {
     constructor() {

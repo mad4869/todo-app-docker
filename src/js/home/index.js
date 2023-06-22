@@ -16,7 +16,7 @@ if (window.location.pathname == '/home') {
     // List of todos
     const todos = new Todos()
 
-    const todosList = await todos.getList(userId)
+    const todosList = await todos.getStack(userId)
 
     if (todosList.length === 0) {
         const empty = todos.emptyState()
@@ -37,7 +37,7 @@ if (window.location.pathname == '/home') {
     // List of dones
     const dones = new Dones()
 
-    const donesList = await dones.getList(userId)
+    const donesList = await dones.getStack(userId)
 
     if (donesList.length === 0) {
         dones.emptyState()

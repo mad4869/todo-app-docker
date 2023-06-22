@@ -1,8 +1,8 @@
 import Menu from "./menu"
 import fetchData, { updateData, deleteData } from '../components/data'
-import createList from '../components/list'
+import createStack from '../components/stack'
 import createSeparator from "../components/separator"
-import createEmptyState from '../components/empty'
+import { createEmptyState } from '../components/empty'
 import showNotice from "../components/notice"
 
 import successData from '../../animations/success.json'
@@ -32,11 +32,11 @@ class Todos {
         return await fetchData(`/api/users/${user_id}/todos`)
     }
 
-    async getList(user_id) {
+    async getStack(user_id) {
         try {
             const data = await this.getData(user_id)
 
-            createList(data, this.name, this.container, 'bg-violet-200')
+            createStack(data, this.name, this.container, 'bg-violet-200')
 
             return data
         } catch (err) {
@@ -97,7 +97,7 @@ class Todos {
 
         console.log(filtered)
 
-        createList(filtered, this.name, this.container, 'bg-violet-200')
+        createStack(filtered, this.name, this.container, 'bg-violet-200')
     }
 
     showAddTodo() {

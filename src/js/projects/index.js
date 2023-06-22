@@ -13,7 +13,7 @@ if (window.location.pathname == '/projects') {
 
     const projects = new Projects()
 
-    projects.getList(userId)
+    projects.getStack(userId)
 
     projects.addProjectShowButton.addEventListener('click', () => {
         projects.showAddProject()
