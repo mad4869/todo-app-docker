@@ -11,7 +11,9 @@ const commonConfig = {
         home: './src/js/home/index.js',
         welcome: './src/js/welcome/index.js',
         profile: './src/js/profile/index.js',
-        projects: './src/js/projects/index.js'
+        projects: './src/js/projects/index.js',
+        register: './src/js/register/index.js',
+        login: './src/js/login/index.js'
     },
     output: {
         path: path.resolve(__dirname, 'todo', 'static', 'dist'),

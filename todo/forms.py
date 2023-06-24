@@ -25,36 +25,43 @@ class RegisterForm(FlaskForm):
     name = StringField(
         "Name",
         validators=[Length(min=1, max=50), InputRequired()],
+        id="form-register-name",
     )
     role = StringField(
         "Role",
         validators=[Length(min=1, max=50), InputRequired()],
+        id="form-register-role",
     )
     email = StringField(
         "Email",
         validators=[Length(min=1, max=50), InputRequired(), Email()],
+        id="form-register-email",
     )
     password = PasswordField(
         "Password",
         validators=[Length(min=6, max=100), InputRequired()],
+        id="form-register-password",
     )
     confirm_password = PasswordField(
         "Confirm Password",
-        validators=[EqualTo("password"), InputRequired()],
+        validators=[EqualTo("password", "The passwords do not match"), InputRequired()],
+        id="form-register-confirm-password",
     )
-    submit = SubmitField("CREATE ACCOUNT")
+    submit = SubmitField("CREATE ACCOUNT", id="form-register-submit")
 
 
 class LoginForm(FlaskForm):
     email = StringField(
         "Email",
         validators=[Length(min=1, max=50), InputRequired(), Email()],
+        id="form-login-email",
     )
     password = PasswordField(
         "Password",
         validators=[Length(min=6, max=100), InputRequired()],
+        id="form-login-password",
     )
-    submit = SubmitField("LOGIN")
+    submit = SubmitField("LOGIN", id="form-login-submit")
 
 
 class AddProjectForm(FlaskForm):

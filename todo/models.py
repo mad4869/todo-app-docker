@@ -1,16 +1,9 @@
 from datetime import datetime
 
-from flask_login import UserMixin
-
-from . import db, bcrypt, login_manager
+from . import db, bcrypt
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    return Users.query.get(int(user_id))
-
-
-class Users(db.Model, UserMixin):
+class Users(db.Model):
     __tablename__ = "users"
     user_id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(50), nullable=False)
@@ -59,7 +52,9 @@ class Projects(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey("users.user_id"))
     created_at = db.Column(db.DateTime(), nullable=False, default=datetime.now())
     users = db.relationship("Users", back_populates="projects")
-    todos = db.relationship("Todos", back_populates="projects", lazy=True)
+    todos = db.relationship(
+        "Todos", back_populates="projects", lazy=True, cascade="all, delete-orphan"
+    )
 
     def serialize(self):
         return {
@@ -96,3 +91,11 @@ class Todos(db.Model):
 
     def __repr__(self):
         return f"{self.title}"
+
+
+class BlocklistToken(db.Model):
+    token_id = db.Column(db.Integer(), primary_key=True)
+    jti = db.Column(db.String(36), nullable=False, unique=True)
+
+    def serialize(self):
+        return {"token_id": self.token_id, "jti": self.jti}

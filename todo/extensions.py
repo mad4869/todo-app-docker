@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
+from flask_jwt_extended import JWTManager
 from flask_static_digest import FlaskStaticDigest
 
 # Database engine
@@ -14,7 +14,7 @@ migrate = Migrate()
 bcrypt = Bcrypt()
 
 # User authentication manager
-login_manager = LoginManager()
+jwt_manager = JWTManager()
 
 # Static assets compiler
 static_digest = FlaskStaticDigest()

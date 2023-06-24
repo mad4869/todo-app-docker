@@ -16,6 +16,24 @@ const fetchData = (url) => {
     })
 }
 
+const sendData = (url, newData) => {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+
+        xhr.onload = () => {
+            if (xhr.status === 201 || xhr.status === 400) {
+                const res = JSON.parse(xhr.responseText)
+                resolve(res)
+            } else {
+                reject(new Error('Failed to send data'))
+            }
+        }
+
+        xhr.open('POST', url, true)
+        xhr.send(newData)
+    })
+}
+
 const updateData = (url, updatedData) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
@@ -52,4 +70,4 @@ const deleteData = (url) => {
     })
 }
 
-export { fetchData, updateData, deleteData }
+export { fetchData, sendData, updateData, deleteData }

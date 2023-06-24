@@ -1,256 +1,269 @@
 import '../../css/style.css'
 
-import Menu from './menu'
-import Projects from './projects'
-import Todos from './todos'
-import Dones from './dones'
-import createButton from '../components/button'
-import createSeparator from '../components/separator'
-import setClock from '../components/clock'
-import showYear from '../components/year'
+// import Menu from './menu'
+// import Projects from './projects'
+// import Todos from './todos'
+// import Dones from './dones'
+// import createButton from '../components/button'
+// import createSeparator from '../components/separator'
+// import setClock from '../components/clock'
+// import showYear from '../components/year'
 
-if (window.location.pathname == '/home') {
-    // Logged in user
-    const userId = document.getElementById('current-user').dataset.user
+// // if (window.location.pathname == '/home') {
+// const access_token = localStorage.getItem('accessToken')
+// console.log(access_token)
 
-    // List of todos
-    const todos = new Todos()
+// fetch('/home', {
+//     headers: {
+//         Authorization: `Bearer ${access_token}`
+//     }
+// })
+//     .then(res => res.text)
+//     .catch(err => {
+//         console.log(err)
+//     })
 
-    const todosList = await todos.getStack(userId)
+// // Logged in user
+// const userId = document.getElementById('current-user').dataset.user
 
-    if (todosList.length === 0) {
-        const empty = todos.emptyState()
-        const getStartedButton = empty.lastElementChild
-        getStartedButton.addEventListener('click', () => {
-            todos.showAddTodo()
-        })
-    }
+// // List of todos
+// const todos = new Todos()
 
-    todos.editTodoCloseButtons.addEventListener('click', () => {
-        todos.closeEditTodo()
-    })
+// const todosList = await todos.getStack(userId)
 
-    todos.deleteTodoCloseButtons.addEventListener('click', () => {
-        todos.closeDeleteTodo()
-    })
+// if (todosList.length === 0) {
+//     const empty = todos.emptyState()
+//     const getStartedButton = empty.lastElementChild
+//     getStartedButton.addEventListener('click', () => {
+//         todos.showAddTodo()
+//     })
+// }
 
-    // List of dones
-    const dones = new Dones()
+// todos.editTodoCloseButtons.addEventListener('click', () => {
+//     todos.closeEditTodo()
+// })
 
-    const donesList = await dones.getStack(userId)
+// todos.deleteTodoCloseButtons.addEventListener('click', () => {
+//     todos.closeDeleteTodo()
+// })
 
-    if (donesList.length === 0) {
-        dones.emptyState()
-    }
+// // List of dones
+// const dones = new Dones()
 
-    // Projects dropdown
-    const projects = new Projects()
+// const donesList = await dones.getStack(userId)
 
-    projects.dropdown.addEventListener('click', () => {
-        projects.showOptions()
-    })
+// if (donesList.length === 0) {
+//     dones.emptyState()
+// }
 
-    const options = await projects.getOptions(userId)
+// // Projects dropdown
+// const projects = new Projects()
 
-    // Filter todos by projects
-    if (options) {
-        options.forEach((option) => {
-            option.addEventListener('click', async () => {
-                projects.selected.textContent = option.textContent
-                projects.closeOptions()
+// projects.dropdown.addEventListener('click', () => {
+//     projects.showOptions()
+// })
 
-                const todosData = await todos.getData(userId)
-                todos.filterByProjects(todosData, option.dataset.value)
+// const options = await projects.getOptions(userId)
 
-                const donesData = await dones.getData(userId)
-                dones.filterByProjects(donesData, option.dataset.value)
-            })
-        })
-    } else {
-        const empty = projects.emptyState()
-        const getStartedButton = empty.lastElementChild
-        getStartedButton.addEventListener('click', () => {
-            projects.showAddProject()
-            projects.closeOptions()
-        })
-    }
+// // Filter todos by projects
+// if (options) {
+//     options.forEach((option) => {
+//         option.addEventListener('click', async () => {
+//             projects.selected.textContent = option.textContent
+//             projects.closeOptions()
 
-    // Sliding menu
-    const menu = new Menu()
-    menu.showMenuButton.addEventListener('click', () => {
-        menu.showMenu()
-    })
+//             const todosData = await todos.getData(userId)
+//             todos.filterByProjects(todosData, option.dataset.value)
 
-    // Add task modal
-    todos.addTodoShowButton.addEventListener('click', () => {
-        todos.showAddTodo()
-    })
-    todos.addTodoCloseButton.addEventListener('click', () => {
-        todos.closeAddTodo()
-    })
+//             const donesData = await dones.getData(userId)
+//             dones.filterByProjects(donesData, option.dataset.value)
+//         })
+//     })
+// } else {
+//     const empty = projects.emptyState()
+//     const getStartedButton = empty.lastElementChild
+//     getStartedButton.addEventListener('click', () => {
+//         projects.showAddProject()
+//         projects.closeOptions()
+//     })
+// }
 
-    // Add project modal
-    projects.addProjectShowButton.addEventListener('click', () => {
-        projects.showAddProject()
-    })
-    projects.addProjectCloseButton.addEventListener('click', () => {
-        projects.closeAddProject()
-    })
-    // Draggable tasks
-    let originalContainer = null
-    const allTasks = document.querySelectorAll('div[draggable="true"]')
-    allTasks.forEach((task) => {
-        task.addEventListener('dragstart', (e) => {
-            originalContainer = e.target.parentNode
-            e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
+// // Sliding menu
+// const menu = new Menu()
+// menu.showMenuButton.addEventListener('click', () => {
+//     menu.showMenu()
+// })
 
-            setTimeout(() => {
-                e.target.classList.add('hidden');
-                e.target.previousElementSibling.classList.add('hidden')
-            }, 0);
-        })
-        task.addEventListener('dragend', (e) => {
-            e.target.classList.remove('hidden')
-            e.target.previousElementSibling.classList.remove('hidden')
-        })
-    })
+// // Add task modal
+// todos.addTodoShowButton.addEventListener('click', () => {
+//     todos.showAddTodo()
+// })
+// todos.addTodoCloseButton.addEventListener('click', () => {
+//     todos.closeAddTodo()
+// })
 
-    todos.container.addEventListener('dragenter', (e) => {
-        e.preventDefault()
-        todos.container.classList.add('bg-fuchsia-400')
-    })
+// // Add project modal
+// projects.addProjectShowButton.addEventListener('click', () => {
+//     projects.showAddProject()
+// })
+// projects.addProjectCloseButton.addEventListener('click', () => {
+//     projects.closeAddProject()
+// })
+// // Draggable tasks
+// let originalContainer = null
+// const allTasks = document.querySelectorAll('div[draggable="true"]')
+// allTasks.forEach((task) => {
+//     task.addEventListener('dragstart', (e) => {
+//         originalContainer = e.target.parentNode
+//         e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
 
-    todos.container.addEventListener('dragover', (e) => {
-        e.preventDefault()
-        todos.container.classList.add('bg-fuchsia-400')
-    })
+//         setTimeout(() => {
+//             e.target.classList.add('hidden');
+//             e.target.previousElementSibling.classList.add('hidden')
+//         }, 0);
+//     })
+//     task.addEventListener('dragend', (e) => {
+//         e.target.classList.remove('hidden')
+//         e.target.previousElementSibling.classList.remove('hidden')
+//     })
+// })
 
-    todos.container.addEventListener('dragleave', (e) => {
-        e.preventDefault()
-        todos.container.classList.remove('bg-fuchsia-400')
-    })
+// todos.container.addEventListener('dragenter', (e) => {
+//     e.preventDefault()
+//     todos.container.classList.add('bg-fuchsia-400')
+// })
 
-    todos.container.addEventListener('drop', (e) => {
-        e.preventDefault()
-        todos.container.classList.remove('bg-fuchsia-400')
+// todos.container.addEventListener('dragover', (e) => {
+//     e.preventDefault()
+//     todos.container.classList.add('bg-fuchsia-400')
+// })
 
-        const data = e.dataTransfer.getData('text/plain')
+// todos.container.addEventListener('dragleave', (e) => {
+//     e.preventDefault()
+//     todos.container.classList.remove('bg-fuchsia-400')
+// })
 
-        if (originalContainer == todos.container) {
-            return
-        }
+// todos.container.addEventListener('drop', (e) => {
+//     e.preventDefault()
+//     todos.container.classList.remove('bg-fuchsia-400')
 
-        const dropped = document.querySelector(`[data-id="${data}"]`)
+//     const data = e.dataTransfer.getData('text/plain')
 
-        const heading = dropped.firstElementChild
-        heading.classList.remove('bg-teal-600')
-        heading.classList.add('bg-violet-700')
+//     if (originalContainer == todos.container) {
+//         return
+//     }
 
-        const rightButtons = dropped.lastElementChild.lastElementChild
-        const undoneButton = rightButtons.firstElementChild
-        undoneButton.remove()
-        const doneButton = createButton('bg-violet-700', '<i class="fa-solid fa-check"></i>', function () {
-            todos.markAsDone(data)
-        }, 'done-button', 'Mark as done')
-        rightButtons.append(doneButton)
+//     const dropped = document.querySelector(`[data-id="${data}"]`)
 
-        const separator = createSeparator('bg-violet-200')
+//     const heading = dropped.firstElementChild
+//     heading.classList.remove('bg-teal-600')
+//     heading.classList.add('bg-violet-700')
 
-        todos.container.append(separator, dropped)
+//     const rightButtons = dropped.lastElementChild.lastElementChild
+//     const undoneButton = rightButtons.firstElementChild
+//     undoneButton.remove()
+//     const doneButton = createButton('bg-violet-700', '<i class="fa-solid fa-check"></i>', function () {
+//         todos.markAsDone(data)
+//     }, 'done-button', 'Mark as done')
+//     rightButtons.append(doneButton)
 
-        dones.dragAsUndone(data)
-    })
+//     const separator = createSeparator('bg-violet-200')
 
-    dones.container.addEventListener('dragenter', (e) => {
-        e.preventDefault()
-        dones.container.classList.add('bg-teal-300')
-    })
+//     todos.container.append(separator, dropped)
 
-    dones.container.addEventListener('dragover', (e) => {
-        e.preventDefault()
-        dones.container.classList.add('bg-teal-300')
-    })
+//     dones.dragAsUndone(data)
+// })
 
-    dones.container.addEventListener('dragleave', (e) => {
-        e.preventDefault()
-        dones.container.classList.remove('bg-teal-300')
-    })
+// dones.container.addEventListener('dragenter', (e) => {
+//     e.preventDefault()
+//     dones.container.classList.add('bg-teal-300')
+// })
 
-    dones.container.addEventListener('drop', (e) => {
-        e.preventDefault()
-        dones.container.classList.remove('bg-teal-300')
+// dones.container.addEventListener('dragover', (e) => {
+//     e.preventDefault()
+//     dones.container.classList.add('bg-teal-300')
+// })
 
-        const data = e.dataTransfer.getData('text/plain')
+// dones.container.addEventListener('dragleave', (e) => {
+//     e.preventDefault()
+//     dones.container.classList.remove('bg-teal-300')
+// })
 
-        if (originalContainer == dones.container) {
-            return
-        }
+// dones.container.addEventListener('drop', (e) => {
+//     e.preventDefault()
+//     dones.container.classList.remove('bg-teal-300')
 
-        const dropped = document.querySelector(`[data-id="${data}"]`)
+//     const data = e.dataTransfer.getData('text/plain')
 
-        const heading = dropped.firstElementChild
-        heading.classList.remove('bg-violet-700')
-        heading.classList.add('bg-teal-600')
+//     if (originalContainer == dones.container) {
+//         return
+//     }
 
-        const rightButtons = dropped.lastElementChild.lastElementChild
-        const doneButton = rightButtons.firstElementChild
-        doneButton.remove()
-        const undoneButton = createButton('bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', function () {
-            dones.markAsUndone(data)
-        }, 'undone-button', 'Mark as undone')
-        rightButtons.append(undoneButton)
+//     const dropped = document.querySelector(`[data-id="${data}"]`)
 
-        const separator = createSeparator('bg-teal-200')
+//     const heading = dropped.firstElementChild
+//     heading.classList.remove('bg-violet-700')
+//     heading.classList.add('bg-teal-600')
 
-        dones.container.append(separator, dropped)
+//     const rightButtons = dropped.lastElementChild.lastElementChild
+//     const doneButton = rightButtons.firstElementChild
+//     doneButton.remove()
+//     const undoneButton = createButton('bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', function () {
+//         dones.markAsUndone(data)
+//     }, 'undone-button', 'Mark as undone')
+//     rightButtons.append(undoneButton)
 
-        todos.dragAsDone(data)
-    })
+//     const separator = createSeparator('bg-teal-200')
 
-    // Closing modal if clicked outside
-    document.addEventListener('click', (e) => {
-        const menuClicked = menu.menu.contains(e.target) || menu.showMenuButton.contains(e.target)
-        if (!menuClicked) {
-            menu.closeMenu()
-        }
+//     dones.container.append(separator, dropped)
+
+//     todos.dragAsDone(data)
+// })
+
+// // Closing modal if clicked outside
+// document.addEventListener('click', (e) => {
+//     const menuClicked = menu.menu.contains(e.target) || menu.showMenuButton.contains(e.target)
+//     if (!menuClicked) {
+//         menu.closeMenu()
+//     }
 
 
-        const projectDropdownClicked = projects.dropdown.contains(e.target) || projects.optionsContainer.contains(e.target)
-        if (!projectDropdownClicked) {
-            projects.closeOptions();
-        }
+//     const projectDropdownClicked = projects.dropdown.contains(e.target) || projects.optionsContainer.contains(e.target)
+//     if (!projectDropdownClicked) {
+//         projects.closeOptions();
+//     }
 
-        const todosGetStartedButton = document.getElementById('home-todos-get-started')
-        let addTodoModalClicked = todos.addTodoModal.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target)
-        if (todosGetStartedButton) {
-            addTodoModalClicked = todos.addTodoModal.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target) || todosGetStartedButton.contains(e.target)
-        }
-        if (!addTodoModalClicked) {
-            todos.closeAddTodo()
-        }
+//     const todosGetStartedButton = document.getElementById('home-todos-get-started')
+//     let addTodoModalClicked = todos.addTodoModal.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target)
+//     if (todosGetStartedButton) {
+//         addTodoModalClicked = todos.addTodoModal.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target) || todosGetStartedButton.contains(e.target)
+//     }
+//     if (!addTodoModalClicked) {
+//         todos.closeAddTodo()
+//     }
 
-        // const editTodoModalClicked = todos.editTodoModal.firstElementChild.contains(e.target) || Array.from(editTodoButtons).some((edit) => edit.contains(e.target))
-        // console.log(editTodoModalClicked)
-        // if (!editTodoModalClicked) {
-        //     todos.closeEditTodo()
-        // }
+//     // const editTodoModalClicked = todos.editTodoModal.firstElementChild.contains(e.target) || Array.from(editTodoButtons).some((edit) => edit.contains(e.target))
+//     // console.log(editTodoModalClicked)
+//     // if (!editTodoModalClicked) {
+//     //     todos.closeEditTodo()
+//     // }
 
-        const projectsGetStartedButton = document.getElementById('home-projects-get-started')
-        let addProjectClicked = projects.addProject.firstElementChild.contains(e.target) || projects.addProjectShowButton.contains(e.target)
-        if (projectsGetStartedButton) {
-            addProjectClicked = projects.addProject.firstElementChild.contains(e.target) || projects.addProjectShowButton.contains(e.target) || projectsGetStartedButton.contains(e.target)
-        }
-        if (!addProjectClicked) {
-            projects.closeAddProject()
-        }
-    });
+//     const projectsGetStartedButton = document.getElementById('home-projects-get-started')
+//     let addProjectClicked = projects.addProject.firstElementChild.contains(e.target) || projects.addProjectShowButton.contains(e.target)
+//     if (projectsGetStartedButton) {
+//         addProjectClicked = projects.addProject.firstElementChild.contains(e.target) || projects.addProjectShowButton.contains(e.target) || projectsGetStartedButton.contains(e.target)
+//     }
+//     if (!addProjectClicked) {
+//         projects.closeAddProject()
+//     }
+// });
 
-    // Footer
-    const footer = document.getElementById('footer')
-    if (footer.hasChildNodes) {
-        footer.classList.add('mt-8')
-    }
+// // Footer
+// const footer = document.getElementById('footer')
+// if (footer.hasChildNodes) {
+//     footer.classList.add('mt-8')
+// }
 
-    setInterval(setClock, 1000)
-    showYear()
-}
+// setInterval(setClock, 1000)
+// showYear()
+// // }

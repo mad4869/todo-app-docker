@@ -5,19 +5,15 @@
     <a href="{{url_for('views.home_page')}}"><img
         src="{{static_url_for('static', filename='dist/img/text-logo-white.svg')}}" alt="Text Logo" class="h-8"></a>
   </div>
-  {% if current_user.is_authenticated %}
   <div class="flex gap-4">
-    <h1 id="current-user" class="font-semibold" data-user="{{ current_user.user_id }}">Hello, {{current_user.name}}!
-    </h1>
-    <a href="{{url_for('views.projects_page')}}" title="View projects" class="hover:text-teal-400">Projects</a>
-    <a href="{{url_for('views.profile_page')}}" title="View profile" class="hover:text-teal-400">Profile</a>
-    <a href="{{url_for('views.logout_page')}}" class="hover:text-rose-400 ">Logout</a>
+    <h1 id="current-user" class="font-semibold"">Hello</h1>
+    <a href=" {{url_for('views.projects_page')}}" title="View projects" class="hover:text-teal-400">Projects</a>
+      <a href="{{url_for('views.profile_page')}}" title="View profile" class="hover:text-teal-400">Profile</a>
+      <a href="/logout" class="hover:text-rose-400 ">Logout</a>
   </div>
-  {% else %}
-  <div class="flex gap-4">
+  <!-- <div class="flex gap-4">
     <a href="{{url_for('views.login_page')}}" title="View profile" class="hover:text-teal-500">Login</a>
     <a href="{{url_for('views.register_page')}}" title="View profile"
       class="font-semibold hover:text-teal-500">Register</a>
-  </div>
-  {% endif %}
+  </div> -->
 </nav>

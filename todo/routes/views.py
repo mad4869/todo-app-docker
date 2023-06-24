@@ -1,11 +1,17 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_user, current_user, logout_user, login_required
+from flask import Blueprint, render_template, redirect, url_for
+from flask_jwt_extended import jwt_required, current_user, get_jwt
 
-from ..extensions import db
-from ..models import *
+from ..extensions import db, jwt_manager
+from ..models import Users, Projects, Todos
 from ..forms import *
+from .api import user_loader
 
 views_bp = Blueprint("views", __name__)
+
+
+# @jwt_manager.unauthorized_loader
+# def unauthorized(error):
+#     return redirect(url_for("views.landing_page"))
 
 
 @views_bp.route("/welcome", strict_slashes=False)
@@ -15,17 +21,15 @@ def welcome_page():
 
 @views_bp.route("/", strict_slashes=False)
 def landing_page():
-    if current_user.is_authenticated:
-        return redirect(url_for("views.home_page"))
+    # if current_user is not None:
+    #     return redirect(url_for("views.home_page"))
 
     return render_template("landing.html")
 
 
-@views_bp.route("/home", methods=["GET", "POST", "PUT"], strict_slashes=False)
+@views_bp.route("/home", strict_slashes=False)
+@jwt_required()
 def home_page():
-    if not current_user.is_authenticated:
-        return redirect(url_for("views.landing_page"))
-
     add_todo_form = AddTodoForm()
     add_todo_form.load_choices(current_user.user_id)
 
@@ -33,46 +37,6 @@ def home_page():
     edit_todo_form.load_choices(current_user.user_id)
 
     add_project_form = AddProjectForm()
-
-    if request.method == "POST":
-        form = request.form
-        method = form.get("_method", "").upper()
-        if method == "PUT":
-            if edit_todo_form.validate_on_submit():
-                old_todo = db.session.execute(
-                    db.select(Todos).filter(
-                        Todos.todo_id == edit_todo_form.todo_id.data
-                    )
-                ).scalar_one()
-                old_todo.title = edit_todo_form.title.data
-                old_todo.description = edit_todo_form.description.data
-                old_todo.project_id = edit_todo_form.project.data
-
-                flash(f"Your task has been updated!", category="success")
-
-                db.session.commit()
-                return redirect(url_for("views.home_page"))
-
-        if add_todo_form.validate_on_submit():
-            todo = Todos(
-                title=add_todo_form.title.data,
-                description=add_todo_form.description.data,
-                project_id=add_todo_form.project.data,
-            )
-            db.session.add(todo)
-            flash(f"Your new task has been added to the list!", category="success")
-
-        elif add_project_form.validate_on_submit():
-            project = Projects(
-                title=add_project_form.title.data,
-                description=add_project_form.description.data,
-                user_id=current_user.user_id,
-            )
-            db.session.add(project)
-            flash(f"Your new project has been added to the list!", category="success")
-
-        db.session.commit()
-        return redirect(url_for("views.home_page"))
 
     return render_template(
         "index.html",
@@ -82,66 +46,22 @@ def home_page():
     )
 
 
-@views_bp.route("/login", methods=["GET", "POST"], strict_slashes=False)
-def login_page():
-    form = LoginForm()
-
-    if request.method == "POST":
-        if form.validate_on_submit():
-            email_registered = Users.query.filter_by(email=form.email.data).first()
-            if email_registered and email_registered.password_auth(
-                password_input=form.password.data
-            ):
-                login_user(email_registered, remember=True)
-                flash(f"Welcome back, {email_registered.name}!", category="success")
-                return redirect(url_for("views.home_page"))
-            else:
-                flash(
-                    "Email and password are not match! Please try again.",
-                    category="error",
-                )
-
-    return render_template("login.html", form=form)
-
-
-@views_bp.route("/logout", strict_slashes=False)
-def logout_page():
-    logout_user()
-    flash("You have been logged out!", category="info")
-
-    return redirect(url_for("views.home_page"))
-
-
 @views_bp.route("/register", methods=["GET", "POST"], strict_slashes=False)
 def register_page():
     form = RegisterForm()
-    if request.method == "POST":
-        if form.validate_on_submit():
-            user = Users(
-                name=form.name.data,
-                role=form.role.data,
-                email=form.email.data,
-                password=form.password.data,
-            )
-
-            db.session.add(user)
-            db.session.commit()
-
-            flash(
-                f"Congratulation, {form.name.data}! Your account has been successfully registered. Please login to continue.",
-                category="success",
-            )
-
-            return redirect(url_for("views.login_page"))
-        if form.errors != {}:
-            for error in form.errors.values():
-                flash(error)
 
     return render_template("register.html", form=form)
 
 
+@views_bp.route("/login", methods=["GET", "POST"], strict_slashes=False)
+def login_page():
+    form = LoginForm()
+
+    return render_template("login.html", form=form)
+
+
 @views_bp.route("/profile", strict_slashes=False)
-@login_required
+@jwt_required()
 def profile_page():
     return render_template("profile.html")
 
@@ -149,7 +69,7 @@ def profile_page():
 @views_bp.route(
     "/projects", methods=["GET", "POST", "PUT", "DELETE"], strict_slashes=False
 )
-@login_required
+@jwt_required()
 def projects_page():
     add_todo_form = AddTodoForm()
     add_todo_form.load_choices(current_user.user_id)
