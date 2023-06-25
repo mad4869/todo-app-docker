@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for
-from flask_jwt_extended import jwt_required, current_user, get_jwt
+from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask_jwt_extended import jwt_required, current_user
 
 from ..extensions import db, jwt_manager
 from ..models import Users, Projects, Todos
@@ -9,9 +9,9 @@ from .api import user_loader
 views_bp = Blueprint("views", __name__)
 
 
-# @jwt_manager.unauthorized_loader
-# def unauthorized(error):
-#     return redirect(url_for("views.landing_page"))
+@jwt_manager.unauthorized_loader
+def unauthorized(error):
+    return redirect(url_for("views.landing_page"))
 
 
 @views_bp.route("/welcome", strict_slashes=False)
