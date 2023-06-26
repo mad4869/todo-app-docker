@@ -1,4 +1,5 @@
 import { sendData } from '../components/data'
+import { validate, showError, resetError, enableSubmit } from '../components/form'
 import showNotice from '../components/notice'
 import helloAnimation from '../../animations/hello.json'
 import alertAnimation from '../../animations/alert.json'
@@ -13,45 +14,53 @@ class LoginForm {
         this.submit = document.getElementById('form-login-submit')
     }
 
-    validate = (field) => {
-        return field.checkValidity()
+    attachEventListeners = () => {
+        enableSubmit(this.fields, this.submit)
+        this.validateInput()
+        this.validateBlur()
+        this.resetFocus()
+        this.validateSubmit()
     }
 
-    getMessage = (field) => {
-        return field.validationMessage
-    }
+    // validate = (field) => {
+    //     return field.checkValidity()
+    // }
 
-    createError = (field) => {
-        const error = document.createElement('p')
-        error.className = 'mt-1 text-xs text-rose-500 italic'
-        error.setAttribute('name', 'error')
-        error.textContent = this.getMessage(field)
+    // getMessage = (field) => {
+    //     return field.validationMessage
+    // }
 
-        return error
-    }
+    // createError = (field) => {
+    //     const error = document.createElement('p')
+    //     error.className = 'mt-1 text-xs text-rose-500 italic'
+    //     error.setAttribute('name', 'error')
+    //     error.textContent = this.getMessage(field)
 
-    showError = (field) => {
-        field.classList.remove('border-slate-500', 'placeholder:text-slate-400')
-        field.classList.add('border-rose-500', 'placeholder:text-rose-300')
+    //     return error
+    // }
 
-        field.parentElement.append(this.createError(field))
-    }
+    // showError = (field) => {
+    //     field.classList.remove('border-slate-500', 'placeholder:text-slate-400')
+    //     field.classList.add('border-rose-500', 'placeholder:text-rose-300')
 
-    resetError = (field) => {
-        field.classList.remove('border-rose-500', 'placeholder:text-rose-300')
-        field.classList.add('border-slate-500', 'placeholder:text-slate-400')
+    //     field.parentElement.append(this.createError(field))
+    // }
 
-        const error = field.parentElement.querySelector('p[name="error"]')
-        error ? error.remove() : ''
-    }
+    // resetError = (field) => {
+    //     field.classList.remove('border-rose-500', 'placeholder:text-rose-300')
+    //     field.classList.add('border-slate-500', 'placeholder:text-slate-400')
+
+    //     const error = field.parentElement.querySelector('p[name="error"]')
+    //     error ? error.remove() : ''
+    // }
 
     validateBlur = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('blur', () => {
-                let isValid = this.validate(this.fields[field])
+                let isValid = validate(this.fields[field])
 
                 if (!isValid) {
-                    this.showError(this.fields[field])
+                    showError(this.fields[field])
                 }
             })
         }
@@ -60,32 +69,15 @@ class LoginForm {
     resetFocus = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('focus', () => {
-                this.resetError(this.fields[field])
+                resetError(this.fields[field])
             })
         }
-    }
-
-    enableSubmit = (fields) => {
-        const results = {}
-
-        for (const field in fields) {
-            let isValid = this.validate(this.fields[field])
-
-            if (!isValid) {
-                results[field] = this.getMessage(fields[field])
-            } else {
-                results[field] = ''
-            }
-        }
-
-        const hasErrors = Object.values(results).some(error => error !== '')
-        this.submit.disabled = hasErrors
     }
 
     validateInput = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('input', () => {
-                this.enableSubmit(this.fields)
+                enableSubmit(this.fields, this.submit)
             })
         }
     }

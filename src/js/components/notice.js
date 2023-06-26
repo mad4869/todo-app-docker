@@ -6,7 +6,7 @@ const showNotice = (message, category, animationData) => {
     mainContainer.classList.add(category)
 
     const animationContainer = document.createElement('div')
-    animationContainer.className = 'h-24'
+    animationContainer.className = 'h-20'
     loadAnimation(animationContainer, animationData)
 
     const messageContainer = document.createElement('div')

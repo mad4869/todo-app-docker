@@ -1,21 +1,27 @@
-from flask import Blueprint, request, jsonify, flash
+from flask import Blueprint, request, jsonify, flash, abort
 from flask_jwt_extended import jwt_required, current_user
 import json
 
 from ..extensions import db, jwt_manager
 from ..models import Users, Projects, Todos
+from ..forms import AddTodoForm, AddProjectForm, EditTodoForm, EditProjectForm
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 
 @jwt_manager.user_lookup_loader
-def user_loader(jwt_header, jwt_payload):
+def load_user(jwt_header, jwt_payload):
     """
     A function to get a logged in user data so it can be accessed from the 'current_user' object
     """
     identity = jwt_payload["sub"]
     user = db.session.execute(db.select(Users).filter_by(user_id=identity)).scalar_one()
     return user
+
+
+@jwt_manager.unauthorized_loader
+def unauthorized():
+    return abort(401)
 
 
 ##### USERS ENDPOINTS #####
@@ -82,29 +88,32 @@ def access_projects(user_id):
         return jsonify({"success": False, "message": "Unauthorized action"}), 403
 
     if request.method == "POST":
-        new_data = request.get_json()
-        project = Projects(
-            title=new_data["title"],
-            description=new_data["description"],
-            user_id=user_id,
+        form = AddProjectForm(
+            title=request.form["title"], description=request.form["description"]
         )
 
-        try:
-            db.session.add(project)
-            db.session.commit()
-        except:
-            db.session.rollback()
-
-            flash("Failed to add the project", category="error")
-
-            return (
-                jsonify({"success": False, "message": "Failed to add the project"}),
-                500,
+        if form.validate():
+            project = Projects(
+                title=form.title.data,
+                description=form.description.data,
+                user_id=user_id,
             )
-        else:
-            flash(f"Your new project has been added to the list!", category="success")
 
-            return jsonify({"success": True, "data": project.serialize()}), 201
+            try:
+                db.session.add(project)
+                db.session.commit()
+            except:
+                db.session.rollback()
+
+                return (
+                    jsonify({"success": False, "message": "Failed to add the project"}),
+                    500,
+                )
+            else:
+                return jsonify({"success": True, "data": project.serialize()}), 201
+        if form.errors != {}:
+            errors = [error for error in form.errors.values()]
+            return jsonify({"success": False, "message": errors}), 400
 
     projects = db.session.execute(
         db.select(Projects).filter_by(user_id=user_id).order_by(Projects.project_id)
@@ -190,29 +199,35 @@ def access_all_todos(user_id):
         return jsonify({"success": False, "message": "Unauthorized action"}), 403
 
     if request.method == "POST":
-        new_data = request.get_json()
-        todo = Todos(
-            title=new_data["title"],
-            description=new_data["description"],
-            project_id=new_data["project_id"],
+        form = AddTodoForm(
+            project=request.form["project"],
+            title=request.form["title"],
+            description=request.form["description"],
         )
+        form.load_choices(user_id)
 
-        try:
-            db.session.add(todo)
-            db.session.commit()
-        except:
-            db.session.rollback()
-
-            flash("Failed to add the task", category="error")
-
-            return (
-                jsonify({"success": False, "message": "Failed to add the task"}),
-                500,
+        if form.validate():
+            todo = Todos(
+                title=form.title.data,
+                description=form.description.data,
+                project_id=form.project.data,
             )
-        else:
-            flash(f"Your new task has been added to the list!", category="success")
 
-            return jsonify({"success": True, "data": todo.serialize()}), 201
+            try:
+                db.session.add(todo)
+                db.session.commit()
+            except:
+                db.session.rollback()
+
+                return (
+                    jsonify({"success": False, "message": "Failed to add the task"}),
+                    500,
+                )
+            else:
+                return jsonify({"success": True, "data": todo.serialize()}), 201
+        if form.errors != {}:
+            errors = [error for error in form.errors.values()]
+            return jsonify({"success": False, "message": errors}), 400
 
     todos = db.session.execute(
         db.select(Todos)
@@ -271,9 +286,8 @@ def access_todo(user_id, todo_id):
     data = todo.serialize()
 
     if request.method == "PUT":
-        # updated_data = json.loads(request.get_data(as_text=True))
         try:
-            updated_data = request.get_json()
+            updated_data = json.loads(request.get_data(as_text=True))
             todo.title = updated_data["title"]
             todo.description = updated_data["description"]
             todo.project_id = updated_data["project_id"]
@@ -283,16 +297,12 @@ def access_todo(user_id, todo_id):
         except:
             db.session.rollback()
 
-            flash("Failed to update the task", category="error")
-
             return (
                 jsonify({"success": False, "message": "Failed to update the task"}),
                 500,
             )
         else:
             updated_data = todo.serialize()
-
-            flash(f"Your task has been updated!", category="success")
 
             return jsonify({"success": True, "data": updated_data}), 201
 
@@ -303,15 +313,11 @@ def access_todo(user_id, todo_id):
         except:
             db.session.rollback()
 
-            flash("Failed to delete the task", category="error")
-
             return (
                 jsonify({"success": False, "message": "Failed to delete the task"}),
                 500,
             )
         else:
-            flash(f"Your task has been deleted!", category="error")
-
             return (
                 jsonify({"success": True, "message": "Your task has been deleted!"}),
                 201,

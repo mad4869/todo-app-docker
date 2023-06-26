@@ -1,42 +1,204 @@
-import Menu from "./menu"
-import { fetchData, updateData, deleteData } from '../components/data'
-import createStack from '../components/stack'
-import createSeparator from "../components/separator"
-import { createEmptyState } from '../components/empty'
-import showNotice from "../components/notice"
+import Menu from './menu'
+// import Dones from './dones'
 
-import successData from '../../animations/success.json'
+import { fetchData, sendData, updateData, deleteData } from '../components/data'
+import { validate, showError, resetError, enableSubmit } from '../components/form'
+import createButton from '../components/button'
+import createSeparator from "../components/separator"
+import showNotice from "../components/notice"
+import successAnimation from '../../animations/success.json'
+import alertAnimation from '../../animations/alert.json'
 
 class Todos {
-    constructor() {
-        this.name = 'todos'
+    constructor(user) {
+        this.user = user
 
-        this.container = document.getElementById('home-todos-container')
-        this.heading = document.getElementById('home-todos-heading')
+        this.stack = {
+            container: document.getElementById('home-todos-container'),
+            heading: document.getElementById('home-todos-heading')
+        }
 
-        this.addTodoModal = document.getElementById('modal-add-todo')
-        this.addTodoShowButton = document.getElementById('modal-add-todo-show-button')
-        this.addTodoCloseButton = document.getElementById('modal-add-todo-close-button')
+        this.add = {
+            modal: document.getElementById('modal-add-todo'),
+            show: document.getElementById('modal-add-todo-show-button'),
+            close: document.getElementById('modal-add-todo-close-button'),
+            form: {
+                form: document.getElementById('form-add-todo'),
+                fields: {
+                    project: document.getElementById('form-add-todo-project'),
+                    title: document.getElementById('form-add-todo-title'),
+                    description: document.getElementById('form-add-todo-description')
+                },
+                submit: document.getElementById('form-add-todo-submit')
+            }
+        }
 
-        this.editTodoModal = document.getElementById('modal-edit-todo')
-        this.editTodoCloseButtons = document.getElementById('modal-edit-todo-close-button')
+        this.edit = {
+            modal: document.getElementById('modal-edit-todo'),
+            id: document.getElementById('form-edit-todo-id'),
+            project: document.getElementById('form-edit-todo-project'),
+            title: document.getElementById('form-edit-todo-title'),
+            description: document.getElementById('form-edit-todo-description'),
+            close: document.getElementById('modal-edit-todo-close-button')
+        }
 
-        this.deleteTodoModal = document.getElementById('modal-delete-todo')
-        this.deleteTodoDeleted = document.getElementById('modal-delete-todo-deleted')
-        this.deleteTodoConfirm = document.getElementById('modal-delete-todo-confirm')
-        this.deleteTodoCancel = document.getElementById('modal-delete-todo-cancel')
-        this.deleteTodoCloseButtons = document.getElementById('modal-delete-todo-close-button')
+        this.delete = {
+            modal: document.getElementById('modal-delete-todo'),
+            deleted: document.getElementById('modal-delete-todo-deleted'),
+            confirm: document.getElementById('modal-delete-todo-confirm'),
+            cancel: document.getElementById('modal-delete-todo-cancel'),
+            close: document.getElementById('modal-delete-todo-close-button')
+        }
     }
 
-    async getData(user_id) {
-        return await fetchData(`/api/users/${user_id}/todos`)
+    attachEventListeners = () => {
+        // Click events
+        this.add.show.addEventListener('click', () => {
+            this.showAddModal()
+
+            const menu = new Menu()
+            menu.closeMenu()
+        })
+        this.add.close.addEventListener('click', () => {
+            this.closeAddModal()
+        })
+        this.edit.close.addEventListener('click', () => {
+            this.closeEditModal()
+        })
+        this.delete.close.addEventListener('click', () => {
+            this.closeDeleteModal()
+        })
+
+        // Form events
+        this.validateInput()
+        this.validateBlur()
+        this.resetFocus()
+        this.validateSubmit()
+
+        // Drag and drop events
+        this.stack.container.addEventListener('dragenter', (e) => {
+            e.preventDefault()
+            this.stack.container.classList.add('bg-fuchsia-400')
+        })
+        this.stack.container.addEventListener('dragover', (e) => {
+            e.preventDefault()
+            this.stack.container.classList.add('bg-fuchsia-400')
+        })
+        this.stack.container.addEventListener('dragleave', (e) => {
+            e.preventDefault()
+            this.stack.container.classList.remove('bg-fuchsia-400')
+        })
     }
 
-    async getStack(user_id) {
+    createHeading = (todoTitle, project) => {
+        const heading = document.createElement('div')
+        heading.className = 'flex justify-between items-center bg-violet-700 px-4 py-2'
+
+        const title = document.createElement('h1')
+        title.className = 'flex-1 text-xl text-white font-semibold'
+        title.textContent = todoTitle
+
+        const label = document.createElement('span')
+        label.className = 'px-2 py-1 border border-solid border-white text-white text-sm rounded-full'
+        label.textContent = project
+
+        heading.append(title, label)
+
+        return heading
+    }
+
+    createDescription = (todoDesc) => {
+        const description = document.createElement('div')
+        description.className = 'bg-white px-4 py-2 text-xs'
+        description.textContent = todoDesc
+
+        return description
+    }
+
+    createToolbar = (editButton, deleteButton, doneButton) => {
+        const toolbar = document.createElement('div')
+        toolbar.className = 'flex justify-between bg-white px-4'
+
+        const leftButtons = document.createElement('span')
+        const rightButtons = document.createElement('span')
+
+        leftButtons.append(editButton, deleteButton)
+        rightButtons.append(doneButton)
+
+        toolbar.append(leftButtons, rightButtons)
+
+        return toolbar
+    }
+
+    createCard = (todoId, todoTitle, project, todoDesc) => {
+        const card = document.createElement('div')
+        card.className = 'w-full pb-2 bg-white border border-solid border-slate-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden'
+        card.setAttribute('draggable', true)
+        card.setAttribute('data-id', todoId)
+
+        const handleEdit = async () => {
+            this.showEditModal()
+
+            const { data } = await fetchData(`/api/users/${this.user}/todos/${todoId}`)
+            this.edit.id.value = data.todo_id
+            this.edit.project.value = data.project_id
+            this.edit.title.value = data.title
+            this.edit.description.value = data.description
+        }
+
+        const handleDelete = async () => {
+            this.showDeleteModal()
+
+            const { data } = await fetchData(`/api/users/${this.user}/todos/${todoId}`)
+            this.delete.deleted.textContent = data.title
+
+            this.delete.confirm.addEventListener('click', () => {
+                this.closeDeleteModal()
+                this.deleteTodo(todoId)
+            })
+
+            this.delete.cancel.addEventListener('click', () => {
+                this.closeDeleteModal()
+            })
+        }
+
+        const handleDone = () => {
+            this.markAsDone(todoId)
+        }
+
+        const editButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-emerald-700', 'Edit', handleEdit, 'edit-button', 'Edit this task')
+        const deleteButton = createButton('ml-1 px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-rose-700', 'Delete', handleDelete, 'delete-button', 'Delete this task')
+        const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-violet-700', '<i class="fa-solid fa-check"></i>', handleDone, 'done-button', 'Mark as done')
+
+        const heading = this.createHeading(todoTitle, project)
+        const description = this.createDescription(todoDesc)
+        const toolbar = this.createToolbar(editButton, deleteButton, doneButton)
+
+        card.append(heading, description, toolbar)
+
+        return card
+    }
+
+    createStack = (data) => {
+        for (let i = 0; i < data.length; i++) {
+            const id = data[i].todo_id
+            const title = data[i].title
+            const project = data[i].project_title
+            const description = data[i].description
+
+            const card = this.createCard(id, title, project, description)
+
+            const separator = createSeparator('bg-violet-200')
+
+            this.stack.container.append(separator, card)
+        }
+    }
+
+    getStack = async () => {
         try {
-            const data = await this.getData(user_id)
+            const { data } = await fetchData(`/api/users/${this.user}/todos/`)
 
-            createStack(data, this.name, this.container, 'bg-violet-200')
+            this.createStack(data)
 
             return data
         } catch (err) {
@@ -44,96 +206,166 @@ class Todos {
         }
     }
 
-    async deleteTodo(todo_id) {
+    deleteTodo = async (todo_id) => {
         try {
-            const data = await deleteData(`/api/todos/${todo_id}`);
-            if (data) {
-                location.reload()
+            const { success } = await deleteData(`/api/users/${this.user}/todos/${todo_id}`);
+            if (success) {
+                showNotice('Your task has been deleted!', 'error', alertAnimation)
             }
         } catch (err) {
             console.error(err);
         }
     }
 
-    async markAsDone(todo_id) {
+    markAsDone = async (todo_id) => {
         try {
-            const data = await fetchData(`/api/todos/${todo_id}`)
+            const { data } = await fetchData(`/api/users/${this.user}/todos/${todo_id}`)
             data.is_done = true
 
-            const updatedData = await updateData(`/api/todos/${todo_id}`, data)
+            const updatedData = await updateData(`/api/users/${this.user}/todos/${todo_id}`, data)
             if (updatedData) {
-                showNotice('Congratulation, you have finished your task!', 'success', successData)
+                showNotice('Congratulation, you have finished your task!', 'success', successAnimation)
             }
         } catch (err) {
             console.error(err)
         }
     }
 
-    async dragAsDone(todo_id) {
+    dragAsDone = async (todo_id) => {
         try {
-            const data = await fetchData(`/api/todos/${todo_id}`)
+            const { data } = await fetchData(`/api/users/${this.user}/todos/${todo_id}`)
             data.is_done = true
 
-            const updatedData = await updateData(`/api/todos/${todo_id}`, data)
+            const updatedData = await updateData(`/api/users/${this.user}/todos/${todo_id}`, data)
             if (updatedData) {
-                // Show a notice
-                showNotice('Congratulation, you have finished your task!', 'success', successData)
+                showNotice('Congratulation, you have finished your task!', 'success', successAnimation)
             }
         } catch (err) {
             console.error(err)
         }
     }
 
-    filterByProjects(todos, projectId) {
-        while (this.container.hasChildNodes()) {
-            this.container.removeChild(this.container.firstChild)
+    filterByProjects = async (projectId) => {
+        try {
+            const { data } = await fetchData(`/api/users/${this.user}/todos`)
+
+            while (this.stack.container.hasChildNodes()) {
+                this.stack.container.removeChild(this.stack.container.firstChild)
+            }
+
+            this.stack.container.appendChild(this.stack.heading)
+
+            const filtered = data.filter((todo) => {
+                return todo.project_id === parseInt(projectId)
+            })
+
+            this.createStack(filtered)
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    showAddModal = () => {
+        this.add.modal.classList.remove('hidden')
+    }
+
+    closeAddModal = () => {
+        this.add.modal.classList.add('hidden')
+    }
+
+    showEditModal = () => {
+        this.edit.modal.classList.remove('hidden')
+    }
+
+    closeEditModal = () => {
+        this.edit.modal.classList.add('hidden')
+    }
+
+    showDeleteModal = () => {
+        this.delete.modal.classList.remove('hidden')
+    }
+
+    closeDeleteModal = () => {
+        this.delete.modal.classList.add('hidden')
+    }
+
+    emptyState = () => {
+        const emptyBox = document.createElement('div')
+        emptyBox.className = 'flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-violet-700 text-violet-700 text-xl capitalize rounded-2xl'
+
+        const illustration = document.createElement('img')
+        illustration.className = 'w-20'
+        illustration.setAttribute('src', '/static/dist/img/empty-primary.svg')
+        illustration.setAttribute('alt', 'This column is empty')
+
+        const text = document.createElement('h3')
+        text.textContent = "you haven't added any tasks yet"
+
+        const handleCta = () => {
+            this.showAddModal()
         }
 
-        this.container.appendChild(this.heading)
+        const ctaButton = createButton('bg-violet-700 mt-8 px-4 py-1 text-white font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase', 'get started', handleCta, 'todo-cta-button', 'Create your first task')
 
-        const filtered = todos.filter((todo) => {
-            return todo.project_id === parseInt(projectId)
+        emptyBox.append(illustration, text, ctaButton)
+
+        const separator = createSeparator('bg-violet-200')
+
+        this.stack.container.append(separator, emptyBox)
+    }
+
+    validateBlur = () => {
+        const fields = this.add.form.fields
+        for (const field in fields) {
+            fields[field].addEventListener('blur', () => {
+                let isValid = validate(fields[field])
+
+                if (!isValid) {
+                    showError(fields[field])
+                }
+            })
+        }
+    }
+
+    resetFocus = () => {
+        const fields = this.add.form.fields
+        for (const field in fields) {
+            fields[field].addEventListener('focus', () => {
+                resetError(fields[field])
+            })
+        }
+    }
+
+    validateInput = () => {
+        const fields = this.add.form.fields
+        const submit = this.add.form.submit
+        for (const field in fields) {
+            fields[field].addEventListener('input', () => {
+                enableSubmit(fields, submit)
+            })
+        }
+    }
+
+    validateSubmit = () => {
+        const form = this.add.form.form
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault()
+            this.closeAddModal()
+
+            const formData = new FormData(form)
+
+            try {
+                const res = await sendData(`/api/users/${this.user}/todos`, formData)
+                if (res.success) {
+                    showNotice('Your task has been added!', 'success', successAnimation)
+                } else {
+                    const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
+                    showNotice(errors.join(''), 'error', alertAnimation)
+                }
+            } catch (error) {
+                console.error(error)
+            }
         })
-
-        console.log(filtered)
-
-        createStack(filtered, this.name, this.container, 'bg-violet-200')
-    }
-
-    showAddTodo() {
-        this.addTodoModal.classList.remove('hidden')
-
-        const menu = new Menu()
-        menu.closeMenu()
-    }
-
-    closeAddTodo() {
-        this.addTodoModal.classList.add('hidden')
-    }
-
-    showEditTodo() {
-        this.editTodoModal.classList.remove('hidden')
-    }
-
-    closeEditTodo() {
-        this.editTodoModal.classList.add('hidden')
-    }
-
-    showDeleteTodo() {
-        this.deleteTodoModal.classList.remove('hidden')
-    }
-
-    closeDeleteTodo() {
-        this.deleteTodoModal.classList.add('hidden')
-    }
-
-    emptyState() {
-        const emptyBox = createEmptyState(this.name)
-        const separator = createSeparator('violet')
-
-        this.container.append(separator, emptyBox)
-
-        return emptyBox
     }
 }
 

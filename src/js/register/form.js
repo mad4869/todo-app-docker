@@ -1,4 +1,5 @@
 import { sendData } from '../components/data'
+import { validate, validatePasswordMatch, showError, resetError, enableSubmit } from '../components/form'
 import showNotice from '../components/notice'
 import successAnimation from '../../animations/success.json'
 import alertAnimation from '../../animations/alert.json'
@@ -16,58 +17,65 @@ class RegisterForm {
         this.submit = document.getElementById('form-register-submit')
     }
 
-    validate = (field) => {
-        return field.checkValidity()
+    attachEventListeners = () => {
+        this.validateInput()
+        this.validateBlur()
+        this.resetFocus()
+        this.validateSubmit()
     }
 
-    validatePasswordMatch = (confirmPassword) => {
-        const { password } = this.fields
-        if (confirmPassword.value !== password.value) {
-            confirmPassword.setCustomValidity('Passwords do not match.')
-        } else confirmPassword.setCustomValidity('')
+    // validate = (field) => {
+    //     return field.checkValidity()
+    // }
 
-        return confirmPassword.checkValidity()
-    }
+    // validatePasswordMatch = (confirmPassword) => {
+    //     const { password } = this.fields
+    //     if (confirmPassword.value !== password.value) {
+    //         confirmPassword.setCustomValidity('Passwords do not match.')
+    //     } else confirmPassword.setCustomValidity('')
 
-    getMessage = (field) => {
-        return field.validationMessage
-    }
+    //     return confirmPassword.checkValidity()
+    // }
 
-    createError = (field) => {
-        const error = document.createElement('p')
-        error.className = 'mt-1 text-xs text-rose-500 italic'
-        error.setAttribute('name', 'error')
-        error.textContent = this.getMessage(field)
+    // getMessage = (field) => {
+    //     return field.validationMessage
+    // }
 
-        return error
-    }
+    // createError = (field) => {
+    //     const error = document.createElement('p')
+    //     error.className = 'mt-1 text-xs text-rose-500 italic'
+    //     error.setAttribute('name', 'error')
+    //     error.textContent = this.getMessage(field)
 
-    showError = (field) => {
-        field.classList.remove('border-slate-500', 'placeholder:text-slate-400')
-        field.classList.add('border-rose-500', 'placeholder:text-rose-300')
+    //     return error
+    // }
 
-        field.parentElement.append(this.createError(field))
-    }
+    // showError = (field) => {
+    //     field.classList.remove('border-slate-500', 'placeholder:text-slate-400')
+    //     field.classList.add('border-rose-500', 'placeholder:text-rose-300')
 
-    resetError = (field) => {
-        field.classList.remove('border-rose-500', 'placeholder:text-rose-300')
-        field.classList.add('border-slate-500', 'placeholder:text-slate-400')
+    //     field.parentElement.append(this.createError(field))
+    // }
 
-        const error = field.parentElement.querySelector('p[name="error"]')
-        error ? error.remove() : ''
-    }
+    // resetError = (field) => {
+    //     field.classList.remove('border-rose-500', 'placeholder:text-rose-300')
+    //     field.classList.add('border-slate-500', 'placeholder:text-slate-400')
+
+    //     const error = field.parentElement.querySelector('p[name="error"]')
+    //     error ? error.remove() : ''
+    // }
 
     validateBlur = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('blur', () => {
-                let isValid = this.validate(this.fields[field])
+                let isValid = validate(this.fields[field])
 
                 if (this.fields[field] === this.fields['confirmPassword']) {
-                    isValid = this.validatePasswordMatch(this.fields[field])
+                    isValid = validatePasswordMatch(this.fields['password'], this.fields[field])
                 }
 
                 if (!isValid) {
-                    this.showError(this.fields[field])
+                    showError(this.fields[field])
                 }
             })
         }
@@ -76,36 +84,36 @@ class RegisterForm {
     resetFocus = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('focus', () => {
-                this.resetError(this.fields[field])
+                resetError(this.fields[field])
             })
         }
     }
 
-    enableSubmit = (fields) => {
-        const results = {}
+    // enableSubmit = (fields) => {
+    //     const results = {}
 
-        for (const field in fields) {
-            let isValid = this.validate(this.fields[field])
+    //     for (const field in fields) {
+    //         let isValid = this.validate(fields[field])
 
-            if (this.fields[field] === this.fields['confirmPassword']) {
-                isValid = this.validatePasswordMatch(this.fields[field])
-            }
+    //         if (fields[field] === fields['confirmPassword']) {
+    //             isValid = this.validatePasswordMatch(fields[field])
+    //         }
 
-            if (!isValid) {
-                results[field] = this.getMessage(fields[field])
-            } else {
-                results[field] = ''
-            }
-        }
+    //         if (!isValid) {
+    //             results[field] = this.getMessage(fields[field])
+    //         } else {
+    //             results[field] = ''
+    //         }
+    //     }
 
-        const hasErrors = Object.values(results).some(error => error !== '')
-        this.submit.disabled = hasErrors
-    }
+    //     const hasErrors = Object.values(results).some(error => error !== '')
+    //     this.submit.disabled = hasErrors
+    // }
 
     validateInput = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('input', () => {
-                this.enableSubmit(this.fields)
+                enableSubmit(this.fields, this.submit)
             })
         }
     }

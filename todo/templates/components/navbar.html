@@ -6,14 +6,9 @@
         src="{{static_url_for('static', filename='dist/img/text-logo-white.svg')}}" alt="Text Logo" class="h-8"></a>
   </div>
   <div class="flex gap-4">
-    <h1 id="current-user" class="font-semibold"">Hello</h1>
+    <h1 id="current-user" class="font-semibold" data-user="{{current_user.user_id}}">Hello {{ current_user.name }}!</h1>
     <a href=" {{url_for('views.projects_page')}}" title="View projects" class="hover:text-teal-400">Projects</a>
-      <a href="{{url_for('views.profile_page')}}" title="View profile" class="hover:text-teal-400">Profile</a>
-      <a href="/logout" class="hover:text-rose-400 ">Logout</a>
+    <a href="{{url_for('views.profile_page')}}" title="View profile" class="hover:text-teal-400">Profile</a>
+    <a href="{{url_for('auth.logout')}}" class="hover:text-rose-400 ">Logout</a>
   </div>
-  <!-- <div class="flex gap-4">
-    <a href="{{url_for('views.login_page')}}" title="View profile" class="hover:text-teal-500">Login</a>
-    <a href="{{url_for('views.register_page')}}" title="View profile"
-      class="font-semibold hover:text-teal-500">Register</a>
-  </div> -->
 </nav>

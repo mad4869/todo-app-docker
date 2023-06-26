@@ -1,7 +1,13 @@
 class Menu {
     constructor() {
         this.menu = document.getElementById('home-menu')
-        this.showMenuButton = document.getElementById('home-show-menu-button')
+        this.show = document.getElementById('home-show-menu-button')
+    }
+
+    attachEventListeners = () => {
+        this.show.addEventListener('click', () => {
+            this.showMenu()
+        })
     }
 
     showMenu() {

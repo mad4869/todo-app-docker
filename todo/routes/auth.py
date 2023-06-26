@@ -6,6 +6,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     get_jwt,
 )
+from flask_login import login_user, logout_user
 
 from ..extensions import db, jwt_manager
 from ..models import Users, BlocklistToken
@@ -75,6 +76,8 @@ def login():
                 400,
             )
 
+        login_user(user_registered)
+
         access_token = create_access_token(identity=user_registered.user_id)
         refresh_token = create_refresh_token(identity=user_registered.user_id)
 
@@ -107,6 +110,8 @@ def refresh_token():
 @auth_bp.route("/logout", methods=["POST"], strict_slashes=False)
 @jwt_required()
 def logout():
+    logout_user()
+
     jwt = get_jwt()
     jti = jwt.get("jti")
 

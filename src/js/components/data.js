@@ -1,6 +1,11 @@
+const accessToken = localStorage.getItem('access_token')
+
 const fetchData = (url) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
+
+        xhr.open('GET', url, true)
+        xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`)
 
         xhr.onload = () => {
             if (xhr.status === 200) {
@@ -11,7 +16,6 @@ const fetchData = (url) => {
             }
         }
 
-        xhr.open('GET', url, true)
         xhr.send()
     })
 }
@@ -19,6 +23,9 @@ const fetchData = (url) => {
 const sendData = (url, newData) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
+
+        xhr.open('POST', url, true)
+        xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`)
 
         xhr.onload = () => {
             if (xhr.status === 201 || xhr.status === 400) {
@@ -29,7 +36,6 @@ const sendData = (url, newData) => {
             }
         }
 
-        xhr.open('POST', url, true)
         xhr.send(newData)
     })
 }
@@ -37,6 +43,9 @@ const sendData = (url, newData) => {
 const updateData = (url, updatedData) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
+
+        xhr.open('PUT', url, true)
+        xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`)
 
         xhr.onload = () => {
             if (xhr.status === 201) {
@@ -47,7 +56,6 @@ const updateData = (url, updatedData) => {
             }
         }
 
-        xhr.open('PUT', url, true)
         xhr.send(JSON.stringify(updatedData))
     })
 }
@@ -55,6 +63,9 @@ const updateData = (url, updatedData) => {
 const deleteData = (url) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
+
+        xhr.open('DELETE', url, true)
+        xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`)
 
         xhr.onload = () => {
             if (xhr.status === 201) {
@@ -65,7 +76,6 @@ const deleteData = (url) => {
             }
         }
 
-        xhr.open('DELETE', url, true)
         xhr.send()
     })
 }

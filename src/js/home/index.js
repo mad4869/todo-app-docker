@@ -1,269 +1,189 @@
 import '../../css/style.css'
 
-// import Menu from './menu'
-// import Projects from './projects'
-// import Todos from './todos'
-// import Dones from './dones'
-// import createButton from '../components/button'
-// import createSeparator from '../components/separator'
-// import setClock from '../components/clock'
-// import showYear from '../components/year'
+import Menu from './menu'
+import Projects from './projects'
+import Todos from './todos'
+import Dones from './dones'
 
-// // if (window.location.pathname == '/home') {
-// const access_token = localStorage.getItem('accessToken')
-// console.log(access_token)
+import createButton from '../components/button'
+import createSeparator from '../components/separator'
 
-// fetch('/home', {
-//     headers: {
-//         Authorization: `Bearer ${access_token}`
-//     }
-// })
-//     .then(res => res.text)
-//     .catch(err => {
-//         console.log(err)
-//     })
+import setClock from '../components/clock'
+import showYear from '../components/year'
 
-// // Logged in user
-// const userId = document.getElementById('current-user').dataset.user
+if (window.location.pathname == '/home') {
+    // Logged in user
+    const userId = document.getElementById('current-user').dataset.user
 
-// // List of todos
-// const todos = new Todos()
+    // Objects instances
+    const projects = new Projects(userId)
+    const todos = new Todos(userId)
+    const dones = new Dones(userId)
+    const menu = new Menu()
 
-// const todosList = await todos.getStack(userId)
+    // Projects section
+    projects.attachEventListeners()
 
-// if (todosList.length === 0) {
-//     const empty = todos.emptyState()
-//     const getStartedButton = empty.lastElementChild
-//     getStartedButton.addEventListener('click', () => {
-//         todos.showAddTodo()
-//     })
-// }
+    const options = await projects.getOptions(userId)
+    if (options) {
+        options.forEach((option) => {
+            option.addEventListener('click', async () => {
+                projects.filter.selected.textContent = option.textContent
+                projects.closeOptions()
 
-// todos.editTodoCloseButtons.addEventListener('click', () => {
-//     todos.closeEditTodo()
-// })
+                todos.filterByProjects(option.dataset.value)
 
-// todos.deleteTodoCloseButtons.addEventListener('click', () => {
-//     todos.closeDeleteTodo()
-// })
+                dones.filterByProjects(option.dataset.value)
+            })
+        })
+    } else {
+        projects.emptyState()
+    }
 
-// // List of dones
-// const dones = new Dones()
+    // Todos section
+    todos.attachEventListeners()
 
-// const donesList = await dones.getStack(userId)
+    const todosStack = await todos.getStack()
+    if (todosStack.length === 0) {
+        todos.emptyState()
+    }
 
-// if (donesList.length === 0) {
-//     dones.emptyState()
-// }
+    // Dones section
+    dones.attachEventListeners()
 
-// // Projects dropdown
-// const projects = new Projects()
+    const donesStack = await dones.getStack()
+    if (donesStack.length === 0) {
+        dones.emptyState()
+    }
 
-// projects.dropdown.addEventListener('click', () => {
-//     projects.showOptions()
-// })
+    // Menu section
+    menu.attachEventListeners()
 
-// const options = await projects.getOptions(userId)
+    // Drag and Drop
+    const handleSwitch = (dropped, oldColor, newColor, newButton) => {
+        const heading = dropped.firstElementChild
+        heading.classList.remove(oldColor)
+        heading.classList.add(newColor)
 
-// // Filter todos by projects
-// if (options) {
-//     options.forEach((option) => {
-//         option.addEventListener('click', async () => {
-//             projects.selected.textContent = option.textContent
-//             projects.closeOptions()
+        const rightButtons = dropped.lastElementChild.lastElementChild
+        const oldButton = rightButtons.firstElementChild
+        oldButton.remove()
 
-//             const todosData = await todos.getData(userId)
-//             todos.filterByProjects(todosData, option.dataset.value)
+        rightButtons.append(newButton)
+    }
 
-//             const donesData = await dones.getData(userId)
-//             dones.filterByProjects(donesData, option.dataset.value)
-//         })
-//     })
-// } else {
-//     const empty = projects.emptyState()
-//     const getStartedButton = empty.lastElementChild
-//     getStartedButton.addEventListener('click', () => {
-//         projects.showAddProject()
-//         projects.closeOptions()
-//     })
-// }
+    let originalContainer = null
 
-// // Sliding menu
-// const menu = new Menu()
-// menu.showMenuButton.addEventListener('click', () => {
-//     menu.showMenu()
-// })
+    const allTasks = document.querySelectorAll('div[draggable="true"]')
+    allTasks.forEach((task) => {
+        task.addEventListener('dragstart', (e) => {
+            originalContainer = e.target.parentNode
+            e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
 
-// // Add task modal
-// todos.addTodoShowButton.addEventListener('click', () => {
-//     todos.showAddTodo()
-// })
-// todos.addTodoCloseButton.addEventListener('click', () => {
-//     todos.closeAddTodo()
-// })
+            setTimeout(() => {
+                e.target.classList.add('hidden');
+                e.target.previousElementSibling.classList.add('hidden')
+            }, 0);
+        })
+        task.addEventListener('dragend', (e) => {
+            e.target.classList.remove('hidden')
+            e.target.previousElementSibling.classList.remove('hidden')
+        })
+    })
 
-// // Add project modal
-// projects.addProjectShowButton.addEventListener('click', () => {
-//     projects.showAddProject()
-// })
-// projects.addProjectCloseButton.addEventListener('click', () => {
-//     projects.closeAddProject()
-// })
-// // Draggable tasks
-// let originalContainer = null
-// const allTasks = document.querySelectorAll('div[draggable="true"]')
-// allTasks.forEach((task) => {
-//     task.addEventListener('dragstart', (e) => {
-//         originalContainer = e.target.parentNode
-//         e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
+    todos.stack.container.addEventListener('drop', (e) => {
+        e.preventDefault()
+        todos.stack.container.classList.remove('bg-fuchsia-400')
 
-//         setTimeout(() => {
-//             e.target.classList.add('hidden');
-//             e.target.previousElementSibling.classList.add('hidden')
-//         }, 0);
-//     })
-//     task.addEventListener('dragend', (e) => {
-//         e.target.classList.remove('hidden')
-//         e.target.previousElementSibling.classList.remove('hidden')
-//     })
-// })
+        const data = e.dataTransfer.getData('text/plain')
 
-// todos.container.addEventListener('dragenter', (e) => {
-//     e.preventDefault()
-//     todos.container.classList.add('bg-fuchsia-400')
-// })
+        if (originalContainer == todos.stack.container) {
+            return
+        }
 
-// todos.container.addEventListener('dragover', (e) => {
-//     e.preventDefault()
-//     todos.container.classList.add('bg-fuchsia-400')
-// })
+        const dropped = document.querySelector(`[data-id="${data}"]`)
+        const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-violet-700', '<i class="fa-solid fa-check"></i>', () => { todos.markAsDone(data) }, 'done-button', 'Mark as done')
 
-// todos.container.addEventListener('dragleave', (e) => {
-//     e.preventDefault()
-//     todos.container.classList.remove('bg-fuchsia-400')
-// })
+        handleSwitch(dropped, 'bg-teal-600', 'bg-violet-700', doneButton)
 
-// todos.container.addEventListener('drop', (e) => {
-//     e.preventDefault()
-//     todos.container.classList.remove('bg-fuchsia-400')
+        const separator = createSeparator('bg-violet-200')
 
-//     const data = e.dataTransfer.getData('text/plain')
+        todos.stack.container.append(separator, dropped)
 
-//     if (originalContainer == todos.container) {
-//         return
-//     }
+        dones.dragAsUndone(data)
+    })
 
-//     const dropped = document.querySelector(`[data-id="${data}"]`)
+    dones.stack.container.addEventListener('drop', (e) => {
+        e.preventDefault()
+        dones.stack.container.classList.remove('bg-teal-300')
 
-//     const heading = dropped.firstElementChild
-//     heading.classList.remove('bg-teal-600')
-//     heading.classList.add('bg-violet-700')
+        const data = e.dataTransfer.getData('text/plain')
 
-//     const rightButtons = dropped.lastElementChild.lastElementChild
-//     const undoneButton = rightButtons.firstElementChild
-//     undoneButton.remove()
-//     const doneButton = createButton('bg-violet-700', '<i class="fa-solid fa-check"></i>', function () {
-//         todos.markAsDone(data)
-//     }, 'done-button', 'Mark as done')
-//     rightButtons.append(doneButton)
+        if (originalContainer == dones.stack.container) {
+            return
+        }
 
-//     const separator = createSeparator('bg-violet-200')
+        const dropped = document.querySelector(`[data-id="${data}"]`)
+        const undoneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', () => { dones.markAsUndone(data) }, 'undone-button', 'Mark as undone')
 
-//     todos.container.append(separator, dropped)
+        handleSwitch(dropped, 'bg-violet-700', 'bg-teal-600', undoneButton)
 
-//     dones.dragAsUndone(data)
-// })
+        const separator = createSeparator('bg-teal-200')
 
-// dones.container.addEventListener('dragenter', (e) => {
-//     e.preventDefault()
-//     dones.container.classList.add('bg-teal-300')
-// })
+        dones.stack.container.append(separator, dropped)
 
-// dones.container.addEventListener('dragover', (e) => {
-//     e.preventDefault()
-//     dones.container.classList.add('bg-teal-300')
-// })
+        todos.dragAsDone(data)
+    })
 
-// dones.container.addEventListener('dragleave', (e) => {
-//     e.preventDefault()
-//     dones.container.classList.remove('bg-teal-300')
-// })
+    // Closing modal if clicked outside
+    document.addEventListener('click', (e) => {
+        const menuClicked = menu.menu.contains(e.target) || menu.show.contains(e.target)
+        if (!menuClicked) {
+            menu.closeMenu()
+        }
 
-// dones.container.addEventListener('drop', (e) => {
-//     e.preventDefault()
-//     dones.container.classList.remove('bg-teal-300')
+        const projectDropdownClicked = projects.filter.dropdown.contains(e.target) || projects.filter.options.contains(e.target)
+        if (!projectDropdownClicked) {
+            projects.closeOptions();
+        }
 
-//     const data = e.dataTransfer.getData('text/plain')
+        const todosCtaButton = document.querySelector('button[name="todo-cta-button"]')
+        let addTodoClicked = todos.add.modal.firstElementChild.contains(e.target) || todos.add.show.contains(e.target)
+        if (todosCtaButton) {
+            addTodoClicked = todos.add.modal.firstElementChild.contains(e.target) || todos.add.show.contains(e.target) || todosCtaButton.contains(e.target)
+        }
+        if (!addTodoClicked) {
+            todos.closeAddModal()
+        }
 
-//     if (originalContainer == dones.container) {
-//         return
-//     }
+        const projectsCtaButton = document.querySelector('button[name="project-cta-button"]')
+        let addProjectClicked = projects.add.modal.firstElementChild.contains(e.target) || projects.add.show.contains(e.target)
+        if (projectsCtaButton) {
+            addProjectClicked = projects.add.modal.firstElementChild.contains(e.target) || projects.add.show.contains(e.target) || projectsCtaButton.contains(e.target)
+        }
+        if (!addProjectClicked) {
+            projects.closeAddModal()
+        }
 
-//     const dropped = document.querySelector(`[data-id="${data}"]`)
+        const editTodoButtons = document.querySelectorAll('button[name="edit-button"]')
+        const editTodoClicked = todos.edit.modal.firstElementChild.contains(e.target) || Array.from(editTodoButtons).some((edit) => edit.contains(e.target))
+        if (!editTodoClicked) {
+            todos.closeEditModal()
+        }
 
-//     const heading = dropped.firstElementChild
-//     heading.classList.remove('bg-violet-700')
-//     heading.classList.add('bg-teal-600')
+        const deleteTodoButtons = document.querySelectorAll('button[name="delete-button"]')
+        const deleteTodoClicked = todos.delete.modal.firstElementChild.contains(e.target) || Array.from(deleteTodoButtons).some((del) => del.contains(e.target))
+        if (!deleteTodoClicked) {
+            todos.closeDeleteModal()
+        }
+    });
 
-//     const rightButtons = dropped.lastElementChild.lastElementChild
-//     const doneButton = rightButtons.firstElementChild
-//     doneButton.remove()
-//     const undoneButton = createButton('bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', function () {
-//         dones.markAsUndone(data)
-//     }, 'undone-button', 'Mark as undone')
-//     rightButtons.append(undoneButton)
+    // Footer
+    const footer = document.getElementById('footer')
+    if (footer.hasChildNodes) {
+        footer.classList.add('mt-8')
+    }
 
-//     const separator = createSeparator('bg-teal-200')
-
-//     dones.container.append(separator, dropped)
-
-//     todos.dragAsDone(data)
-// })
-
-// // Closing modal if clicked outside
-// document.addEventListener('click', (e) => {
-//     const menuClicked = menu.menu.contains(e.target) || menu.showMenuButton.contains(e.target)
-//     if (!menuClicked) {
-//         menu.closeMenu()
-//     }
-
-
-//     const projectDropdownClicked = projects.dropdown.contains(e.target) || projects.optionsContainer.contains(e.target)
-//     if (!projectDropdownClicked) {
-//         projects.closeOptions();
-//     }
-
-//     const todosGetStartedButton = document.getElementById('home-todos-get-started')
-//     let addTodoModalClicked = todos.addTodoModal.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target)
-//     if (todosGetStartedButton) {
-//         addTodoModalClicked = todos.addTodoModal.firstElementChild.contains(e.target) || todos.addTodoShowButton.contains(e.target) || todosGetStartedButton.contains(e.target)
-//     }
-//     if (!addTodoModalClicked) {
-//         todos.closeAddTodo()
-//     }
-
-//     // const editTodoModalClicked = todos.editTodoModal.firstElementChild.contains(e.target) || Array.from(editTodoButtons).some((edit) => edit.contains(e.target))
-//     // console.log(editTodoModalClicked)
-//     // if (!editTodoModalClicked) {
-//     //     todos.closeEditTodo()
-//     // }
-
-//     const projectsGetStartedButton = document.getElementById('home-projects-get-started')
-//     let addProjectClicked = projects.addProject.firstElementChild.contains(e.target) || projects.addProjectShowButton.contains(e.target)
-//     if (projectsGetStartedButton) {
-//         addProjectClicked = projects.addProject.firstElementChild.contains(e.target) || projects.addProjectShowButton.contains(e.target) || projectsGetStartedButton.contains(e.target)
-//     }
-//     if (!addProjectClicked) {
-//         projects.closeAddProject()
-//     }
-// });
-
-// // Footer
-// const footer = document.getElementById('footer')
-// if (footer.hasChildNodes) {
-//     footer.classList.add('mt-8')
-// }
-
-// setInterval(setClock, 1000)
-// showYear()
-// // }
+    setInterval(setClock, 1000)
+    showYear()
+}

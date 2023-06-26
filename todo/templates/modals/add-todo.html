@@ -29,9 +29,11 @@
         focus:text-slate-900 focus:outline-none") }}
     </label>
     <div class="flex gap-1">
-        {{ add_todo_form.submit(type="submit", title="Submit form",
-        class="flex-1 py-1 bg-violet-700 text-white rounded-lg shadow-[0px_2px_5px_rgba(0,0,0,0.6)] hover:bg-violet-900
-        active:shadow-[inset_0_2px_5px_rgba(0,0,0,0.6)]") }}
+        {{ add_todo_form.submit(title="Add the task",
+        class="flex-1 py-1 bg-violet-700 text-white rounded-lg cursor-pointer shadow-[0px_2px_5px_rgba(0,0,0,0.6)]
+        hover:bg-violet-900
+        active:shadow-[inset_0_2px_5px_rgba(0,0,0,0.6)] disabled:bg-slate-300 disabled:shadow-none
+        disabled:cursor-not-allowed", disabled=true) }}
         <button type="reset" id="form-add-todo-reset" title="Start over"
             class="px-2 py-1 bg-slate-400 text-white rounded-lg hover:bg-slate-600">
             <i class="fa-solid fa-arrow-rotate-left"></i>
