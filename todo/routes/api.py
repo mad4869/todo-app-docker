@@ -286,13 +286,23 @@ def access_todo(user_id, todo_id):
     data = todo.serialize()
 
     if request.method == "PUT":
-        try:
-            updated_data = json.loads(request.get_data(as_text=True))
-            todo.title = updated_data["title"]
-            todo.description = updated_data["description"]
-            todo.project_id = updated_data["project_id"]
-            todo.is_done = updated_data["is_done"]
+        if list(request.form) != []:
+            form = EditTodoForm(
+                project=request.form["project"],
+                title=request.form["title"],
+                description=request.form["description"],
+            )
+            form.load_choices(user_id)
 
+            if form.validate():
+                todo.title = form.title.data
+                todo.description = form.description.data
+                todo.project_id = form.project.data
+        else:
+            updated_data = json.loads(request.get_data(as_text=True))
+            todo.is_done = updated_data.get("is_done")
+
+        try:
             db.session.commit()
         except:
             db.session.rollback()
@@ -305,6 +315,9 @@ def access_todo(user_id, todo_id):
             updated_data = todo.serialize()
 
             return jsonify({"success": True, "data": updated_data}), 201
+        if form.errors != {}:
+            errors = [error for error in form.errors.values()]
+            return jsonify({"success": False, "message": errors}), 400
 
     elif request.method == "DELETE":
         try:

@@ -2,7 +2,7 @@ import loadAnimation from './animation'
 
 const showNotice = (message, category, animationData) => {
     const mainContainer = document.createElement('div')
-    mainContainer.className = 'fixed flex gap-2 items-center left-1/2 -translate-x-1/2 bottom-10 px-8 py-1 rounded-2xl transition-opacity'
+    mainContainer.className = 'fixed flex gap-1 items-center left-1/2 -translate-x-1/2 bottom-10 px-8 py-1 rounded-2xl transition-opacity'
     mainContainer.classList.add(category)
 
     const animationContainer = document.createElement('div')

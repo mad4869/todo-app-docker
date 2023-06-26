@@ -35,10 +35,16 @@ class Todos {
 
         this.edit = {
             modal: document.getElementById('modal-edit-todo'),
-            id: document.getElementById('form-edit-todo-id'),
-            project: document.getElementById('form-edit-todo-project'),
-            title: document.getElementById('form-edit-todo-title'),
-            description: document.getElementById('form-edit-todo-description'),
+            form: {
+                form: document.getElementById('form-edit-todo'),
+                fields: {
+                    id: document.getElementById('form-edit-todo-id'),
+                    project: document.getElementById('form-edit-todo-project'),
+                    title: document.getElementById('form-edit-todo-title'),
+                    description: document.getElementById('form-edit-todo-description')
+                },
+                submit: document.getElementById('form-edit-todo-submit')
+            },
             close: document.getElementById('modal-edit-todo-close-button')
         }
 
@@ -70,10 +76,14 @@ class Todos {
         })
 
         // Form events
-        this.validateInput()
-        this.validateBlur()
-        this.resetFocus()
-        this.validateSubmit()
+        this.validateInput(this.add.form.fields, this.add.form.submit)
+        this.validateInput(this.edit.form.fields, this.edit.form.submit)
+        this.validateBlur(this.add.form.fields)
+        this.validateBlur(this.edit.form.fields)
+        this.resetFocus(this.add.form.fields)
+        this.resetFocus(this.edit.form.fields)
+        this.validateSubmit(this.add.form.form)
+        this.validateSubmit(this.edit.form.form)
 
         // Drag and drop events
         this.stack.container.addEventListener('dragenter', (e) => {
@@ -140,10 +150,10 @@ class Todos {
             this.showEditModal()
 
             const { data } = await fetchData(`/api/users/${this.user}/todos/${todoId}`)
-            this.edit.id.value = data.todo_id
-            this.edit.project.value = data.project_id
-            this.edit.title.value = data.title
-            this.edit.description.value = data.description
+            this.edit.form.fields.id.value = data.todo_id
+            this.edit.form.fields.project.value = data.project_id
+            this.edit.form.fields.title.value = data.title
+            this.edit.form.fields.description.value = data.description
         }
 
         const handleDelete = async () => {
@@ -220,10 +230,14 @@ class Todos {
     markAsDone = async (todo_id) => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}/todos/${todo_id}`)
-            data.is_done = true
+            const updatedData = {
+                ...data,
+                is_done: true,
+            }
+            const dataToSend = JSON.stringify(updatedData)
 
-            const updatedData = await updateData(`/api/users/${this.user}/todos/${todo_id}`, data)
-            if (updatedData) {
+            const { success } = await updateData(`/api/users/${this.user}/todos/${todo_id}`, dataToSend)
+            if (success) {
                 showNotice('Congratulation, you have finished your task!', 'success', successAnimation)
             }
         } catch (err) {
@@ -314,8 +328,7 @@ class Todos {
         this.stack.container.append(separator, emptyBox)
     }
 
-    validateBlur = () => {
-        const fields = this.add.form.fields
+    validateBlur = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('blur', () => {
                 let isValid = validate(fields[field])
@@ -327,8 +340,7 @@ class Todos {
         }
     }
 
-    resetFocus = () => {
-        const fields = this.add.form.fields
+    resetFocus = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('focus', () => {
                 resetError(fields[field])
@@ -336,9 +348,7 @@ class Todos {
         }
     }
 
-    validateInput = () => {
-        const fields = this.add.form.fields
-        const submit = this.add.form.submit
+    validateInput = (fields, submit) => {
         for (const field in fields) {
             fields[field].addEventListener('input', () => {
                 enableSubmit(fields, submit)
@@ -346,18 +356,23 @@ class Todos {
         }
     }
 
-    validateSubmit = () => {
-        const form = this.add.form.form
+    validateSubmit = (form) => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault()
-            this.closeAddModal()
 
             const formData = new FormData(form)
 
+            const method = formData.get('_method')
+            method === 'PUT' ?
+                this.closeEditModal() :
+                this.closeAddModal()
+
             try {
-                const res = await sendData(`/api/users/${this.user}/todos`, formData)
+                const res = method === 'PUT' ?
+                    await updateData(`/api/users/${this.user}/todos/${formData.get('todo_id')}`, formData) :
+                    await sendData(`/api/users/${this.user}/todos`, formData)
                 if (res.success) {
-                    showNotice('Your task has been added!', 'success', successAnimation)
+                    showNotice(`Your task has been ${method === 'PUT' ? 'updated' : 'added'}`, 'success', successAnimation)
                 } else {
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
                     showNotice(errors.join(''), 'error', alertAnimation)

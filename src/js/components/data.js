@@ -56,7 +56,7 @@ const updateData = (url, updatedData) => {
             }
         }
 
-        xhr.send(JSON.stringify(updatedData))
+        xhr.send(updatedData)
     })
 }
 

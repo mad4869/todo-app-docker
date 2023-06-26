@@ -8,7 +8,7 @@
 <span class="px-28 py-4 bg-emerald-700 text-2xl font-bold text-white rounded-t-2xl">
     <h1>EDIT TASK</h1>
 </span>
-<form method="post" id="form-edit-todo" class="flex flex-col gap-4 w-full px-8">
+<form id="form-edit-todo" class="flex flex-col gap-4 w-full px-8">
     {{ edit_todo_form.hidden_tag() }}
     <label for="project" class="block w-full">
         {{ edit_todo_form.project(title="Project",
@@ -28,10 +28,11 @@
         focus:text-slate-900 focus:outline-none") }}
     </label>
     <div class="flex gap-1">
-        {{ edit_todo_form.submit(type="submit", title="Submit form",
-        class="flex-1 py-1 bg-emerald-700 text-white rounded-lg shadow-[0px_2px_5px_rgba(0,0,0,0.6)]
+        {{ edit_todo_form.submit(title="Update the task",
+        class="flex-1 py-1 bg-emerald-700 text-white rounded-lg cursor-pointer shadow-[0px_2px_5px_rgba(0,0,0,0.6)]
         hover:bg-emerald-900
-        active:shadow-[inset_0_2px_5px_rgba(0,0,0,0.6)]") }}
+        active:shadow-[inset_0_2px_5px_rgba(0,0,0,0.6)] disabled:bg-slate-300 disabled:shadow-none
+        disabled:cursor-not-allowed", disabled=true) }}
         <button type="reset" id="form-edit-todo-reset" title="Reset form"
             class="px-2 py-1 bg-slate-400 text-white rounded-lg hover:bg-slate-600">
             <i class="fa-solid fa-arrow-rotate-left"></i>
