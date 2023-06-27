@@ -1,13 +1,10 @@
 import Menu from './menu'
-// import Dones from './dones'
 
 import { fetchData, sendData, updateData, deleteData } from '../components/data'
 import { validate, showError, resetError, enableSubmit } from '../components/form'
 import createButton from '../components/button'
 import createSeparator from "../components/separator"
 import showNotice from "../components/notice"
-import successAnimation from '../../animations/success.json'
-import alertAnimation from '../../animations/alert.json'
 
 class Todos {
     constructor(user) {
@@ -220,7 +217,8 @@ class Todos {
         try {
             const { success } = await deleteData(`/api/users/${this.user}/todos/${todoId}`);
             if (success) {
-                showNotice('Your task has been deleted!', 'error', alertAnimation)
+                location.reload()
+                // showNotice('Your task has been deleted!', 'error', alertAnimation)
             }
         } catch (err) {
             console.error(err);
@@ -237,7 +235,8 @@ class Todos {
 
             const { success } = await updateData(`/api/users/${this.user}/todos/${todo_id}`, JSON.stringify(updatedData))
             if (success) {
-                showNotice('Congratulation, you have finished your task!', 'success', successAnimation)
+                location.reload()
+                // showNotice('Congratulation, you have finished your task!', 'success', successAnimation)
             }
         } catch (err) {
             console.error(err)
@@ -254,7 +253,7 @@ class Todos {
 
             const { success } = await updateData(`/api/users/${this.user}/todos/${todoId}`, JSON.stringify(updatedData))
             if (success) {
-                showNotice('Congratulation, you have finished your task!', 'success', successAnimation)
+                showNotice('Congratulation, you have finished your task!', 'success')
             }
         } catch (err) {
             console.error(err)
@@ -374,10 +373,11 @@ class Todos {
                     await updateData(`/api/users/${this.user}/todos/${formData.get('todo_id')}`, formData) :
                     await sendData(`/api/users/${this.user}/todos`, formData)
                 if (res.success) {
-                    showNotice(`Your task has been ${method === 'PUT' ? 'updated' : 'added'}`, 'success', successAnimation)
+                    location.reload()
+                    // showNotice(`Your task has been ${method === 'PUT' ? 'updated' : 'added'}`, 'success', successAnimation)
                 } else {
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
-                    showNotice(errors.join(''), 'error', alertAnimation)
+                    showNotice(errors.join(''), 'error')
                 }
             } catch (error) {
                 console.error(error)

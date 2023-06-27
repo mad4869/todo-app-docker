@@ -1,11 +1,7 @@
-// import Todos from './todos'
-
 import { fetchData, updateData, deleteData } from '../components/data'
 import createButton from '../components/button'
 import createSeparator from '../components/separator'
 import showNotice from '../components/notice'
-import infoAnimation from '../../animations/info.json'
-import alertAnimation from '../../animations/alert.json'
 
 class Dones {
     constructor(user) {
@@ -181,7 +177,8 @@ class Dones {
         try {
             const { success } = await deleteData(`/api/users/${this.user}/todos/${doneId}`);
             if (success) {
-                showNotice('Your task has been deleted!', 'error', alertAnimation)
+                location.reload()
+                // showNotice('Your task has been deleted!', 'error', alertAnimation)
             }
         } catch (err) {
             console.error(err);
@@ -198,7 +195,8 @@ class Dones {
 
             const { success } = await updateData(`/api/users/${this.user}/todos/${doneId}`, JSON.stringify(updatedData))
             if (success) {
-                showNotice('You have undone your finished task!', 'info', infoAnimation)
+                location.reload()
+                // showNotice('You have undone your finished task!', 'info', infoAnimation)
             }
         } catch (err) {
             console.error(err)
@@ -216,7 +214,7 @@ class Dones {
 
             const { success } = await updateData(`/api/users/${this.user}/todos/${doneId}`, dataToSend)
             if (success) {
-                showNotice('You have undone your finished task!', 'info', infoAnimation)
+                showNotice('You have undone your finished task!', 'info')
             }
         } catch (err) {
             console.error(err)

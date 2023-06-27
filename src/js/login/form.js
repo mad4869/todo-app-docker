@@ -1,8 +1,6 @@
 import { sendData } from '../components/data'
 import { validate, showError, resetError, enableSubmit } from '../components/form'
 import showNotice from '../components/notice'
-import helloAnimation from '../../animations/hello.json'
-import alertAnimation from '../../animations/alert.json'
 
 class LoginForm {
     constructor() {
@@ -59,7 +57,7 @@ class LoginForm {
             try {
                 const res = await sendData('/auth/login', formData)
                 if (res.success) {
-                    showNotice('<span class="font-semibold">Login successful. Welcome back!</span><br>Please wait a moment while we redirect you to the homepage.', 'success', helloAnimation)
+                    showNotice('<span class="font-semibold">Login successful. Welcome back!</span><br>Please wait a moment while we redirect you to the homepage.', 'hello')
                     localStorage.setItem('access_token', res.access_token)
                     localStorage.setItem('refresh_token', res.refresh_token)
                     setTimeout(() => {
@@ -67,7 +65,7 @@ class LoginForm {
                     }, 3000)
                 } else {
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
-                    showNotice(errors.join(''), 'error', alertAnimation)
+                    showNotice(errors.join(''), 'error')
                 }
             } catch (error) {
                 console.error(error)

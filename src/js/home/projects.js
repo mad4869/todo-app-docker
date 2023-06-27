@@ -4,7 +4,6 @@ import { fetchData, sendData } from "../components/data"
 import { validate, showError, resetError, enableSubmit } from '../components/form'
 import createButton from "../components/button"
 import showNotice from '../components/notice'
-import successAnimation from '../../animations/success.json'
 class Projects {
     constructor(user) {
         this.user = user
@@ -151,10 +150,11 @@ class Projects {
             try {
                 const res = await sendData(`/api/users/${this.user}/projects`, formData)
                 if (res.success) {
-                    showNotice('Your project has been added!', 'success', successAnimation)
+                    location.reload()
+                    // showNotice('Your project has been added!', 'success', successAnimation)
                 } else {
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
-                    showNotice(errors.join(''), 'error', alertAnimation)
+                    showNotice(errors.join(''), 'error')
                 }
             } catch (error) {
                 console.error(error)

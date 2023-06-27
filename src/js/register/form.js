@@ -1,8 +1,6 @@
 import { sendData } from '../components/data'
 import { validate, validatePasswordMatch, showError, resetError, enableSubmit } from '../components/form'
 import showNotice from '../components/notice'
-import successAnimation from '../../animations/success.json'
-import alertAnimation from '../../animations/alert.json'
 
 class RegisterForm {
     constructor() {
@@ -65,13 +63,13 @@ class RegisterForm {
             try {
                 const res = await sendData('/auth/register', formData)
                 if (res.success) {
-                    showNotice('Your account has been registered. Please login to proceed.', 'success', successAnimation)
+                    showNotice('Your account has been registered. Please login to proceed.', 'success')
                     setTimeout(() => {
                         window.location.replace('/login')
                     }, 3000)
                 } else {
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
-                    showNotice(errors.join(''), 'error', alertAnimation)
+                    showNotice(errors.join(''), 'error')
                 }
             } catch (error) {
                 console.error(error)
