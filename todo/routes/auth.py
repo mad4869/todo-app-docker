@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, flash
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -81,6 +81,10 @@ def login():
         access_token = create_access_token(identity=user_registered.user_id)
         refresh_token = create_refresh_token(identity=user_registered.user_id)
 
+        flash(
+            f"Login successful. Welcome back, {user_registered.name}!",
+            category="hello",
+        )
         return (
             jsonify(
                 {
@@ -123,8 +127,9 @@ def logout():
     except:
         db.session.rollback()
 
-        return jsonify({"success": True, "message": "Logout failed!"}), 500
+        return jsonify({"success": False, "message": "Logout failed!"}), 500
     else:
+        flash("You have been logged out", category="info")
         return jsonify({"success": True, "message": "Logout success!"}), 200
 
 

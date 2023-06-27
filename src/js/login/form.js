@@ -51,19 +51,22 @@ class LoginForm {
     validateSubmit = () => {
         this.form.addEventListener('submit', async (e) => {
             e.preventDefault()
+            this.submit.value = '...'
 
             const formData = new FormData(this.form)
 
             try {
                 const res = await sendData('/auth/login', formData)
                 if (res.success) {
-                    showNotice('<span class="font-semibold">Login successful. Welcome back!</span><br>Please wait a moment while we redirect you to the homepage.', 'hello')
+                    this.submit.value = 'LOGIN SUCCESSFUL'
+
                     localStorage.setItem('access_token', res.access_token)
                     localStorage.setItem('refresh_token', res.refresh_token)
-                    setTimeout(() => {
-                        window.location.replace('/home')
-                    }, 3000)
+
+                    window.location.replace('/home')
                 } else {
+                    this.submit.value = 'LOGIN'
+
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
                     showNotice(errors.join(''), 'error')
                 }

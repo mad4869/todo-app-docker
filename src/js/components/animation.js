@@ -12,7 +12,7 @@ const loadAnimation = (container, category) => {
         case 'success':
             animationData = successAnimation
             break
-        case 'alert':
+        case 'error':
             animationData = alertAnimation
             break
         case 'info':

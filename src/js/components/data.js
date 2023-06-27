@@ -80,4 +80,24 @@ const deleteData = (url) => {
     })
 }
 
-export { fetchData, sendData, updateData, deleteData }
+const logout = () => {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+
+        xhr.open('POST', '/auth/logout', true)
+        xhr.setRequestHeader('Authorization', `Bearer ${accessToken}`)
+
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                const res = JSON.parse(xhr.responseText)
+                resolve(res)
+            } else {
+                reject(new Error('Failed to logout'))
+            }
+        }
+
+        xhr.send()
+    })
+}
+
+export { fetchData, sendData, updateData, deleteData, logout }

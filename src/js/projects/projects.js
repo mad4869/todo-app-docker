@@ -1,5 +1,7 @@
-import { fetchData, deleteData } from "../components/data"
+import { fetchData, sendData, updateData, deleteData } from "../components/data"
+import { validate, showError, resetError, enableSubmit } from '../components/form'
 import createButton from "../components/button"
+import showNotice from "../components/notice"
 
 class Projects {
     constructor(user) {
@@ -12,6 +14,14 @@ class Projects {
 
         this.add = {
             modal: document.getElementById('modal-add-project'),
+            form: {
+                form: document.getElementById('form-add-project'),
+                fields: {
+                    title: document.getElementById('form-add-project-title'),
+                    description: document.getElementById('form-add-project-description')
+                },
+                submit: document.getElementById('form-add-project-submit')
+            },
             show: document.getElementById('modal-add-project-show-button'),
             close: document.getElementById('modal-add-project-close-button')
         }
@@ -19,7 +29,7 @@ class Projects {
         this.edit = {
             modal: document.getElementById('modal-edit-project'),
             form: {
-                form: document,
+                form: document.getElementById('form-edit-project'),
                 fields: {
                     id: document.getElementById('form-edit-project-id'),
                     title: document.getElementById('form-edit-project-title'),
@@ -41,36 +51,37 @@ class Projects {
         this.todos = {
             modal: document.getElementById('modal-add-todo'),
             form: {
-                form: document,
+                form: document.getElementById('form-add-todo'),
                 fields: {
-                    project: document.getElementById('form-add-todo-project')
+                    project: document.getElementById('form-add-todo-project'),
+                    title: document.getElementById('form-add-todo-title'),
+                    description: document.getElementById('form-add-todo-description')
                 },
-                submit: document
+                submit: document.getElementById('form-add-todo-submit')
             },
             close: document.getElementById('modal-add-todo-close-button')
         }
     }
 
     attachEventListeners = () => {
-        this.add.show.addEventListener('click', () => {
-            this.showAddProject()
-        })
+        this.showAddProject()
+        this.closeAddTodo()
+        this.closeAddProject()
+        this.closeEditProject()
+        this.closeDeleteProject()
 
-        this.add.close.addEventListener('click', () => {
-            this.closeAddProject()
-        })
-
-        this.edit.close.addEventListener('click', () => {
-            this.closeEditProject()
-        })
-
-        this.delete.close.addEventListener('click', () => {
-            this.closeDeleteProject()
-        })
-
-        this.todos.close.addEventListener('click', () => {
-            this.closeAddTodo()
-        })
+        this.validateInput(this.add.form.fields, this.add.form.submit)
+        this.validateInput(this.edit.form.fields, this.edit.form.submit)
+        this.validateInput(this.todos.form.fields, this.todos.form.submit)
+        this.validateBlur(this.add.form.fields)
+        this.validateBlur(this.edit.form.fields)
+        this.validateBlur(this.todos.form.fields)
+        this.resetFocus(this.add.form.fields)
+        this.resetFocus(this.edit.form.fields)
+        this.resetFocus(this.todos.form.fields)
+        this.submitData(this.add.form.form, `/api/users/${this.user}/projects`, sendData, this.add.form.submit)
+        this.submitData(this.edit.form.form, `/api/users/${this.user}/projects/`, updateData, this.edit.form.submit)
+        this.submitData(this.todos.form.form, `/api/users/${this.user}/todos`, sendData, this.todos.form.submit)
     }
 
     createHeading = () => {
@@ -226,17 +237,6 @@ class Projects {
         }
     }
 
-    deleteProject = async (projectId) => {
-        try {
-            const { success } = await deleteData(`/api/projects/${projectId}`);
-            if (success) {
-                location.reload()
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
     getStack = async () => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}/projects`)
@@ -249,36 +249,117 @@ class Projects {
         }
     }
 
-    showAddTodo() {
+    deleteProject = async (projectId) => {
+        try {
+            const { success } = await deleteData(`/api/users/${this.user}/projects/${projectId}`);
+            if (success) {
+                location.reload()
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    showAddTodo = () => {
         this.todos.modal.classList.remove('hidden')
     }
 
-    closeAddTodo() {
-        this.todos.modal.classList.add('hidden')
+    closeAddTodo = () => {
+        this.todos.close.addEventListener('click', () => {
+            this.todos.modal.classList.add('hidden')
+        })
     }
 
-    showAddProject() {
-        this.add.modal.classList.remove('hidden')
+    showAddProject = () => {
+        this.add.show.addEventListener('click', () => {
+            this.add.modal.classList.remove('hidden')
+        })
     }
 
-    closeAddProject() {
-        this.add.modal.classList.add('hidden')
+    closeAddProject = () => {
+        this.add.close.addEventListener('click', () => {
+            this.add.modal.classList.add('hidden')
+        })
     }
 
-    showEditProject() {
+    showEditProject = () => {
         this.edit.modal.classList.remove('hidden')
     }
 
-    closeEditProject() {
-        this.edit.modal.classList.add('hidden')
+    closeEditProject = () => {
+        this.edit.close.addEventListener('click', () => {
+            this.edit.modal.classList.add('hidden')
+        })
     }
 
-    showDeleteProject() {
+    showDeleteProject = () => {
         this.delete.modal.classList.remove('hidden')
     }
 
-    closeDeleteProject() {
-        this.delete.modal.classList.add('hidden')
+    closeDeleteProject = () => {
+        this.delete.close.addEventListener('click', () => {
+            this.delete.modal.classList.add('hidden')
+        })
+    }
+
+    validateBlur = (fields) => {
+        for (const field in fields) {
+            fields[field].addEventListener('blur', () => {
+                let isValid = validate(fields[field])
+
+                if (!isValid) {
+                    showError(fields[field])
+                }
+            })
+        }
+    }
+
+    resetFocus = (fields) => {
+        for (const field in fields) {
+            fields[field].addEventListener('focus', () => {
+                resetError(fields[field])
+            })
+        }
+    }
+
+    validateInput = (fields, submit) => {
+        for (const field in fields) {
+            fields[field].addEventListener('input', () => {
+                enableSubmit(fields, submit)
+            })
+        }
+    }
+
+    validateSubmit = async (formData, apiUrl, method) => {
+        try {
+            const res = await method(apiUrl, formData)
+
+            return res
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    submitData = (form, apiUrl, method, submitButton) => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault()
+            submitButton.value = 'Loading...'
+
+            const formData = new FormData(form)
+            try {
+                const res = formData.get('_method') !== 'PUT' ?
+                    await this.validateSubmit(formData, apiUrl, method) :
+                    await this.validateSubmit(formData, apiUrl + formData.get('project_id'), method)
+                if (res.success) {
+                    location.reload()
+                } else {
+                    const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
+                    showNotice(errors.join(''), 'error')
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        })
     }
 }
 

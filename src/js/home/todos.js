@@ -17,8 +17,6 @@ class Todos {
 
         this.add = {
             modal: document.getElementById('modal-add-todo'),
-            show: document.getElementById('modal-add-todo-show-button'),
-            close: document.getElementById('modal-add-todo-close-button'),
             form: {
                 form: document.getElementById('form-add-todo'),
                 fields: {
@@ -27,7 +25,9 @@ class Todos {
                     description: document.getElementById('form-add-todo-description')
                 },
                 submit: document.getElementById('form-add-todo-submit')
-            }
+            },
+            show: document.getElementById('modal-add-todo-show-button'),
+            close: document.getElementById('modal-add-todo-close-button')
         }
 
         this.edit = {

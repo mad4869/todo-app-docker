@@ -45,7 +45,9 @@ def access_user(user_id):
     if current_user.user_id != user_id and current_user.role.upper() != "ADMIN":
         return jsonify({"success": False, "message": "Unauthorized action"}), 403
 
-    user = db.session.execute(db.select(Users).filter_by(user_id=user_id)).scalar_one()
+    user = db.session.execute(
+        db.select(Users).filter_by(user_id=user_id)
+    ).scalar_one_or_none()
     data = user.serialize()
 
     if request.method == "PUT":
@@ -107,6 +109,7 @@ def access_projects(user_id):
                     500,
                 )
             else:
+                flash("Your project has been added!", category="success")
                 return jsonify({"success": True, "data": project.serialize()}), 201
         if form.errors != {}:
             errors = [error for error in form.errors.values()]
@@ -132,31 +135,35 @@ def access_project(user_id, project_id):
 
     project = db.session.execute(
         db.select(Projects).filter_by(project_id=project_id)
-    ).scalar_one()
+    ).scalar_one_or_none()
     data = project.serialize()
 
     if request.method == "PUT":
-        try:
-            updated_data = request.get_json()
-            project.title = updated_data["title"]
-            project.description = updated_data["description"]
+        form = EditProjectForm(
+            title=request.form["title"], description=request.form["description"]
+        )
 
-            db.session.commit()
-        except:
-            db.session.rollback()
+        if form.validate():
+            try:
+                project.title = form.title.data
+                project.description = form.description.data
 
-            flash("Failed to update the project", category="error")
+                db.session.commit()
+            except:
+                db.session.rollback()
 
-            return (
-                jsonify({"success": False, "message": "Failed to update the project"}),
-                500,
-            )
-        else:
-            updated_data = project.serialize()
+                return (
+                    jsonify(
+                        {"success": False, "message": "Failed to update the project"}
+                    ),
+                    500,
+                )
+            else:
+                updated_data = project.serialize()
 
-            flash(f"Your project has been updated!", category="success")
+                flash(f"Your project has been updated!", category="success")
 
-            return jsonify({"success": True, "data": updated_data}), 201
+                return jsonify({"success": True, "data": updated_data}), 201
 
     elif request.method == "DELETE":
         try:
@@ -164,8 +171,6 @@ def access_project(user_id, project_id):
             db.session.commit()
         except:
             db.session.rollback()
-
-            flash("Failed to delete the project", category="error")
 
             return (
                 jsonify({"success": False, "message": "Failed to delete the project"}),
@@ -221,6 +226,7 @@ def access_all_todos(user_id):
                     500,
                 )
             else:
+                flash("Your task has been added", category="success")
                 return jsonify({"success": True, "data": todo.serialize()}), 201
         if form.errors != {}:
             errors = [error for error in form.errors.values()]
@@ -279,7 +285,7 @@ def access_todo(user_id, todo_id):
 
     todo = db.session.execute(
         db.select(Todos).filter(Todos.todo_id == todo_id)
-    ).scalar_one()
+    ).scalar_one_or_none()
     data = todo.serialize()
 
     if request.method == "PUT":

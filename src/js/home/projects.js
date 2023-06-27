@@ -15,8 +15,6 @@ class Projects {
 
         this.add = {
             modal: document.getElementById('modal-add-project'),
-            show: document.getElementById('modal-add-project-show-button'),
-            close: document.getElementById('modal-add-project-close-button'),
             form: {
                 form: document.getElementById('form-add-project'),
                 fields: {
@@ -24,7 +22,9 @@ class Projects {
                     description: document.getElementById('form-add-project-description')
                 },
                 submit: document.getElementById('form-add-project-submit')
-            }
+            },
+            show: document.getElementById('modal-add-project-show-button'),
+            close: document.getElementById('modal-add-project-close-button')
         }
     }
 
@@ -151,7 +151,6 @@ class Projects {
                 const res = await sendData(`/api/users/${this.user}/projects`, formData)
                 if (res.success) {
                     location.reload()
-                    // showNotice('Your project has been added!', 'success', successAnimation)
                 } else {
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
                     showNotice(errors.join(''), 'error')

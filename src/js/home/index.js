@@ -10,6 +10,7 @@ import createSeparator from '../components/separator'
 
 import setClock from '../components/clock'
 import showYear from '../components/year'
+import { logout } from '../components/data'
 
 if (window.location.pathname == '/home') {
     // Logged in user
@@ -176,6 +177,20 @@ if (window.location.pathname == '/home') {
             todos.closeDeleteModal()
         }
     });
+
+    const logoutLink = document.querySelector('a[href="/auth/logout"]')
+    logoutLink.addEventListener('click', async (e) => {
+        e.preventDefault()
+
+        try {
+            const { success } = await logout()
+            if (success) {
+                window.location.replace('/')
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    })
 
     // Footer
     const footer = document.getElementById('footer')
