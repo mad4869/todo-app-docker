@@ -32,7 +32,6 @@ if (window.location.pathname == '/home') {
                 projects.closeOptions()
 
                 todos.filterByProjects(option.dataset.value)
-
                 dones.filterByProjects(option.dataset.value)
             })
         })

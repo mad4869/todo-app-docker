@@ -216,9 +216,9 @@ class Todos {
         }
     }
 
-    deleteTodo = async (todo_id) => {
+    deleteTodo = async (todoId) => {
         try {
-            const { success } = await deleteData(`/api/users/${this.user}/todos/${todo_id}`);
+            const { success } = await deleteData(`/api/users/${this.user}/todos/${todoId}`);
             if (success) {
                 showNotice('Your task has been deleted!', 'error', alertAnimation)
             }
@@ -234,9 +234,8 @@ class Todos {
                 ...data,
                 is_done: true,
             }
-            const dataToSend = JSON.stringify(updatedData)
 
-            const { success } = await updateData(`/api/users/${this.user}/todos/${todo_id}`, dataToSend)
+            const { success } = await updateData(`/api/users/${this.user}/todos/${todo_id}`, JSON.stringify(updatedData))
             if (success) {
                 showNotice('Congratulation, you have finished your task!', 'success', successAnimation)
             }
@@ -245,13 +244,16 @@ class Todos {
         }
     }
 
-    dragAsDone = async (todo_id) => {
+    dragAsDone = async (todoId) => {
         try {
-            const { data } = await fetchData(`/api/users/${this.user}/todos/${todo_id}`)
-            data.is_done = true
+            const { data } = await fetchData(`/api/users/${this.user}/todos/${todoId}`)
+            const updatedData = {
+                ...data,
+                is_done: true,
+            }
 
-            const updatedData = await updateData(`/api/users/${this.user}/todos/${todo_id}`, data)
-            if (updatedData) {
+            const { success } = await updateData(`/api/users/${this.user}/todos/${todoId}`, JSON.stringify(updatedData))
+            if (success) {
                 showNotice('Congratulation, you have finished your task!', 'success', successAnimation)
             }
         } catch (err) {

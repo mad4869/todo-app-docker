@@ -22,38 +22,6 @@ class LoginForm {
         this.validateSubmit()
     }
 
-    // validate = (field) => {
-    //     return field.checkValidity()
-    // }
-
-    // getMessage = (field) => {
-    //     return field.validationMessage
-    // }
-
-    // createError = (field) => {
-    //     const error = document.createElement('p')
-    //     error.className = 'mt-1 text-xs text-rose-500 italic'
-    //     error.setAttribute('name', 'error')
-    //     error.textContent = this.getMessage(field)
-
-    //     return error
-    // }
-
-    // showError = (field) => {
-    //     field.classList.remove('border-slate-500', 'placeholder:text-slate-400')
-    //     field.classList.add('border-rose-500', 'placeholder:text-rose-300')
-
-    //     field.parentElement.append(this.createError(field))
-    // }
-
-    // resetError = (field) => {
-    //     field.classList.remove('border-rose-500', 'placeholder:text-rose-300')
-    //     field.classList.add('border-slate-500', 'placeholder:text-slate-400')
-
-    //     const error = field.parentElement.querySelector('p[name="error"]')
-    //     error ? error.remove() : ''
-    // }
-
     validateBlur = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('blur', () => {

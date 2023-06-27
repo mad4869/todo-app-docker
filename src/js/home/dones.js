@@ -1,10 +1,11 @@
-import Todos from './todos'
+// import Todos from './todos'
 
-import { fetchData, updateData } from '../components/data'
+import { fetchData, updateData, deleteData } from '../components/data'
 import createButton from '../components/button'
 import createSeparator from '../components/separator'
 import showNotice from '../components/notice'
-import infoData from '../../animations/info.json'
+import infoAnimation from '../../animations/info.json'
+import alertAnimation from '../../animations/alert.json'
 
 class Dones {
     constructor(user) {
@@ -17,10 +18,16 @@ class Dones {
 
         this.edit = {
             modal: document.getElementById('modal-edit-todo'),
-            id: document.getElementById('form-edit-todo-id'),
-            project: document.getElementById('form-edit-todo-project'),
-            title: document.getElementById('form-edit-todo-title'),
-            description: document.getElementById('form-edit-todo-description'),
+            form: {
+                form: document.getElementById('form-edit-todo'),
+                fields: {
+                    id: document.getElementById('form-edit-todo-id'),
+                    project: document.getElementById('form-edit-todo-project'),
+                    title: document.getElementById('form-edit-todo-title'),
+                    description: document.getElementById('form-edit-todo-description')
+                },
+                submit: document.getElementById('form-edit-todo-submit')
+            },
             close: document.getElementById('modal-edit-todo-close-button')
         }
 
@@ -106,10 +113,10 @@ class Dones {
             this.showEditDone()
 
             const { data } = await fetchData(`/api/users/${this.user}/todos/${doneId}`)
-            this.edit.id.value = data.todo_id
-            this.edit.project.value = data.project_id
-            this.edit.title.value = data.title
-            this.edit.description.value = data.description
+            this.edit.form.fields.id.value = data.todo_id
+            this.edit.form.fields.project.value = data.project_id
+            this.edit.form.fields.title.value = data.title
+            this.edit.form.fields.description.value = data.description
         }
 
         const handleDelete = async () => {
@@ -119,11 +126,12 @@ class Dones {
             this.delete.deleted.textContent = data.title
 
             this.delete.confirm.addEventListener('click', () => {
-                this.deleteTodo(doneId)
+                this.deleteDone(doneId)
+                this.closeDeleteDone()
             })
 
             this.delete.cancel.addEventListener('click', () => {
-                this.closeDeleteTodo()
+                this.closeDeleteDone()
             })
         }
 
@@ -169,15 +177,28 @@ class Dones {
         }
     }
 
+    deleteDone = async (doneId) => {
+        try {
+            const { success } = await deleteData(`/api/users/${this.user}/todos/${doneId}`);
+            if (success) {
+                showNotice('Your task has been deleted!', 'error', alertAnimation)
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     markAsUndone = async (doneId) => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}/todos/${doneId}`)
-            data.is_done = false
+            const updatedData = {
+                ...data,
+                is_done: false,
+            }
 
-            const updatedData = await updateData(`/api/users/${this.user}/todos/${doneId}`, data)
-            if (updatedData) {
-                location.reload()
-                // showNotice('You have undone your finished task!', 'info', infoData)
+            const { success } = await updateData(`/api/users/${this.user}/todos/${doneId}`, JSON.stringify(updatedData))
+            if (success) {
+                showNotice('You have undone your finished task!', 'info', infoAnimation)
             }
         } catch (err) {
             console.error(err)
@@ -187,11 +208,15 @@ class Dones {
     dragAsUndone = async (doneId) => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}/todos/${doneId}`)
-            data.is_done = false
+            const updatedData = {
+                ...data,
+                is_done: false,
+            }
+            const dataToSend = JSON.stringify(updatedData)
 
-            const updatedData = await updateData(`/api/users/${this.user}/todos/${doneId}`, data)
-            if (updatedData) {
-                showNotice('You have undone your finished task!', 'info', infoData)
+            const { success } = await updateData(`/api/users/${this.user}/todos/${doneId}`, dataToSend)
+            if (success) {
+                showNotice('You have undone your finished task!', 'info', infoAnimation)
             }
         } catch (err) {
             console.error(err)
@@ -200,7 +225,7 @@ class Dones {
 
     filterByProjects = async (projectId) => {
         try {
-            const { dones } = await fetchData(`/api/users/${this.user}/dones`)
+            const { data } = await fetchData(`/api/users/${this.user}/dones`)
 
             while (this.stack.container.hasChildNodes()) {
                 this.stack.container.removeChild(this.stack.container.firstChild)
@@ -208,7 +233,7 @@ class Dones {
 
             this.stack.container.appendChild(this.stack.heading)
 
-            const filtered = dones.filter((done) => {
+            const filtered = data.filter((done) => {
                 return done.project_id === parseInt(projectId)
             })
 
