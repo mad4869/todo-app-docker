@@ -8,6 +8,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 const commonConfig = {
     entry: {
+        base: './src/js/index.js',
         home: './src/js/home/index.js',
         welcome: './src/js/welcome/index.js',
         profile: './src/js/profile/index.js',

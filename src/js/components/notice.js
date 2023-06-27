@@ -1,16 +1,15 @@
 import loadAnimation from './animation'
 
-const showNotice = (message, category, animationData) => {
+const showNotice = (message, category) => {
     const mainContainer = document.createElement('div')
-    mainContainer.className = 'fixed flex gap-1 items-center left-1/2 -translate-x-1/2 bottom-10 px-8 py-1 rounded-2xl transition-opacity'
+    mainContainer.className = 'fixed flex gap-1 items-center left-1/2 -translate-x-1/2 bottom-10 px-8 py-1 text-white rounded-2xl transition-opacity'
     mainContainer.classList.add(category)
 
     const animationContainer = document.createElement('div')
     animationContainer.className = 'h-20'
-    loadAnimation(animationContainer, animationData)
+    loadAnimation(animationContainer, category)
 
     const messageContainer = document.createElement('div')
-    messageContainer.className = 'text-white'
     messageContainer.innerHTML = message
 
     mainContainer.append(animationContainer, messageContainer)

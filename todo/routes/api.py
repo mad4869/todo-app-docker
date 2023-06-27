@@ -50,8 +50,7 @@ def access_user(user_id):
 
     if request.method == "PUT":
         try:
-            # updated_data = json.loads(request.get_data(as_text=True))
-            updated_data = request.get_json()
+            updated_data = json.loads(request.get_data(as_text=True))
             user.name = updated_data["name"]
             user.role = updated_data["role"]
             user.bio = updated_data["bio"]
@@ -59,8 +58,6 @@ def access_user(user_id):
             db.session.commit()
         except:
             db.session.rollback()
-
-            flash("Failed to add the profile", category="error")
 
             return (
                 jsonify({"success": False, "message": "Failed to update the profile"}),

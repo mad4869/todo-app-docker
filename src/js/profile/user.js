@@ -1,55 +1,65 @@
 import { fetchData, updateData } from "../components/data"
 
 class User {
-    constructor() {
-        this.profile = document.getElementById('profile-user')
-        this.name = document.getElementById('profile-user-name')
-        this.role = document.getElementById('profile-user-role')
-        this.bio = document.getElementById('profile-user-bio')
-        this.update = document.getElementById('profile-user-update')
+    constructor(user) {
+        this.user = user
+        this.profile = {
+            profile: document.getElementById('profile-user'),
+            fields: {
+                name: document.getElementById('profile-user-name'),
+                role: document.getElementById('profile-user-role'),
+                bio: document.getElementById('profile-user-bio')
+            },
+            update: document.getElementById('profile-user-update')
+        }
 
-        this.tasksTotal = document.getElementById('profile-tasks-total')
-        this.tasksOnprogress = document.getElementById('profile-tasks-onprogress')
-        this.tasksDone = document.getElementById('profile-tasks-done')
+        this.tasks = {
+            total: document.getElementById('profile-tasks-total'),
+            onProgress: document.getElementById('profile-tasks-onprogress'),
+            done: document.getElementById('profile-tasks-done')
+        }
     }
 
-    async getUserData(user_id) {
-        return await fetchData(`/api/users/${user_id}`)
+    attachEventListeners = () => {
+        this.profile.profile.addEventListener('focus', (e) => {
+            if (e.target.hasAttribute('contenteditable')) {
+                this.profile.update.classList.remove('hidden')
+            }
+        }, true)
+
+        this.profile.update.addEventListener('click', () => {
+            this.updateProfile()
+        })
     }
 
-    async getTodosData(user_id) {
-        return await fetchData(`/api/users/${user_id}/todos`)
-    }
-
-    async getDonesData(user_id) {
-        return await fetchData(`/api/users/${user_id}/dones`)
-    }
-
-    async getProfile(user_id) {
+    getProfile = async () => {
         try {
-            const data = await this.getUserData(user_id)
+            const { data } = await fetchData(`/api/users/${this.user}`)
 
-            this.name.textContent = data.name
-            this.role.textContent = data.role
+            this.profile.fields.name.textContent = data.name
+            this.profile.fields.role.textContent = data.role
             if (data.bio) {
-                this.bio.textContent = data.bio
+                this.profile.fields.bio.textContent = data.bio
             } else {
-                this.bio.textContent = 'Describe yourself here...'
+                this.profile.fields.bio.textContent = 'Describe yourself here...'
             }
         } catch (err) {
             console.error(err)
         }
     }
 
-    async updateProfile(user_id) {
+    updateProfile = async () => {
         try {
-            const data = await fetchData(`/api/users/${user_id}`)
-            data.name = this.name.textContent
-            data.role = this.role.textContent
-            data.bio = this.bio.textContent
+            const { data } = await fetchData(`/api/users/${this.user}`)
+            const updatedData = {
+                ...data,
+                name: this.profile.fields.name.textContent,
+                role: this.profile.fields.role.textContent,
+                bio: this.profile.fields.bio.textContent
+            }
 
-            const updatedData = await updateData(`/api/users/${user_id}`, data)
-            if (updatedData) {
+            const { success } = await updateData(`/api/users/${this.user}`, JSON.stringify(updatedData))
+            if (success) {
                 location.reload()
             }
         } catch (err) {
@@ -57,14 +67,14 @@ class User {
         }
     }
 
-    async getTasksStats(user_id) {
+    getTasksDetails = async () => {
         try {
-            const onprogressTasks = await this.getTodosData(user_id)
-            const doneTasks = await this.getDonesData(user_id)
+            const todoTasks = await fetchData(`/api/users/${this.user}/todos`)
+            const doneTasks = await fetchData(`/api/users/${this.user}/dones`)
 
-            this.tasksTotal.textContent = onprogressTasks.length + doneTasks.length
-            this.tasksOnprogress.textContent = onprogressTasks.length
-            this.tasksDone.textContent = doneTasks.length
+            this.tasks.total.textContent = todoTasks['data'].length + doneTasks['data'].length
+            this.tasks.onProgress.textContent = todoTasks['data'].length
+            this.tasks.done.textContent = doneTasks['data'].length
         } catch (err) {
             console.error(err)
         }
