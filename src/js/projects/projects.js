@@ -1,5 +1,5 @@
 import { fetchData, sendData, updateData, deleteData } from "../components/data"
-import { validate, showError, resetError, enableSubmit } from '../components/form'
+import { validate, showError, resetError, enableSubmit, validateSubmit } from '../components/form'
 import createButton from "../components/button"
 import showNotice from "../components/notice"
 
@@ -63,25 +63,27 @@ class Projects {
         }
     }
 
-    attachEventListeners = () => {
-        this.showAddProject()
-        this.closeAddTodo()
-        this.closeAddProject()
-        this.closeEditProject()
-        this.closeDeleteProject()
+    attachHandlers = () => {
+        this.handleShowAddModal()
+        this.handleCloseAddModal()
+        this.handleCloseEditModal()
+        this.handleCloseDeleteModal()
+        this.handleCloseTodosModal()
 
-        this.validateInput(this.add.form.fields, this.add.form.submit)
-        this.validateInput(this.edit.form.fields, this.edit.form.submit)
-        this.validateInput(this.todos.form.fields, this.todos.form.submit)
-        this.validateBlur(this.add.form.fields)
-        this.validateBlur(this.edit.form.fields)
-        this.validateBlur(this.todos.form.fields)
-        this.resetFocus(this.add.form.fields)
-        this.resetFocus(this.edit.form.fields)
-        this.resetFocus(this.todos.form.fields)
-        this.submitData(this.add.form.form, `/api/users/${this.user}/projects`, sendData, this.add.form.submit)
-        this.submitData(this.edit.form.form, `/api/users/${this.user}/projects/`, updateData, this.edit.form.submit)
-        this.submitData(this.todos.form.form, `/api/users/${this.user}/todos`, sendData, this.todos.form.submit)
+        this.handleInput(this.add.form.fields, this.add.form.submit)
+        this.handleInput(this.edit.form.fields, this.edit.form.submit)
+        this.handleInput(this.todos.form.fields, this.todos.form.submit)
+        this.handleBlur(this.add.form.fields)
+        this.handleBlur(this.edit.form.fields)
+        this.handleBlur(this.todos.form.fields)
+        this.handleFocus(this.add.form.fields)
+        this.handleFocus(this.edit.form.fields)
+        this.handleFocus(this.todos.form.fields)
+        this.handleSubmit(this.add.form.form, `/api/users/${this.user}/projects`, sendData, this.add.form.submit, this.closeAddModal)
+        this.handleSubmit(this.edit.form.form, `/api/users/${this.user}/projects/`, updateData, this.edit.form.submit, this.closeEditModal)
+        this.handleSubmit(this.todos.form.form, `/api/users/${this.user}/todos`, sendData, this.todos.form.submit, this.closeTodosModal)
+
+        this.handleClickOutside()
     }
 
     createHeading = () => {
@@ -119,21 +121,21 @@ class Projects {
         const emptyList = document.createElement('li')
         emptyList.className = 'mx-auto'
 
-        const handleCta = () => {
-            this.showAddTodo()
+        const handleAdd = () => {
+            this.showTodosModal()
 
             this.todos.form.fields.project.value = projectId
         }
 
-        const button = createButton(
+        const addButton = createButton(
             'flex gap-2 items-center px-4 py-1 text-indigo-700 font-semibold border border-dashed border-indigo-700 rounded-lg shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase',
             '<i class="fa-solid fa-circle-plus fa-sm text-indigo-700"></i><span>add your first task</span>',
-            handleCta,
-            'cta-button',
+            handleAdd,
+            'add-todo-button',
             'Create your first task'
         )
 
-        emptyList.append(button)
+        emptyList.append(addButton)
 
         return emptyList
     }
@@ -205,7 +207,7 @@ class Projects {
         }
 
         const handleAdd = () => {
-            this.showAddTodo()
+            this.showTodosModal()
 
             this.todos.form.fields.project.value = dataId
         }
@@ -260,25 +262,37 @@ class Projects {
         }
     }
 
-    showAddTodo = () => {
+    showTodosModal = () => {
         this.todos.modal.classList.remove('hidden')
     }
 
-    closeAddTodo = () => {
+    closeTodosModal = () => {
+        this.todos.modal.classList.add('hidden')
+    }
+
+    handleCloseTodosModal = () => {
         this.todos.close.addEventListener('click', () => {
-            this.todos.modal.classList.add('hidden')
+            this.closeTodosModal()
         })
     }
 
-    showAddProject = () => {
+    showAddModal = () => {
+        this.add.modal.classList.remove('hidden')
+    }
+
+    handleShowAddModal = () => {
         this.add.show.addEventListener('click', () => {
-            this.add.modal.classList.remove('hidden')
+            this.showAddModal()
         })
     }
 
-    closeAddProject = () => {
+    closeAddModal = () => {
+        this.add.modal.classList.add('hidden')
+    }
+
+    handleCloseAddModal = () => {
         this.add.close.addEventListener('click', () => {
-            this.add.modal.classList.add('hidden')
+            this.closeAddModal()
         })
     }
 
@@ -286,9 +300,13 @@ class Projects {
         this.edit.modal.classList.remove('hidden')
     }
 
-    closeEditProject = () => {
+    closeEditModal = () => {
+        this.edit.modal.classList.add('hidden')
+    }
+
+    handleCloseEditModal = () => {
         this.edit.close.addEventListener('click', () => {
-            this.edit.modal.classList.add('hidden')
+            this.closeEditModal()
         })
     }
 
@@ -296,13 +314,44 @@ class Projects {
         this.delete.modal.classList.remove('hidden')
     }
 
-    closeDeleteProject = () => {
+    closeDeleteModal = () => {
+        this.delete.modal.classList.add('hidden')
+    }
+
+    handleCloseDeleteModal = () => {
         this.delete.close.addEventListener('click', () => {
-            this.delete.modal.classList.add('hidden')
+            this.closeDeleteModal()
         })
     }
 
-    validateBlur = (fields) => {
+    handleClickOutside = () => {
+        document.addEventListener('click', (e) => {
+            const addTodoButtons = document.querySelectorAll('button[name="add-todo-button"]')
+            const addTodoClicked = this.todos.modal.firstElementChild.contains(e.target) || Array.from(addTodoButtons).some((button) => button.contains(e.target))
+            if (!addTodoClicked) {
+                this.todos.modal.classList.add('hidden')
+            }
+
+            const addProjectClicked = this.add.modal.firstElementChild.contains(e.target) || this.add.show.contains(e.target)
+            if (!addProjectClicked) {
+                this.add.modal.classList.add('hidden')
+            }
+
+            const editButtons = document.querySelectorAll('button[name="edit-button"]')
+            const editProjectClicked = this.edit.modal.firstElementChild.contains(e.target) || Array.from(editButtons).some((button) => button.contains(e.target))
+            if (!editProjectClicked) {
+                this.edit.modal.classList.add('hidden')
+            }
+
+            const deleteButtons = document.querySelectorAll('button[name="delete-button"]')
+            const deleteProjectClicked = this.delete.modal.firstElementChild.contains(e.target) || Array.from(deleteButtons).some((button) => button.contains(e.target))
+            if (!deleteProjectClicked) {
+                this.delete.modal.classList.add('hidden')
+            }
+        })
+    }
+
+    handleBlur = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('blur', () => {
                 let isValid = validate(fields[field])
@@ -314,7 +363,7 @@ class Projects {
         }
     }
 
-    resetFocus = (fields) => {
+    handleFocus = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('focus', () => {
                 resetError(fields[field])
@@ -322,7 +371,7 @@ class Projects {
         }
     }
 
-    validateInput = (fields, submit) => {
+    handleInput = (fields, submit) => {
         for (const field in fields) {
             fields[field].addEventListener('input', () => {
                 enableSubmit(fields, submit)
@@ -330,17 +379,7 @@ class Projects {
         }
     }
 
-    validateSubmit = async (formData, apiUrl, method) => {
-        try {
-            const res = await method(apiUrl, formData)
-
-            return res
-        } catch (err) {
-            console.error(err)
-        }
-    }
-
-    submitData = (form, apiUrl, method, submitButton) => {
+    handleSubmit = (form, apiUrl, method, submitButton, modalCloser) => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault()
             submitButton.value = 'Loading...'
@@ -348,11 +387,13 @@ class Projects {
             const formData = new FormData(form)
             try {
                 const res = formData.get('_method') !== 'PUT' ?
-                    await this.validateSubmit(formData, apiUrl, method) :
-                    await this.validateSubmit(formData, apiUrl + formData.get('project_id'), method)
+                    await validateSubmit(formData, apiUrl, method) :
+                    await validateSubmit(formData, apiUrl + formData.get('project_id'), method)
                 if (res.success) {
                     location.reload()
                 } else {
+                    modalCloser()
+
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
                     showNotice(errors.join(''), 'error')
                 }

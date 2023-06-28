@@ -4,6 +4,7 @@ import successAnimation from '../../animations/success.json'
 import alertAnimation from '../../animations/alert.json'
 import infoAnimation from '../../animations/info.json'
 import helloAnimation from '../../animations/hello.json'
+import dotsAnimation from '../../animations/dots.json'
 
 const loadAnimation = (container, category) => {
     let animationData = null
@@ -20,6 +21,12 @@ const loadAnimation = (container, category) => {
             break
         case 'hello':
             animationData = helloAnimation
+            break
+        case 'dots':
+            animationData = dotsAnimation
+            break
+        default:
+            animationData = null
     }
 
     Lottie.loadAnimation({

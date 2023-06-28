@@ -1,26 +1,33 @@
 import '../../css/style.css'
 
 import Projects from './projects'
-import setClock from '../components/clock'
-import showYear from '../components/year'
+import { handleFlash } from '../components/notice'
+import handleFooter from '../components/footer'
+import handleLogout from '../components/logout'
 
-if (window.location.pathname == '/projects') {
-    // Logged in user
-    const userId = document.getElementById('current-user').dataset.user
-    const link = document.querySelector('a[href=" /projects"]')
-    link.classList.add('text-teal-400')
 
-    const projects = new Projects(userId)
-
-    projects.getStack()
-    projects.attachEventListeners()
-
-    // Footer
-    const footer = document.getElementById('footer')
-    if (footer.hasChildNodes) {
-        footer.classList.add('mt-8')
-    }
-
-    setInterval(setClock, 1000)
-    showYear()
+// Handle flash
+const flash = document.getElementById('flash')
+if (flash) {
+    handleFlash()
 }
+
+// Active link
+const link = document.querySelector('a[href=" /projects"]')
+link.classList.add('text-teal-400')
+
+// Handle Logout
+handleLogout()
+
+// Logged in user
+const userId = document.getElementById('current-user').dataset.user
+
+// Project object instance with the logged in user data
+const projects = new Projects(userId)
+
+// Get all the user's projects elements with their event listeners
+projects.getStack()
+projects.attachHandlers()
+
+// Footer
+handleFooter()

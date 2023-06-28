@@ -1,26 +1,36 @@
 import '../../css/style.css'
 
 import User from './user'
-import setClock from '../components/clock'
-import showYear from '../components/year'
+import { handleFlash } from '../components/notice'
+import handleFooter from '../components/footer'
+import handleLogout from '../components/logout'
 
-if (window.location.pathname == '/profile') {
-    // Active link on the navbar
-    const link = document.querySelector('a[href="/profile"]')
-    link.classList.add('text-teal-400')
 
-    // Logged in user
-    const userId = document.getElementById('current-user').dataset.user
-
-    // User profile
-    const user = new User(userId)
-    user.getProfile()
-    user.attachEventListeners()
-
-    // User tasks details
-    user.getTasksDetails()
-
-    // Footer
-    setInterval(setClock, 1000)
-    showYear()
+// Handle flash
+const flash = document.getElementById('flash')
+if (flash) {
+    handleFlash()
 }
+
+// Active link
+const link = document.querySelector('a[href="/profile"]')
+link.classList.add('text-teal-400')
+
+// Handle Logout
+handleLogout()
+
+// Logged in user
+const userId = document.getElementById('current-user').dataset.user
+
+// User object instance with the logged in user data
+const user = new User(userId)
+
+// Get all user details and their event listeners
+user.getProfile()
+user.attachEventListeners()
+
+// Get user's tasks details
+user.getTasksDetails()
+
+// Footer
+handleFooter()

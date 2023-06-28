@@ -51,4 +51,14 @@ const enableSubmit = (fields, submit) => {
     submit.disabled = hasErrors
 }
 
-export { validate, validatePasswordMatch, showError, resetError, enableSubmit }
+const validateSubmit = async (formData, apiUrl, method) => {
+    try {
+        const res = await method(apiUrl, formData)
+
+        return res
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+export { validate, validatePasswordMatch, showError, resetError, enableSubmit, validateSubmit }
