@@ -1,16 +1,15 @@
 <nav class="flex justify-between items-center w-screen px-28 py-4 bg-navbar bg-cover bg-center bg-no-repeat text-white">
-  <div class="flex gap-2">
-    <a href="{{url_for('views.home_page')}}"><img src="{{static_url_for('static', filename='dist/img/logo.svg')}}"
-        alt="Logo" class="h-8"></a>
-    <a href="{{url_for('views.home_page')}}"><img
-        src="{{static_url_for('static', filename='dist/img/text-logo-white.svg')}}" alt="Text Logo" class="h-8"></a>
-  </div>
-  <div class="flex gap-4">
-    <h1 id="current-user" class="font-semibold" data-user="{{current_user.user_id}}">Hello {{ current_user.name }}!</h1>
-    <a href=" {{url_for('views.projects_page')}}" title="View your projects" class="hover:text-teal-400">Projects</a>
-    <a href="{{url_for('views.profile_page')}}" title="View your profile" class="hover:text-teal-400">Profile</a>
-    <span id="logout" class="max-h-6 max-w-[24px]">
-      <a href="{{url_for('auth.logout')}}" class="hover:text-rose-400" title="Logout your account">Logout</a>
-    </span>
-  </div>
+    <div class="flex gap-2">
+        <a href="{{url_for('views.home_page')}}"><img src="{{static_url_for('static', filename='dist/img/logo.svg')}}" alt="Logo" class="h-8"></a>
+        <a href="{{url_for('views.home_page')}}"><img src="{{static_url_for('static', filename='dist/img/text-logo-white.svg')}}" alt="Text Logo" class="h-8"></a>
+    </div>
+    <div class="flex gap-4">
+        <h1 id="current-user" class="font-semibold" data-user="{{current_user.user_id}}">Hello
+            {{ current_user.name }}!</h1>
+        <a href=" {{url_for('views.projects_page')}}" title="View your projects" class="hover:text-teal-400">Projects</a>
+        <a href="{{url_for('views.profile_page')}}" title="View your profile" class="hover:text-teal-400">Profile</a>
+        <span id="logout" class="max-h-6 max-w-[24px]">
+            <a href="{{url_for('auth.logout')}}" class="hover:text-rose-400" title="Logout your account">Logout</a>
+        </span>
+    </div>
 </nav>
