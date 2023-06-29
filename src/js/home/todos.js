@@ -1,10 +1,11 @@
 import Menu from './menu'
 
 import { fetchData, sendData, updateData, deleteData } from '../components/data'
-import { validate, showError, resetError, enableSubmit } from '../components/form'
+import { validate, showError, resetError, enableSubmit, validateSubmit } from '../components/form'
 import createButton from '../components/button'
 import createSeparator from "../components/separator"
 import showNotice from "../components/notice"
+import loadAnimation from '../components/animation'
 
 class Todos {
     constructor(user) {
@@ -54,47 +55,31 @@ class Todos {
         }
     }
 
-    attachEventListeners = () => {
-        // Click events
-        this.add.show.addEventListener('click', () => {
-            this.showAddModal()
+    attachHandlers = () => {
+        // Handle clicks
+        this.handleShowAddModal()
+        this.handleCloseAddModal()
+        this.handleCloseEditModal()
+        this.handleCloseDeleteModal()
+        this.handleClickOutsideModal()
 
-            const menu = new Menu()
-            menu.closeMenu()
-        })
-        this.add.close.addEventListener('click', () => {
-            this.closeAddModal()
-        })
-        this.edit.close.addEventListener('click', () => {
-            this.closeEditModal()
-        })
-        this.delete.close.addEventListener('click', () => {
-            this.closeDeleteModal()
-        })
+        // Handle empty state
+        this.handleEmpty()
 
-        // Form events
-        this.validateInput(this.add.form.fields, this.add.form.submit)
-        this.validateInput(this.edit.form.fields, this.edit.form.submit)
-        this.validateBlur(this.add.form.fields)
-        this.validateBlur(this.edit.form.fields)
-        this.resetFocus(this.add.form.fields)
-        this.resetFocus(this.edit.form.fields)
-        this.validateSubmit(this.add.form.form)
-        this.validateSubmit(this.edit.form.form)
+        // Handle forms
+        this.handleInput(this.add.form.fields, this.add.form.submit)
+        this.handleInput(this.edit.form.fields, this.edit.form.submit)
+        this.handleBlur(this.add.form.fields)
+        this.handleBlur(this.edit.form.fields)
+        this.handleFocus(this.add.form.fields)
+        this.handleFocus(this.edit.form.fields)
+        this.handleSubmit(this.add.form.form, `/api/users/${this.user}/todos`, sendData, this.add.form.submit, this.closeAddModal)
+        this.handleSubmit(this.edit.form.form, `api/users/${this.user}/todos/`, updateData, this.edit.form.submit, this.closeEditModal)
 
         // Drag and drop events
-        this.stack.container.addEventListener('dragenter', (e) => {
-            e.preventDefault()
-            this.stack.container.classList.add('bg-fuchsia-400')
-        })
-        this.stack.container.addEventListener('dragover', (e) => {
-            e.preventDefault()
-            this.stack.container.classList.add('bg-fuchsia-400')
-        })
-        this.stack.container.addEventListener('dragleave', (e) => {
-            e.preventDefault()
-            this.stack.container.classList.remove('bg-fuchsia-400')
-        })
+        this.handleDragEnter()
+        this.handleDragOver()
+        this.handleDragLeave()
     }
 
     createHeading = (todoTitle, project) => {
@@ -146,7 +131,8 @@ class Todos {
         const handleEdit = async () => {
             this.showEditModal()
 
-            const { data } = await fetchData(`/api/users/${this.user}/todos/${todoId}`)
+            const { data } = await fetchData(`/api/users/${this.user
+                }/todos/${todoId}`)
             this.edit.form.fields.id.value = data.todo_id
             this.edit.form.fields.project.value = data.project_id
             this.edit.form.fields.title.value = data.title
@@ -156,7 +142,8 @@ class Todos {
         const handleDelete = async () => {
             this.showDeleteModal()
 
-            const { data } = await fetchData(`/api/users/${this.user}/todos/${todoId}`)
+            const { data } = await fetchData(`/api/users/${this.user
+                }/todos/${todoId}`)
             this.delete.deleted.textContent = data.title
 
             this.delete.confirm.addEventListener('click', () => {
@@ -203,7 +190,8 @@ class Todos {
 
     getStack = async () => {
         try {
-            const { data } = await fetchData(`/api/users/${this.user}/todos/`)
+            const { data } = await fetchData(`/api/users/${this.user
+                }/todos/`)
 
             this.createStack(data)
 
@@ -211,97 +199,6 @@ class Todos {
         } catch (err) {
             console.error(err)
         }
-    }
-
-    deleteTodo = async (todoId) => {
-        try {
-            const { success } = await deleteData(`/api/users/${this.user}/todos/${todoId}`);
-            if (success) {
-                location.reload()
-                // showNotice('Your task has been deleted!', 'error', alertAnimation)
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    markAsDone = async (todo_id) => {
-        try {
-            const { data } = await fetchData(`/api/users/${this.user}/todos/${todo_id}`)
-            const updatedData = {
-                ...data,
-                is_done: true,
-            }
-
-            const { success } = await updateData(`/api/users/${this.user}/todos/${todo_id}`, JSON.stringify(updatedData))
-            if (success) {
-                location.reload()
-                // showNotice('Congratulation, you have finished your task!', 'success', successAnimation)
-            }
-        } catch (err) {
-            console.error(err)
-        }
-    }
-
-    dragAsDone = async (todoId) => {
-        try {
-            const { data } = await fetchData(`/api/users/${this.user}/todos/${todoId}`)
-            const updatedData = {
-                ...data,
-                is_done: true,
-            }
-
-            const { success } = await updateData(`/api/users/${this.user}/todos/${todoId}`, JSON.stringify(updatedData))
-            if (success) {
-                showNotice('Congratulation, you have finished your task!', 'success')
-            }
-        } catch (err) {
-            console.error(err)
-        }
-    }
-
-    filterByProjects = async (projectId) => {
-        try {
-            const { data } = await fetchData(`/api/users/${this.user}/todos`)
-
-            while (this.stack.container.hasChildNodes()) {
-                this.stack.container.removeChild(this.stack.container.firstChild)
-            }
-
-            this.stack.container.appendChild(this.stack.heading)
-
-            const filtered = data.filter((todo) => {
-                return todo.project_id === parseInt(projectId)
-            })
-
-            this.createStack(filtered)
-        } catch (err) {
-            console.error(err)
-        }
-    }
-
-    showAddModal = () => {
-        this.add.modal.classList.remove('hidden')
-    }
-
-    closeAddModal = () => {
-        this.add.modal.classList.add('hidden')
-    }
-
-    showEditModal = () => {
-        this.edit.modal.classList.remove('hidden')
-    }
-
-    closeEditModal = () => {
-        this.edit.modal.classList.add('hidden')
-    }
-
-    showDeleteModal = () => {
-        this.delete.modal.classList.remove('hidden')
-    }
-
-    closeDeleteModal = () => {
-        this.delete.modal.classList.add('hidden')
     }
 
     emptyState = () => {
@@ -329,7 +226,188 @@ class Todos {
         this.stack.container.append(separator, emptyBox)
     }
 
-    validateBlur = (fields) => {
+    handleEmpty = async () => {
+        const stack = await this.getStack()
+        if (stack.length === 0) {
+            this.emptyState()
+        }
+    }
+
+    deleteTodo = async (todoId) => {
+        try {
+            const { success } = await deleteData(`/api/users/${this.user}/todos/${todoId}`);
+            if (success) {
+                location.reload()
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    markAsDone = async (todo_id) => {
+        try {
+            const { data } = await fetchData(`/api/users/${this.user
+                }/todos/${todo_id}`)
+            const updatedData = {
+                ...data,
+                is_done: true
+            }
+
+            const { success } = await updateData(`/api/users/${this.user
+                }/todos/${todo_id}`, JSON.stringify(updatedData))
+            if (success) {
+                location.reload()
+                // showNotice('Congratulation, you have finished your task!', 'success', successAnimation)
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    dragAsDone = async (todoId) => {
+        try {
+            const { data } = await fetchData(`/api/users/${this.user
+                }/todos/${todoId}`)
+            const updatedData = {
+                ...data,
+                is_done: true
+            }
+
+            const { success } = await updateData(`/api/users/${this.user
+                }/todos/${todoId}`, JSON.stringify(updatedData))
+            if (success) {
+                showNotice('Congratulation, you have finished your task!', 'success')
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    handleDragEnter = () => {
+        this.stack.container.addEventListener('dragenter', (e) => {
+            e.preventDefault()
+            this.stack.container.classList.add('bg-fuchsia-400')
+        })
+    }
+
+    handleDragOver = () => {
+        this.stack.container.addEventListener('dragover', (e) => {
+            e.preventDefault()
+            this.stack.container.classList.add('bg-fuchsia-400')
+        })
+    }
+
+    handleDragLeave = () => {
+        this.stack.container.addEventListener('dragleave', (e) => {
+            e.preventDefault()
+            this.stack.container.classList.remove('bg-fuchsia-400')
+        })
+    }
+
+    filterByProjects = async (projectId) => {
+        try {
+            const { data } = await fetchData(`/api/users/${this.user
+                }/todos`)
+
+            while (this.stack.container.hasChildNodes()) {
+                this.stack.container.removeChild(this.stack.container.firstChild)
+            }
+
+            this.stack.container.appendChild(this.stack.heading)
+
+            const filtered = data.filter((todo) => {
+                return todo.project_id === parseInt(projectId)
+            })
+
+            this.createStack(filtered)
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    showAddModal = () => {
+        this.add.modal.classList.remove('hidden')
+    }
+
+    handleShowAddModal = () => {
+        this.add.show.addEventListener('click', () => {
+            this.showAddModal()
+
+            const menu = new Menu()
+            menu.closeMenu()
+        })
+    }
+
+    closeAddModal = () => {
+        this.add.modal.classList.add('hidden')
+    }
+
+    handleCloseAddModal = () => {
+        this.add.close.addEventListener('click', () => {
+            this.closeAddModal()
+        })
+    }
+
+    showEditModal = () => {
+        this.edit.modal.classList.remove('hidden')
+    }
+
+    closeEditModal = () => {
+        this.edit.modal.classList.add('hidden')
+    }
+
+    handleCloseEditModal = () => {
+        this.edit.close.addEventListener('click', () => {
+            this.closeEditModal()
+        })
+    }
+
+    showDeleteModal = () => {
+        this.delete.modal.classList.remove('hidden')
+    }
+
+    closeDeleteModal = () => {
+        this.delete.modal.classList.add('hidden')
+    }
+
+    handleCloseDeleteModal = () => {
+        this.delete.close.addEventListener('click', () => {
+            this.closeDeleteModal()
+        })
+    }
+
+    handleClickOutsideModal = () => {
+        document.addEventListener('click', (e) => {
+            if (this.add.modal) {
+                const ctaButton = document.querySelector('button[name="todo-cta-button"]')
+                let addTodoClicked = this.add.modal.firstElementChild.contains(e.target) || this.add.show.contains(e.target)
+                if (ctaButton) {
+                    addTodoClicked = this.add.modal.firstElementChild.contains(e.target) || this.add.show.contains(e.target) || ctaButton.contains(e.target)
+                }
+                if (!addTodoClicked) {
+                    this.closeAddModal()
+                }
+            }
+
+            if (this.edit.modal) {
+                const editButtons = document.querySelectorAll('button[name="edit-button"]')
+                const editTodoClicked = this.edit.modal.firstElementChild.contains(e.target) || Array.from(editButtons).some((button) => button.contains(e.target))
+                if (!editTodoClicked) {
+                    this.closeEditModal()
+                }
+            }
+
+            if (this.delete.modal) {
+                const deleteButtons = document.querySelectorAll('button[name="delete-button"]')
+                const deleteTodoClicked = this.delete.modal.firstElementChild.contains(e.target) || Array.from(deleteButtons).some((button) => button.contains(e.target))
+                if (!deleteTodoClicked) {
+                    this.closeDeleteModal()
+                }
+            }
+        });
+    }
+
+    handleBlur = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('blur', () => {
                 let isValid = validate(fields[field])
@@ -341,7 +419,7 @@ class Todos {
         }
     }
 
-    resetFocus = (fields) => {
+    handleFocus = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('focus', () => {
                 resetError(fields[field])
@@ -349,7 +427,7 @@ class Todos {
         }
     }
 
-    validateInput = (fields, submit) => {
+    handleInput = (fields, submit) => {
         for (const field in fields) {
             fields[field].addEventListener('input', () => {
                 enableSubmit(fields, submit)
@@ -357,30 +435,30 @@ class Todos {
         }
     }
 
-    validateSubmit = (form) => {
+    handleSubmit = (form, apiUrl, method, submitButton, modalCloser) => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault()
+            const defaultMsg = submitButton.innerHTML
+            submitButton.innerHTML = ''
+            loadAnimation(submitButton, 'dots')
 
             const formData = new FormData(form)
 
-            const method = formData.get('_method')
-            method === 'PUT' ?
-                this.closeEditModal() :
-                this.closeAddModal()
-
             try {
-                const res = method === 'PUT' ?
-                    await updateData(`/api/users/${this.user}/todos/${formData.get('todo_id')}`, formData) :
-                    await sendData(`/api/users/${this.user}/todos`, formData)
+                const res = formData.get('_method') !== 'PUT' ?
+                    await validateSubmit(formData, apiUrl, method) :
+                    await validateSubmit(formData, apiUrl + formData.get('todo_id'), method)
                 if (res.success) {
                     location.reload()
-                    // showNotice(`Your task has been ${method === 'PUT' ? 'updated' : 'added'}`, 'success', successAnimation)
                 } else {
+                    submitButton.innerHTML = defaultMsg
+                    modalCloser()
+
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
                     showNotice(errors.join(''), 'error')
                 }
-            } catch (error) {
-                console.error(error)
+            } catch (err) {
+                console.error(err)
             }
         })
     }

@@ -23,48 +23,23 @@ handleLogout()
 // Logged in user
 const userId = document.getElementById('current-user').dataset.user
 
-// Objects instances
+// Object instances with the logged in user data
 const projects = new Projects(userId)
 const todos = new Todos(userId)
 const dones = new Dones(userId)
 const menu = new Menu()
 
 // Projects section
-projects.attachEventListeners()
-
-const options = await projects.getOptions(userId)
-if (options) {
-    options.forEach((option) => {
-        option.addEventListener('click', async () => {
-            projects.filter.selected.textContent = option.textContent
-            projects.closeOptions()
-
-            todos.filterByProjects(option.dataset.value)
-            dones.filterByProjects(option.dataset.value)
-        })
-    })
-} else {
-    projects.emptyState()
-}
+projects.attachHandlers()
 
 // Todos section
-todos.attachEventListeners()
-
-const todosStack = await todos.getStack()
-if (todosStack.length === 0) {
-    todos.emptyState()
-}
+todos.attachHandlers()
 
 // Dones section
-dones.attachEventListeners()
-
-const donesStack = await dones.getStack()
-if (donesStack.length === 0) {
-    dones.emptyState()
-}
+dones.attachHandlers()
 
 // Menu section
-menu.attachEventListeners()
+menu.attachHandlers()
 
 // Drag and Drop
 const handleSwitch = (dropped, oldColor, newColor, newButton) => {
@@ -109,7 +84,9 @@ todos.stack.container.addEventListener('drop', (e) => {
     }
 
     const dropped = document.querySelector(`[data-id="${data}"]`)
-    const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-violet-700', '<i class="fa-solid fa-check"></i>', () => { todos.markAsDone(data) }, 'done-button', 'Mark as done')
+    const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-violet-700', '<i class="fa-solid fa-check"></i>', () => {
+        todos.markAsDone(data)
+    }, 'done-button', 'Mark as done')
 
     handleSwitch(dropped, 'bg-teal-600', 'bg-violet-700', doneButton)
 
@@ -131,7 +108,9 @@ dones.stack.container.addEventListener('drop', (e) => {
     }
 
     const dropped = document.querySelector(`[data-id="${data}"]`)
-    const undoneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', () => { dones.markAsUndone(data) }, 'undone-button', 'Mark as undone')
+    const undoneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', () => {
+        dones.markAsUndone(data)
+    }, 'undone-button', 'Mark as undone')
 
     handleSwitch(dropped, 'bg-violet-700', 'bg-teal-600', undoneButton)
 
@@ -141,49 +120,6 @@ dones.stack.container.addEventListener('drop', (e) => {
 
     todos.dragAsDone(data)
 })
-
-// Closing modal if clicked outside
-document.addEventListener('click', (e) => {
-    const menuClicked = menu.menu.contains(e.target) || menu.show.contains(e.target)
-    if (!menuClicked) {
-        menu.closeMenu()
-    }
-
-    const projectDropdownClicked = projects.filter.dropdown.contains(e.target) || projects.filter.options.contains(e.target)
-    if (!projectDropdownClicked) {
-        projects.closeOptions();
-    }
-
-    const todosCtaButton = document.querySelector('button[name="todo-cta-button"]')
-    let addTodoClicked = todos.add.modal.firstElementChild.contains(e.target) || todos.add.show.contains(e.target)
-    if (todosCtaButton) {
-        addTodoClicked = todos.add.modal.firstElementChild.contains(e.target) || todos.add.show.contains(e.target) || todosCtaButton.contains(e.target)
-    }
-    if (!addTodoClicked) {
-        todos.closeAddModal()
-    }
-
-    const projectsCtaButton = document.querySelector('button[name="project-cta-button"]')
-    let addProjectClicked = projects.add.modal.firstElementChild.contains(e.target) || projects.add.show.contains(e.target)
-    if (projectsCtaButton) {
-        addProjectClicked = projects.add.modal.firstElementChild.contains(e.target) || projects.add.show.contains(e.target) || projectsCtaButton.contains(e.target)
-    }
-    if (!addProjectClicked) {
-        projects.closeAddModal()
-    }
-
-    const editTodoButtons = document.querySelectorAll('button[name="edit-button"]')
-    const editTodoClicked = todos.edit.modal.firstElementChild.contains(e.target) || Array.from(editTodoButtons).some((edit) => edit.contains(e.target))
-    if (!editTodoClicked) {
-        todos.closeEditModal()
-    }
-
-    const deleteTodoButtons = document.querySelectorAll('button[name="delete-button"]')
-    const deleteTodoClicked = todos.delete.modal.firstElementChild.contains(e.target) || Array.from(deleteTodoButtons).some((del) => del.contains(e.target))
-    if (!deleteTodoClicked) {
-        todos.closeDeleteModal()
-    }
-});
 
 // Footer
 handleFooter()

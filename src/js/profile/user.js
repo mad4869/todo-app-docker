@@ -1,4 +1,6 @@
 import { fetchData, updateData } from "../components/data"
+import loadAnimation from "../components/animation"
+import showNotice from "../components/notice"
 
 class User {
     constructor(user) {
@@ -20,16 +22,11 @@ class User {
         }
     }
 
-    attachEventListeners = () => {
-        this.profile.profile.addEventListener('focus', (e) => {
-            if (e.target.hasAttribute('contenteditable')) {
-                this.profile.update.classList.remove('hidden')
-            }
-        }, true)
-
-        this.profile.update.addEventListener('click', () => {
-            this.updateProfile()
-        })
+    attachHandlers = () => {
+        this.handleShowUpdate()
+        this.handleHideUpdate()
+        this.handleHoverUpdate()
+        this.handleUpdateProfile()
     }
 
     getProfile = async () => {
@@ -48,6 +45,38 @@ class User {
         }
     }
 
+    handleShowUpdate = () => {
+        this.showUpdate = (e) => {
+            if (e.target.hasAttribute('contenteditable')) {
+                this.profile.update.classList.remove('hidden')
+            }
+        }
+
+        this.profile.profile.addEventListener('focus', this.showUpdate, true)
+    }
+
+    handleHideUpdate = () => {
+        this.hideUpdate = (e) => {
+            if (e.target.hasAttribute('contenteditable')) {
+                this.profile.update.classList.add('hidden')
+            }
+        }
+
+        this.profile.profile.addEventListener('blur', this.hideUpdate, true)
+    }
+
+    handleHoverUpdate = () => {
+        this.profile.update.addEventListener('mouseenter', () => {
+            this.profile.profile.removeEventListener('blur', this.hideUpdate, true)
+        })
+        this.profile.update.addEventListener('mouseover', () => {
+            this.profile.profile.removeEventListener('blur', this.hideUpdate, true)
+        })
+        this.profile.update.addEventListener('mouseleave', () => {
+            this.profile.profile.addEventListener('blur', this.hideUpdate, true)
+        })
+    }
+
     updateProfile = async () => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}`)
@@ -58,13 +87,32 @@ class User {
                 bio: this.profile.fields.bio.textContent
             }
 
-            const { success } = await updateData(`/api/users/${this.user}`, JSON.stringify(updatedData))
-            if (success) {
-                location.reload()
-            }
+            const res = await updateData(`/api/users/${this.user}`, JSON.stringify(updatedData))
+
+            return res
         } catch (err) {
             console.error(err)
         }
+    }
+
+    handleUpdateProfile = () => {
+        this.profile.update.addEventListener('click', async () => {
+            this.profile.update.innerHTML = ''
+            loadAnimation(this.profile.update, 'dots')
+
+            try {
+                const res = await this.updateProfile()
+                if (res.success) {
+                    location.reload()
+                } else {
+                    this.profile.update.innerHTML = 'update profile'
+
+                    showNotice(res.message, 'error')
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        })
     }
 
     getTasksDetails = async () => {

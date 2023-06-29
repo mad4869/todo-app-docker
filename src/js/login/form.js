@@ -1,6 +1,7 @@
 import { sendData } from '../components/data'
-import { validate, showError, resetError, enableSubmit } from '../components/form'
+import { validate, showError, resetError, enableSubmit, validateSubmit } from '../components/form'
 import showNotice from '../components/notice'
+import loadAnimation from '../components/animation'
 
 class LoginForm {
     constructor() {
@@ -12,15 +13,15 @@ class LoginForm {
         this.submit = document.getElementById('form-login-submit')
     }
 
-    attachEventListeners = () => {
+    attachHandlers = () => {
         enableSubmit(this.fields, this.submit)
-        this.validateInput()
-        this.validateBlur()
-        this.resetFocus()
-        this.validateSubmit()
+        this.handleInput()
+        this.handleBlur()
+        this.handleFocus()
+        this.handleSubmit()
     }
 
-    validateBlur = () => {
+    handleBlur = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('blur', () => {
                 let isValid = validate(this.fields[field])
@@ -32,7 +33,7 @@ class LoginForm {
         }
     }
 
-    resetFocus = () => {
+    handleFocus = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('focus', () => {
                 resetError(this.fields[field])
@@ -40,7 +41,7 @@ class LoginForm {
         }
     }
 
-    validateInput = () => {
+    handleInput = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('input', () => {
                 enableSubmit(this.fields, this.submit)
@@ -48,24 +49,23 @@ class LoginForm {
         }
     }
 
-    validateSubmit = () => {
+    handleSubmit = () => {
         this.form.addEventListener('submit', async (e) => {
             e.preventDefault()
-            this.submit.value = '...'
+            this.submit.innerHTML = ''
+            loadAnimation(this.submit, 'dots')
 
             const formData = new FormData(this.form)
 
             try {
-                const res = await sendData('/auth/login', formData)
+                const res = await validateSubmit(formData, '/auth/login', sendData)
                 if (res.success) {
-                    this.submit.value = 'LOGIN SUCCESSFUL'
-
                     localStorage.setItem('access_token', res.access_token)
                     localStorage.setItem('refresh_token', res.refresh_token)
 
                     window.location.replace('/home')
                 } else {
-                    this.submit.value = 'LOGIN'
+                    this.submit.innerHTML = 'login'
 
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
                     showNotice(errors.join(''), 'error')

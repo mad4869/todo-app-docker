@@ -55,10 +55,9 @@
                 <p class="text-right text-xs text-violet-700">Already have an account?
                     <a href="{{url_for('views.login_page')}}" class="font-semibold">Login</a>
                 </p>
-                {{ form.submit(class="py-1 bg-violet-700 text-white rounded-lg
-            shadow-[0px_2px_5px_rgba(0,0,0,0.6)] cursor-pointer hover:bg-violet-900
-            active:shadow-[inset_0_2px_5px_rgba(0,0,0,0.6)] disabled:bg-slate-300 disabled:shadow-none
-            disabled:cursor-not-allowed", disabled=true) }}
+                <button id="form-register-submit" type="submit" title="Create your account" class="flex-1 py-1 max-h-8 bg-violet-700 text-white rounded-lg uppercase cursor-pointer shadow-[0px_2px_5px_rgba(0,0,0,0.6)] hover:bg-violet-900 active:shadow-[inset_0_2px_5px_rgba(0,0,0,0.6)] disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed" disabled>
+                    create account
+                </button>
             </form>
         </div>
     </section>

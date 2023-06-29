@@ -36,19 +36,12 @@ class Dones {
         }
     }
 
-    attachEventListeners = () => {
-        this.stack.container.addEventListener('dragenter', (e) => {
-            e.preventDefault()
-            this.stack.container.classList.add('bg-teal-300')
-        })
-        this.stack.container.addEventListener('dragover', (e) => {
-            e.preventDefault()
-            this.stack.container.classList.add('bg-teal-300')
-        })
-        this.stack.container.addEventListener('dragleave', (e) => {
-            e.preventDefault()
-            this.stack.container.classList.remove('bg-teal-300')
-        })
+    attachHandlers = () => {
+        this.handleEmpty()
+
+        this.handleDragEnter()
+        this.handleDragOver()
+        this.handleDragLeave()
     }
 
     createCard = (doneId) => {
@@ -173,6 +166,32 @@ class Dones {
         }
     }
 
+    emptyState() {
+        const emptyBox = document.createElement('div')
+        emptyBox.className = 'flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-teal-600 text-teal-600 text-xl capitalize rounded-2xl'
+
+        const illustration = document.createElement('img')
+        illustration.className = 'w-20'
+        illustration.setAttribute('alt', 'This column is empty')
+        illustration.setAttribute('src', '/static/dist/img/empty-secondary.svg')
+
+        const text = document.createElement('h3')
+        text.textContent = "you haven't finished any tasks yet"
+
+        emptyBox.append(illustration, text)
+
+        const separator = createSeparator('bg-teal-200')
+
+        this.stack.container.append(separator, emptyBox)
+    }
+
+    handleEmpty = async () => {
+        const stack = await this.getStack()
+        if (stack.length === 0) {
+            this.emptyState()
+        }
+    }
+
     deleteDone = async (doneId) => {
         try {
             const { success } = await deleteData(`/api/users/${this.user}/todos/${doneId}`);
@@ -221,6 +240,27 @@ class Dones {
         }
     }
 
+    handleDragEnter = () => {
+        this.stack.container.addEventListener('dragenter', (e) => {
+            e.preventDefault()
+            this.stack.container.classList.add('bg-teal-300')
+        })
+    }
+
+    handleDragOver = () => {
+        this.stack.container.addEventListener('dragover', (e) => {
+            e.preventDefault()
+            this.stack.container.classList.add('bg-teal-300')
+        })
+    }
+
+    handleDragLeave = () => {
+        this.stack.container.addEventListener('dragleave', (e) => {
+            e.preventDefault()
+            this.stack.container.classList.remove('bg-teal-300')
+        })
+    }
+
     filterByProjects = async (projectId) => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}/dones`)
@@ -255,25 +295,6 @@ class Dones {
 
     closeDeleteDone = () => {
         this.delete.modal.classList.add('hidden')
-    }
-
-    emptyState() {
-        const emptyBox = document.createElement('div')
-        emptyBox.className = 'flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-teal-600 text-teal-600 text-xl capitalize rounded-2xl'
-
-        const illustration = document.createElement('img')
-        illustration.className = 'w-20'
-        illustration.setAttribute('alt', 'This column is empty')
-        illustration.setAttribute('src', '/static/dist/img/empty-secondary.svg')
-
-        const text = document.createElement('h3')
-        text.textContent = "you haven't finished any tasks yet"
-
-        emptyBox.append(illustration, text)
-
-        const separator = createSeparator('bg-teal-200')
-
-        this.stack.container.append(separator, emptyBox)
     }
 }
 

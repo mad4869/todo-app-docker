@@ -1,6 +1,7 @@
 import '../../css/style.css'
 
 import Projects from './projects'
+import active from '../components/active'
 import { handleFlash } from '../components/notice'
 import handleFooter from '../components/footer'
 import handleLogout from '../components/logout'
@@ -13,8 +14,7 @@ if (flash) {
 }
 
 // Active link
-const link = document.querySelector('a[href=" /projects"]')
-link.classList.add('text-teal-400')
+active('/projects')
 
 // Handle Logout
 handleLogout()

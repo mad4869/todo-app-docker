@@ -135,6 +135,7 @@ def access_todo(user_id, todo_id):
         else:
             updated_data = todo.serialize()
 
+            flash("Your task has been updated!", category="success")
             return jsonify({"success": True, "data": updated_data}), 201
         if form.errors != {}:
             errors = [error for error in form.errors.values()]

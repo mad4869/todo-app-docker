@@ -47,7 +47,6 @@ class RegisterForm(FlaskForm):
         validators=[EqualTo("password", "The passwords do not match"), InputRequired()],
         id="form-register-confirm-password",
     )
-    submit = SubmitField("CREATE ACCOUNT", id="form-register-submit")
 
 
 class LoginForm(FlaskForm):
@@ -61,7 +60,6 @@ class LoginForm(FlaskForm):
         validators=[Length(min=6, max=100), InputRequired()],
         id="form-login-password",
     )
-    submit = SubmitField("LOGIN", id="form-login-submit")
 
 
 class AddProjectForm(FlaskForm):
@@ -73,7 +71,6 @@ class AddProjectForm(FlaskForm):
     description = TextAreaField(
         "Description", validators=[Length(max=250)], id="form-add-project-description"
     )
-    submit = SubmitField("ADD", id="form-add-project-submit")
 
 
 class EditProjectForm(FlaskForm):
@@ -89,7 +86,6 @@ class EditProjectForm(FlaskForm):
         validators=[Length(max=250)],
         id="form-edit-project-description",
     )
-    submit = SubmitField("UPDATE", id="form-edit-project-submit")
 
 
 class AddTodoForm(FlaskForm):
@@ -107,7 +103,6 @@ class AddTodoForm(FlaskForm):
     description = TextAreaField(
         "Description", validators=[Length(max=250)], id="form-add-todo-description"
     )
-    submit = SubmitField("ADD", id="form-add-todo-submit")
 
     def load_choices(self, user_id):
         with current_app.app_context():
@@ -136,7 +131,6 @@ class EditTodoForm(FlaskForm):
     description = TextAreaField(
         "Description", validators=[Length(max=250)], id="form-edit-todo-description"
     )
-    submit = SubmitField("UPDATE", id="form-edit-todo-submit")
 
     def load_choices(self, user_id):
         with current_app.app_context():

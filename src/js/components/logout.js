@@ -25,22 +25,21 @@ const logout = () => {
 
 const handleLogout = () => {
     const logoutLink = document.querySelector('a[href="/auth/logout"]')
-    const logoutBox = document.getElementById('logout')
     logoutLink.addEventListener('click', async (e) => {
         e.preventDefault()
 
-        logoutLink.classList.add('hidden')
-        loadAnimation(logoutBox, 'dots')
+        logoutLink.innerHTML = ''
+        loadAnimation(logoutLink, 'dots')
 
         try {
             const { success } = await logout()
             if (success) {
-                logoutBox.innerHTML = logoutLink.outerHTML
-                logoutLink.classList.remove('hidden')
+                logoutLink.innerHTML = 'Logout'
+
                 window.location.replace('/')
             } else {
-                logoutBox.innerHTML = logoutLink
-                logoutLink.classList.remove('hidden')
+                logoutLink.innerHTML = 'Logout'
+
                 showNotice('Failed to log you out. Please try again.', 'error')
             }
         } catch (err) {

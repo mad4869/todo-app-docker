@@ -1,7 +1,14 @@
 import { fetchData, sendData, updateData, deleteData } from "../components/data"
-import { validate, showError, resetError, enableSubmit, validateSubmit } from '../components/form'
+import {
+    validate,
+    showError,
+    resetError,
+    enableSubmit,
+    validateSubmit
+} from '../components/form'
 import createButton from "../components/button"
 import showNotice from "../components/notice"
+import loadAnimation from "../components/animation"
 
 class Projects {
     constructor(user) {
@@ -64,12 +71,15 @@ class Projects {
     }
 
     attachHandlers = () => {
+        // Handle modals
         this.handleShowAddModal()
         this.handleCloseAddModal()
         this.handleCloseEditModal()
         this.handleCloseDeleteModal()
         this.handleCloseTodosModal()
+        this.handleClickOutsideModal()
 
+        // Handle forms
         this.handleInput(this.add.form.fields, this.add.form.submit)
         this.handleInput(this.edit.form.fields, this.edit.form.submit)
         this.handleInput(this.todos.form.fields, this.todos.form.submit)
@@ -82,8 +92,6 @@ class Projects {
         this.handleSubmit(this.add.form.form, `/api/users/${this.user}/projects`, sendData, this.add.form.submit, this.closeAddModal)
         this.handleSubmit(this.edit.form.form, `/api/users/${this.user}/projects/`, updateData, this.edit.form.submit, this.closeEditModal)
         this.handleSubmit(this.todos.form.form, `/api/users/${this.user}/todos`, sendData, this.todos.form.submit, this.closeTodosModal)
-
-        this.handleClickOutside()
     }
 
     createHeading = () => {
@@ -127,13 +135,7 @@ class Projects {
             this.todos.form.fields.project.value = projectId
         }
 
-        const addButton = createButton(
-            'flex gap-2 items-center px-4 py-1 text-indigo-700 font-semibold border border-dashed border-indigo-700 rounded-lg shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase',
-            '<i class="fa-solid fa-circle-plus fa-sm text-indigo-700"></i><span>add your first task</span>',
-            handleAdd,
-            'add-todo-button',
-            'Create your first task'
-        )
+        const addButton = createButton('flex gap-2 items-center px-4 py-1 text-indigo-700 font-semibold border border-dashed border-indigo-700 rounded-lg shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase', '<i class="fa-solid fa-circle-plus fa-sm text-indigo-700"></i><span>add your first task</span>', handleAdd, 'add-todo-button', 'Create your first task')
 
         emptyList.append(addButton)
 
@@ -161,9 +163,7 @@ class Projects {
             title.textContent = todos[i].title
 
             const badge = document.createElement('div')
-            todos[i].is_done === false ?
-                badge.innerHTML = '<i class="fa-regular fa-hourglass fa-xs text-violet-700"></i>' :
-                badge.innerHTML = '<i class="fa-solid fa-circle-check fa-xs text-teal-600"></i>'
+            todos[i].is_done === false ? badge.innerHTML = '<i class="fa-regular fa-hourglass fa-xs text-violet-700"></i>' : badge.innerHTML = '<i class="fa-solid fa-circle-check fa-xs text-teal-600"></i>'
 
             todo.append(title, badge)
 
@@ -231,7 +231,9 @@ class Projects {
 
     createStack = async (data) => {
         for (let i = 0; i < data.length; i++) {
-            const todos = await fetchData(`/api/users/${this.user}/projects/${data[i].project_id}/todos`)
+            const todos = await fetchData(`/api/users/${this.user
+                }/projects/${data[i].project_id
+                }/todos`)
 
             const card = this.createCard(data[i].project_id, data[i].title, data[i].description, todos.data)
 
@@ -241,9 +243,11 @@ class Projects {
 
     getStack = async () => {
         try {
-            const { data } = await fetchData(`/api/users/${this.user}/projects`)
+            const { data } = await fetchData(`/api/users/${this.user
+                }/projects`)
 
-            this.stack.counter.innerHTML = `You have <span class="text-teal-300 font-bold">${data.length} projects</span> so far`
+            this.stack.counter.innerHTML = `You have <span class="text-teal-300 font-bold">${data.length
+                } projects</span> so far`
 
             this.createStack(data)
         } catch (err) {
@@ -253,7 +257,8 @@ class Projects {
 
     deleteProject = async (projectId) => {
         try {
-            const { success } = await deleteData(`/api/users/${this.user}/projects/${projectId}`);
+            const { success } = await deleteData(`/api/users/${this.user
+                }/projects/${projectId}`);
             if (success) {
                 location.reload()
             }
@@ -324,29 +329,37 @@ class Projects {
         })
     }
 
-    handleClickOutside = () => {
+    handleClickOutsideModal = () => {
         document.addEventListener('click', (e) => {
-            const addTodoButtons = document.querySelectorAll('button[name="add-todo-button"]')
-            const addTodoClicked = this.todos.modal.firstElementChild.contains(e.target) || Array.from(addTodoButtons).some((button) => button.contains(e.target))
-            if (!addTodoClicked) {
-                this.todos.modal.classList.add('hidden')
+            if (this.todos.modal) {
+                const addTodoButtons = document.querySelectorAll('button[name="add-todo-button"]')
+                const addTodoClicked = this.todos.modal.firstElementChild.contains(e.target) || Array.from(addTodoButtons).some((button) => button.contains(e.target))
+                if (!addTodoClicked) {
+                    this.todos.modal.classList.add('hidden')
+                }
             }
 
-            const addProjectClicked = this.add.modal.firstElementChild.contains(e.target) || this.add.show.contains(e.target)
-            if (!addProjectClicked) {
-                this.add.modal.classList.add('hidden')
+            if (this.add.modal) {
+                const addProjectClicked = this.add.modal.firstElementChild.contains(e.target) || this.add.show.contains(e.target)
+                if (!addProjectClicked) {
+                    this.add.modal.classList.add('hidden')
+                }
             }
 
-            const editButtons = document.querySelectorAll('button[name="edit-button"]')
-            const editProjectClicked = this.edit.modal.firstElementChild.contains(e.target) || Array.from(editButtons).some((button) => button.contains(e.target))
-            if (!editProjectClicked) {
-                this.edit.modal.classList.add('hidden')
+            if (this.edit.modal) {
+                const editButtons = document.querySelectorAll('button[name="edit-button"]')
+                const editProjectClicked = this.edit.modal.firstElementChild.contains(e.target) || Array.from(editButtons).some((button) => button.contains(e.target))
+                if (!editProjectClicked) {
+                    this.edit.modal.classList.add('hidden')
+                }
             }
 
-            const deleteButtons = document.querySelectorAll('button[name="delete-button"]')
-            const deleteProjectClicked = this.delete.modal.firstElementChild.contains(e.target) || Array.from(deleteButtons).some((button) => button.contains(e.target))
-            if (!deleteProjectClicked) {
-                this.delete.modal.classList.add('hidden')
+            if (this.delete.modal) {
+                const deleteButtons = document.querySelectorAll('button[name="delete-button"]')
+                const deleteProjectClicked = this.delete.modal.firstElementChild.contains(e.target) || Array.from(deleteButtons).some((button) => button.contains(e.target))
+                if (!deleteProjectClicked) {
+                    this.delete.modal.classList.add('hidden')
+                }
             }
         })
     }
@@ -382,7 +395,9 @@ class Projects {
     handleSubmit = (form, apiUrl, method, submitButton, modalCloser) => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault()
-            submitButton.value = 'Loading...'
+            const defaultMsg = submitButton.innerHTML
+            submitButton.innerHTML = ''
+            loadAnimation(submitButton, 'dots')
 
             const formData = new FormData(form)
             try {
@@ -392,6 +407,7 @@ class Projects {
                 if (res.success) {
                     location.reload()
                 } else {
+                    submitButton.innerHTML = defaultMsg
                     modalCloser()
 
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)

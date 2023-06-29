@@ -40,6 +40,10 @@ const enableSubmit = (fields, submit) => {
     for (const field in fields) {
         let isValid = validate(fields[field])
 
+        if (fields[field] === fields['confirmPassword']) {
+            isValid = validatePasswordMatch(fields['password'], fields[field])
+        }
+
         if (!isValid) {
             results[field] = fields[field].validationMessage
         } else {

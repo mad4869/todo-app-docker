@@ -1,6 +1,7 @@
 import { sendData } from '../components/data'
-import { validate, validatePasswordMatch, showError, resetError, enableSubmit } from '../components/form'
+import { validate, validatePasswordMatch, showError, resetError, enableSubmit, validateSubmit } from '../components/form'
 import showNotice from '../components/notice'
+import loadAnimation from '../components/animation'
 
 class RegisterForm {
     constructor() {
@@ -16,13 +17,13 @@ class RegisterForm {
     }
 
     attachEventListeners = () => {
-        this.validateInput()
-        this.validateBlur()
-        this.resetFocus()
-        this.validateSubmit()
+        this.handleInput()
+        this.handleBlur()
+        this.handleFocus()
+        this.handleSubmit()
     }
 
-    validateBlur = () => {
+    handleBlur = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('blur', () => {
                 let isValid = validate(this.fields[field])
@@ -38,7 +39,7 @@ class RegisterForm {
         }
     }
 
-    resetFocus = () => {
+    handleFocus = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('focus', () => {
                 resetError(this.fields[field])
@@ -46,7 +47,7 @@ class RegisterForm {
         }
     }
 
-    validateInput = () => {
+    handleInput = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('input', () => {
                 enableSubmit(this.fields, this.submit)
@@ -54,20 +55,26 @@ class RegisterForm {
         }
     }
 
-    validateSubmit = () => {
+    handleSubmit = () => {
         this.form.addEventListener('submit', async (e) => {
             e.preventDefault()
+            this.submit.innerHTML = ''
+            loadAnimation(this.submit, 'dots')
 
             const formData = new FormData(this.form)
 
             try {
-                const res = await sendData('/auth/register', formData)
+                const res = await validateSubmit(formData, 'auth/register', sendData)
                 if (res.success) {
+                    this.submit.innerHTML = 'create account'
+
                     showNotice('Your account has been registered. Please login to proceed.', 'success')
                     setTimeout(() => {
                         window.location.replace('/login')
                     }, 3000)
                 } else {
+                    this.submit.innerHTML = 'create account'
+
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
                     showNotice(errors.join(''), 'error')
                 }

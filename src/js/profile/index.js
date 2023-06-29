@@ -1,6 +1,7 @@
 import '../../css/style.css'
 
 import User from './user'
+import active from '../components/active'
 import { handleFlash } from '../components/notice'
 import handleFooter from '../components/footer'
 import handleLogout from '../components/logout'
@@ -13,8 +14,7 @@ if (flash) {
 }
 
 // Active link
-const link = document.querySelector('a[href="/profile"]')
-link.classList.add('text-teal-400')
+active('/profile')
 
 // Handle Logout
 handleLogout()
@@ -25,9 +25,9 @@ const userId = document.getElementById('current-user').dataset.user
 // User object instance with the logged in user data
 const user = new User(userId)
 
-// Get all user details and their event listeners
+// Get all user details and their handlers
 user.getProfile()
-user.attachEventListeners()
+user.attachHandlers()
 
 // Get user's tasks details
 user.getTasksDetails()
