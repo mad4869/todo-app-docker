@@ -45,5 +45,3 @@ menu.handleMenu()
 
 // Footer
 handleFooter()
-
-// Modify dones text color

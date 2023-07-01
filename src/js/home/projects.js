@@ -93,8 +93,8 @@ class Projects {
                 const dones = new Dones(this.user)
 
                 try {
-                    const filteredTodos = await todos.filterByProjects(option.dataset.id)
-                    const filteredDones = await dones.filterByProjects(option.dataset.id)
+                    const filteredTodos = await todos.filterByProject(option.dataset.id)
+                    const filteredDones = await dones.filterByProject(option.dataset.id)
 
                     if (filteredTodos && filteredDones) {
                         this.filter.selected.innerHTML = option.textContent
@@ -104,7 +104,6 @@ class Projects {
                         others.forEach((other) => other.classList.remove('hidden'))
 
                         this.createResetFilter()
-
                     }
                 } catch (err) {
                     console.error(err)
@@ -150,7 +149,7 @@ class Projects {
 
         emptyBox.append(text, ctaButton)
 
-        this.filter.options.appendChild(emptyBox)
+        this.filter.options.append(emptyBox)
     }
 
     handleOptions = async () => {

@@ -54,8 +54,6 @@ class Todos {
             cancel: document.getElementById('modal-delete-todo-cancel'),
             close: document.getElementById('modal-delete-todo-close-button')
         }
-
-        this.draggedContainer = null
     }
 
     createHeading = (todoTitle, project) => {
@@ -100,7 +98,7 @@ class Todos {
 
     createCard = (todoId, todoTitle, project, todoDesc) => {
         const card = document.createElement('div')
-        card.className = 'w-full pb-2 bg-white border border-solid border-slate-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] overflow-hidden'
+        card.className = 'w-full pb-2 bg-white border border-solid border-slate-700 rounded-2xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] cursor-move overflow-hidden'
         card.setAttribute('draggable', true)
         card.setAttribute('data-id', todoId)
 
@@ -231,19 +229,23 @@ class Todos {
 
     handleDragSender = () => {
         this.handleDragStart = (e) => {
-            this.draggedContainer = e.target.parentNode
+            // this.stack.container.removeEventListener('dragenter', this.handleDragEnterOver)
+            // this.stack.container.removeEventListener('dragover', this.handleDragEnterOver)
+            // this.stack.container.removeEventListener('dragleave', this.handleDragLeave)
+            // this.stack.container.removeEventListener('drop', this.handleDrop)
 
             e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
 
-            setTimeout(() => {
-                e.target.classList.add('hidden');
-                e.target.previousElementSibling.classList.add('hidden')
-            }, 0);
+            e.target.classList.add('opacity-50');
         }
 
         this.handleDragEnd = (e) => {
-            e.target.classList.remove('hidden')
-            e.target.previousElementSibling.classList.remove('hidden')
+            e.target.classList.remove('opacity-50')
+
+            // this.stack.container.addEventListener('dragenter', this.handleDragEnterOver)
+            // this.stack.container.addEventListener('dragover', this.handleDragEnterOver)
+            // this.stack.container.addEventListener('dragleave', this.handleDragLeave)
+            // this.stack.container.addEventListener('drop', this.handleDrop)
         }
 
         const allTasks = document.querySelectorAll('div[draggable="true"]')
@@ -256,44 +258,51 @@ class Todos {
     handleDragRecipient = () => {
         this.handleDragEnterOver = (e) => {
             e.preventDefault()
-            this.stack.container.classList.add('bg-fuchsia-400')
-        }
-
-        this.handleDragLeave = (e) => {
-            e.preventDefault()
-            this.stack.container.classList.remove('bg-fuchsia-400')
-        }
-
-        this.handleDrop = (e) => {
-            e.preventDefault()
-            this.stack.container.classList.remove('bg-fuchsia-400')
-
-            if (this.draggedContainer === this.stack.container) {
-                return
-            }
-
-            const empty = document.getElementById('empty-state')
-            if (empty) {
-                empty.classList.add('hidden')
-            }
 
             const data = e.dataTransfer.getData('text/plain')
 
             const dropped = document.querySelector(`[data-id="${data}"]`)
-            const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-violet-700', '<i class="fa-solid fa-check"></i>', this.handleDone, 'done-button', 'Mark as done')
 
-            doneToTodo(dropped, doneButton)
+            if (this.stack.container.contains(document.getElementById('empty-state'))) {
+                this.stack.container.replaceChild(dropped, document.getElementById('empty-state'))
+            }
 
             this.stack.container.append(dropped)
-
-            const dones = new Dones(this.user)
-            // dones.markAsUndone(data)
         }
 
-        this.stack.container.addEventListener('dragenter', this.handleDragEnterOver)
+        // this.handleDragLeave = (e) => {
+        //     e.preventDefault()
+        //     this.stack.container.classList.remove('bg-fuchsia-400')
+        // }
+
+        // this.handleDrop = (e) => {
+        //     e.preventDefault()
+        //     this.stack.container.classList.remove('bg-fuchsia-400')
+
+        //     console.log('hello from todo')
+
+        //     const empty = document.getElementById('empty-state')
+        //     if (empty) {
+        //         empty.classList.add('hidden')
+        //     }
+
+        //     const data = e.dataTransfer.getData('text/plain')
+
+        //     const dropped = document.querySelector(`[data-id="${data}"]`)
+        //     const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-violet-700', '<i class="fa-solid fa-check"></i>', this.handleDone, 'done-button', 'Mark as done')
+
+        //     doneToTodo(dropped, doneButton)
+
+        //     this.stack.container.append(dropped)
+
+        //     const dones = new Dones(this.user)
+        //     // dones.markAsUndone(data)
+        // }
+
+        // this.stack.container.addEventListener('dragenter', this.handleDragEnterOver)
         this.stack.container.addEventListener('dragover', this.handleDragEnterOver)
-        this.stack.container.addEventListener('dragleave', this.handleDragLeave)
-        this.stack.container.addEventListener('drop', this.handleDrop)
+        // this.stack.container.addEventListener('dragleave', this.handleDragLeave)
+        // this.stack.container.addEventListener('drop', this.handleDrop)
     }
 
     resetDrag = () => {
@@ -303,10 +312,10 @@ class Todos {
             task.removeEventListener('dragend', this.handleDragEnd)
         })
 
-        this.stack.container.removeEventListener('dragenter', this.handleDragEnterOver)
+        // this.stack.container.removeEventListener('dragenter', this.handleDragEnterOver)
         this.stack.container.removeEventListener('dragover', this.handleDragEnterOver)
-        this.stack.container.removeEventListener('dragleave', this.handleDragLeave)
-        this.stack.container.removeEventListener('drop', this.handleDrop)
+        // this.stack.container.removeEventListener('dragleave', this.handleDragLeave)
+        // this.stack.container.removeEventListener('drop', this.handleDrop)
     }
 
     handleStack = async () => {
@@ -321,6 +330,8 @@ class Todos {
     }
 
     resetStack = () => {
+        this.resetDrag()
+
         while (this.stack.container.hasChildNodes()) {
             this.stack.container.removeChild(this.stack.container.firstChild)
         }
@@ -328,10 +339,10 @@ class Todos {
         this.stack.container.appendChild(this.stack.heading)
     }
 
-    filterByProjects = async (projectId) => {
-        try {
-            this.resetStack()
+    filterByProject = async (projectId) => {
+        this.resetStack()
 
+        try {
             const { data } = await fetchData(`/api/users/${this.user
                 }/todos`)
 
@@ -341,11 +352,9 @@ class Todos {
 
             if (filtered.length === 0) {
                 this.emptyState()
-                this.resetDrag()
                 this.handleDragRecipient()
             } else {
                 this.createStack(filtered)
-                this.resetDrag()
                 this.handleDragSender()
                 this.handleDragRecipient()
             }
