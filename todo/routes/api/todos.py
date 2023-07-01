@@ -153,6 +153,7 @@ def access_todo(user_id, todo_id):
                 500,
             )
         else:
+            flash("Your task has been deleted!", category="error")
             return (
                 jsonify({"success": True, "message": "Your task has been deleted!"}),
                 201,

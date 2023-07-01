@@ -4,11 +4,6 @@ class Menu {
         this.show = document.getElementById('home-show-menu-button')
     }
 
-    attachHandlers = () => {
-        this.handleShowMenu()
-        this.handleClickOutside()
-    }
-
     showMenu() {
         this.menu.classList.remove('translate-y-full')
         this.menu.classList.add('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]')
@@ -29,11 +24,16 @@ class Menu {
         document.addEventListener('click', (e) => {
             if (this.menu) {
                 const menuClicked = this.menu.contains(e.target) || this.show.contains(e.target)
-                if (! menuClicked) {
+                if (!menuClicked) {
                     this.closeMenu()
                 }
             }
         })
+    }
+
+    handleMenu = () => {
+        this.handleShowMenu()
+        this.handleClickOutside()
     }
 }
 

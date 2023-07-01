@@ -1,7 +1,8 @@
+import Todos from './todos'
+
 import { fetchData, updateData, deleteData } from '../components/data'
 import createButton from '../components/button'
-import createSeparator from '../components/separator'
-import showNotice from '../components/notice'
+import { todoToDone } from '../components/switch'
 
 class Dones {
     constructor(user) {
@@ -34,14 +35,8 @@ class Dones {
             cancel: document.getElementById('modal-delete-todo-cancel'),
             close: document.getElementById('modal-delete-todo-close-button')
         }
-    }
 
-    attachHandlers = () => {
-        this.handleEmpty()
-
-        this.handleDragEnter()
-        this.handleDragOver()
-        this.handleDragLeave()
+        this.draggedContainer = null
     }
 
     createCard = (doneId) => {
@@ -55,14 +50,14 @@ class Dones {
 
     createHeading = (doneTitle, project) => {
         const heading = document.createElement('div')
-        heading.className = 'flex justify-between items-center bg-teal-600 px-4 py-2'
+        heading.className = 'flex justify-between items-center bg-teal-600 px-4 py-2 text-teal-500 '
 
         const title = document.createElement('h1')
-        title.className = 'flex-1 text-xl text-white font-semibold'
+        title.className = 'flex-1 text-xl font-semibold'
         title.textContent = doneTitle
 
         const label = document.createElement('span')
-        label.className = 'px-2 py-1 border border-solid border-white text-white text-sm rounded-full'
+        label.className = 'px-2 py-1 border border-solid border-teal-500 text-sm rounded-full'
         label.textContent = project
 
         heading.append(title, label)
@@ -72,7 +67,7 @@ class Dones {
 
     createDescription = (doneDesc) => {
         const description = document.createElement('div')
-        description.className = 'bg-white px-4 py-2 text-xs'
+        description.className = 'bg-white px-4 py-2 text-neutral-400 text-xs'
         description.textContent = doneDesc
 
         return description
@@ -124,13 +119,13 @@ class Dones {
             })
         }
 
-        const handleUndone = () => {
+        this.handleUndone = () => {
             this.markAsUndone(doneId)
         }
 
-        const editButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-emerald-700', 'Edit', handleEdit, 'edit-button', 'Edit this task')
-        const deleteButton = createButton('ml-1 px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-rose-700', 'Delete', handleDelete, 'delete-button', 'Delete this task')
-        const undoneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', handleUndone, 'undone-button', 'Mark as undone')
+        const editButton = createButton('px-4 py-px text-xs text-emerald-500 rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-emerald-700', 'Edit', handleEdit, 'edit-button', 'Edit this task')
+        const deleteButton = createButton('ml-1 px-4 py-px text-xs text-rose-500 rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-rose-700', 'Delete', handleDelete, 'delete-button', 'Delete this task')
+        const undoneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', this.handleUndone, 'undone-button', 'Mark as undone')
 
         const toolbar = this.createToolbar(editButton, deleteButton, undoneButton)
 
@@ -148,9 +143,7 @@ class Dones {
 
             const done = this.createDone(id, title, project, description)
 
-            const separator = createSeparator('bg-teal-200')
-
-            this.stack.container.append(separator, done)
+            this.stack.container.append(done)
         }
     }
 
@@ -169,6 +162,7 @@ class Dones {
     emptyState() {
         const emptyBox = document.createElement('div')
         emptyBox.className = 'flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-teal-600 text-teal-600 text-xl capitalize rounded-2xl'
+        emptyBox.setAttribute('id', 'empty-state')
 
         const illustration = document.createElement('img')
         illustration.className = 'w-20'
@@ -180,16 +174,7 @@ class Dones {
 
         emptyBox.append(illustration, text)
 
-        const separator = createSeparator('bg-teal-200')
-
-        this.stack.container.append(separator, emptyBox)
-    }
-
-    handleEmpty = async () => {
-        const stack = await this.getStack()
-        if (stack.length === 0) {
-            this.emptyState()
-        }
+        this.stack.container.append(emptyBox)
     }
 
     deleteDone = async (doneId) => {
@@ -197,7 +182,6 @@ class Dones {
             const { success } = await deleteData(`/api/users/${this.user}/todos/${doneId}`);
             if (success) {
                 location.reload()
-                // showNotice('Your task has been deleted!', 'error', alertAnimation)
             }
         } catch (err) {
             console.error(err);
@@ -215,67 +199,133 @@ class Dones {
             const { success } = await updateData(`/api/users/${this.user}/todos/${doneId}`, JSON.stringify(updatedData))
             if (success) {
                 location.reload()
-                // showNotice('You have undone your finished task!', 'info', infoAnimation)
             }
         } catch (err) {
             console.error(err)
         }
     }
 
-    dragAsUndone = async (doneId) => {
-        try {
-            const { data } = await fetchData(`/api/users/${this.user}/todos/${doneId}`)
-            const updatedData = {
-                ...data,
-                is_done: false,
-            }
-            const dataToSend = JSON.stringify(updatedData)
+    handleDragSender = () => {
+        this.handleDragStart = (e) => {
+            this.draggedContainer = e.target.parentNode
 
-            const { success } = await updateData(`/api/users/${this.user}/todos/${doneId}`, dataToSend)
-            if (success) {
-                showNotice('You have undone your finished task!', 'info')
-            }
-        } catch (err) {
-            console.error(err)
+            e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
+
+            setTimeout(() => {
+                e.target.classList.add('hidden');
+                e.target.previousElementSibling.classList.add('hidden')
+            }, 0);
         }
-    }
 
-    handleDragEnter = () => {
-        this.stack.container.addEventListener('dragenter', (e) => {
-            e.preventDefault()
-            this.stack.container.classList.add('bg-teal-300')
+        this.handleDragEnd = (e) => {
+            e.target.classList.remove('hidden')
+            e.target.previousElementSibling.classList.remove('hidden')
+        }
+
+        const allTasks = document.querySelectorAll('div[draggable="true"]')
+        allTasks.forEach((task) => {
+            task.addEventListener('dragstart', this.handleDragStart)
+            task.addEventListener('dragend', this.handleDragEnd)
         })
     }
 
-    handleDragOver = () => {
-        this.stack.container.addEventListener('dragover', (e) => {
+    handleDragRecipient = () => {
+        this.handleDragEnterOver = (e) => {
             e.preventDefault()
             this.stack.container.classList.add('bg-teal-300')
-        })
-    }
+        }
 
-    handleDragLeave = () => {
-        this.stack.container.addEventListener('dragleave', (e) => {
+        this.handleDragLeave = (e) => {
             e.preventDefault()
             this.stack.container.classList.remove('bg-teal-300')
+        }
+
+        this.handleDrop = (e) => {
+            e.preventDefault()
+            this.stack.container.classList.remove('bg-teal-300')
+
+            if (this.draggedContainer === this.stack.container) {
+                return
+            }
+
+            const empty = document.getElementById('empty-state')
+            if (empty) {
+                empty.classList.add('hidden')
+            }
+
+            const data = e.dataTransfer.getData('text/plain')
+
+            const dropped = document.querySelector(`[data-id="${data}"]`)
+            const undoneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', this.handleUndone, 'undone-button', 'Mark as undone')
+
+            todoToDone(dropped, undoneButton)
+
+            this.stack.container.append(dropped)
+
+            const todos = new Todos(this.user)
+            // todos.markAsDone(data)
+        }
+
+        this.stack.container.addEventListener('dragenter', this.handleDragEnterOver)
+        this.stack.container.addEventListener('dragover', this.handleDragEnterOver)
+        this.stack.container.addEventListener('dragleave', this.handleDragLeave)
+        this.stack.container.addEventListener('drop', this.handleDrop)
+    }
+
+    resetDrag = () => {
+        const allTasks = document.querySelectorAll('div[draggable="true"]')
+        allTasks.forEach((task) => {
+            task.removeEventListener('dragstart', this.handleDragStart)
+            task.removeEventListener('dragend', this.handleDragEnd)
         })
+
+        this.stack.container.removeEventListener('dragenter', this.handleDragEnterOver)
+        this.stack.container.removeEventListener('dragover', this.handleDragEnterOver)
+        this.stack.container.removeEventListener('dragleave', this.handleDragLeave)
+        this.stack.container.removeEventListener('drop', this.handleDrop)
+    }
+
+    handleStack = async () => {
+        const stack = await this.getStack()
+        if (stack.length === 0) {
+            this.emptyState()
+            this.handleDragRecipient()
+        } else {
+            this.handleDragSender()
+            this.handleDragRecipient()
+        }
+    }
+
+    resetStack = () => {
+        while (this.stack.container.hasChildNodes()) {
+            this.stack.container.removeChild(this.stack.container.firstChild)
+        }
+
+        this.stack.container.appendChild(this.stack.heading)
     }
 
     filterByProjects = async (projectId) => {
         try {
+            this.resetStack()
+
             const { data } = await fetchData(`/api/users/${this.user}/dones`)
-
-            while (this.stack.container.hasChildNodes()) {
-                this.stack.container.removeChild(this.stack.container.firstChild)
-            }
-
-            this.stack.container.appendChild(this.stack.heading)
 
             const filtered = data.filter((done) => {
                 return done.project_id === parseInt(projectId)
             })
 
-            this.createStack(filtered)
+            if (filtered.length === 0) {
+                this.emptyState()
+                this.resetDrag()
+                this.handleDragRecipient()
+            } else {
+                this.createStack(filtered)
+                this.resetDrag()
+                this.handleDragSender()
+                this.handleDragRecipient()
+            }
+
+            return filtered
         } catch (err) {
             console.error(err)
         }

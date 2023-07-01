@@ -1,11 +1,12 @@
 import Menu from './menu'
+import Dones from './dones'
 
 import { fetchData, sendData, updateData, deleteData } from '../components/data'
 import { validate, showError, resetError, enableSubmit, validateSubmit } from '../components/form'
 import createButton from '../components/button'
-import createSeparator from "../components/separator"
 import showNotice from "../components/notice"
 import loadAnimation from '../components/animation'
+import { doneToTodo } from '../components/switch'
 
 class Todos {
     constructor(user) {
@@ -53,45 +54,20 @@ class Todos {
             cancel: document.getElementById('modal-delete-todo-cancel'),
             close: document.getElementById('modal-delete-todo-close-button')
         }
-    }
 
-    attachHandlers = () => {
-        // Handle clicks
-        this.handleShowAddModal()
-        this.handleCloseAddModal()
-        this.handleCloseEditModal()
-        this.handleCloseDeleteModal()
-        this.handleClickOutsideModal()
-
-        // Handle empty state
-        this.handleEmpty()
-
-        // Handle forms
-        this.handleInput(this.add.form.fields, this.add.form.submit)
-        this.handleInput(this.edit.form.fields, this.edit.form.submit)
-        this.handleBlur(this.add.form.fields)
-        this.handleBlur(this.edit.form.fields)
-        this.handleFocus(this.add.form.fields)
-        this.handleFocus(this.edit.form.fields)
-        this.handleSubmit(this.add.form.form, `/api/users/${this.user}/todos`, sendData, this.add.form.submit, this.closeAddModal)
-        this.handleSubmit(this.edit.form.form, `api/users/${this.user}/todos/`, updateData, this.edit.form.submit, this.closeEditModal)
-
-        // Drag and drop events
-        this.handleDragEnter()
-        this.handleDragOver()
-        this.handleDragLeave()
+        this.draggedContainer = null
     }
 
     createHeading = (todoTitle, project) => {
         const heading = document.createElement('div')
-        heading.className = 'flex justify-between items-center bg-violet-700 px-4 py-2'
+        heading.className = 'flex justify-between items-center bg-violet-700 px-4 py-2 text-white'
 
         const title = document.createElement('h1')
-        title.className = 'flex-1 text-xl text-white font-semibold'
+        title.className = 'flex-1 text-xl font-semibold'
         title.textContent = todoTitle
 
         const label = document.createElement('span')
-        label.className = 'px-2 py-1 border border-solid border-white text-white text-sm rounded-full'
+        label.className = 'px-2 py-1 border border-solid border-white text-sm rounded-full'
         label.textContent = project
 
         heading.append(title, label)
@@ -156,13 +132,13 @@ class Todos {
             })
         }
 
-        const handleDone = () => {
+        this.handleDone = () => {
             this.markAsDone(todoId)
         }
 
         const editButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-emerald-700', 'Edit', handleEdit, 'edit-button', 'Edit this task')
         const deleteButton = createButton('ml-1 px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-rose-700', 'Delete', handleDelete, 'delete-button', 'Delete this task')
-        const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-violet-700', '<i class="fa-solid fa-check"></i>', handleDone, 'done-button', 'Mark as done')
+        const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-violet-700', '<i class="fa-solid fa-check"></i>', this.handleDone, 'done-button', 'Mark as done')
 
         const heading = this.createHeading(todoTitle, project)
         const description = this.createDescription(todoDesc)
@@ -182,9 +158,7 @@ class Todos {
 
             const card = this.createCard(id, title, project, description)
 
-            const separator = createSeparator('bg-violet-200')
-
-            this.stack.container.append(separator, card)
+            this.stack.container.append(card)
         }
     }
 
@@ -204,6 +178,7 @@ class Todos {
     emptyState = () => {
         const emptyBox = document.createElement('div')
         emptyBox.className = 'flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-violet-700 text-violet-700 text-xl capitalize rounded-2xl'
+        emptyBox.setAttribute('id', 'empty-state')
 
         const illustration = document.createElement('img')
         illustration.className = 'w-20'
@@ -221,16 +196,7 @@ class Todos {
 
         emptyBox.append(illustration, text, ctaButton)
 
-        const separator = createSeparator('bg-violet-200')
-
-        this.stack.container.append(separator, emptyBox)
-    }
-
-    handleEmpty = async () => {
-        const stack = await this.getStack()
-        if (stack.length === 0) {
-            this.emptyState()
-        }
+        this.stack.container.append(emptyBox)
     }
 
     deleteTodo = async (todoId) => {
@@ -257,69 +223,134 @@ class Todos {
                 }/todos/${todo_id}`, JSON.stringify(updatedData))
             if (success) {
                 location.reload()
-                // showNotice('Congratulation, you have finished your task!', 'success', successAnimation)
             }
         } catch (err) {
             console.error(err)
         }
     }
 
-    dragAsDone = async (todoId) => {
-        try {
-            const { data } = await fetchData(`/api/users/${this.user
-                }/todos/${todoId}`)
-            const updatedData = {
-                ...data,
-                is_done: true
-            }
+    handleDragSender = () => {
+        this.handleDragStart = (e) => {
+            this.draggedContainer = e.target.parentNode
 
-            const { success } = await updateData(`/api/users/${this.user
-                }/todos/${todoId}`, JSON.stringify(updatedData))
-            if (success) {
-                showNotice('Congratulation, you have finished your task!', 'success')
-            }
-        } catch (err) {
-            console.error(err)
+            e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
+
+            setTimeout(() => {
+                e.target.classList.add('hidden');
+                e.target.previousElementSibling.classList.add('hidden')
+            }, 0);
         }
-    }
 
-    handleDragEnter = () => {
-        this.stack.container.addEventListener('dragenter', (e) => {
-            e.preventDefault()
-            this.stack.container.classList.add('bg-fuchsia-400')
+        this.handleDragEnd = (e) => {
+            e.target.classList.remove('hidden')
+            e.target.previousElementSibling.classList.remove('hidden')
+        }
+
+        const allTasks = document.querySelectorAll('div[draggable="true"]')
+        allTasks.forEach((task) => {
+            task.addEventListener('dragstart', this.handleDragStart)
+            task.addEventListener('dragend', this.handleDragEnd)
         })
     }
 
-    handleDragOver = () => {
-        this.stack.container.addEventListener('dragover', (e) => {
+    handleDragRecipient = () => {
+        this.handleDragEnterOver = (e) => {
             e.preventDefault()
             this.stack.container.classList.add('bg-fuchsia-400')
-        })
-    }
+        }
 
-    handleDragLeave = () => {
-        this.stack.container.addEventListener('dragleave', (e) => {
+        this.handleDragLeave = (e) => {
             e.preventDefault()
             this.stack.container.classList.remove('bg-fuchsia-400')
+        }
+
+        this.handleDrop = (e) => {
+            e.preventDefault()
+            this.stack.container.classList.remove('bg-fuchsia-400')
+
+            if (this.draggedContainer === this.stack.container) {
+                return
+            }
+
+            const empty = document.getElementById('empty-state')
+            if (empty) {
+                empty.classList.add('hidden')
+            }
+
+            const data = e.dataTransfer.getData('text/plain')
+
+            const dropped = document.querySelector(`[data-id="${data}"]`)
+            const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-violet-700', '<i class="fa-solid fa-check"></i>', this.handleDone, 'done-button', 'Mark as done')
+
+            doneToTodo(dropped, doneButton)
+
+            this.stack.container.append(dropped)
+
+            const dones = new Dones(this.user)
+            // dones.markAsUndone(data)
+        }
+
+        this.stack.container.addEventListener('dragenter', this.handleDragEnterOver)
+        this.stack.container.addEventListener('dragover', this.handleDragEnterOver)
+        this.stack.container.addEventListener('dragleave', this.handleDragLeave)
+        this.stack.container.addEventListener('drop', this.handleDrop)
+    }
+
+    resetDrag = () => {
+        const allTasks = document.querySelectorAll('div[draggable="true"]')
+        allTasks.forEach((task) => {
+            task.removeEventListener('dragstart', this.handleDragStart)
+            task.removeEventListener('dragend', this.handleDragEnd)
         })
+
+        this.stack.container.removeEventListener('dragenter', this.handleDragEnterOver)
+        this.stack.container.removeEventListener('dragover', this.handleDragEnterOver)
+        this.stack.container.removeEventListener('dragleave', this.handleDragLeave)
+        this.stack.container.removeEventListener('drop', this.handleDrop)
+    }
+
+    handleStack = async () => {
+        const stack = await this.getStack()
+        if (stack.length === 0) {
+            this.emptyState()
+            this.handleDragRecipient()
+        } else {
+            this.handleDragSender()
+            this.handleDragRecipient()
+        }
+    }
+
+    resetStack = () => {
+        while (this.stack.container.hasChildNodes()) {
+            this.stack.container.removeChild(this.stack.container.firstChild)
+        }
+
+        this.stack.container.appendChild(this.stack.heading)
     }
 
     filterByProjects = async (projectId) => {
         try {
+            this.resetStack()
+
             const { data } = await fetchData(`/api/users/${this.user
                 }/todos`)
-
-            while (this.stack.container.hasChildNodes()) {
-                this.stack.container.removeChild(this.stack.container.firstChild)
-            }
-
-            this.stack.container.appendChild(this.stack.heading)
 
             const filtered = data.filter((todo) => {
                 return todo.project_id === parseInt(projectId)
             })
 
-            this.createStack(filtered)
+            if (filtered.length === 0) {
+                this.emptyState()
+                this.resetDrag()
+                this.handleDragRecipient()
+            } else {
+                this.createStack(filtered)
+                this.resetDrag()
+                this.handleDragSender()
+                this.handleDragRecipient()
+            }
+
+            return filtered
         } catch (err) {
             console.error(err)
         }
@@ -407,6 +438,14 @@ class Todos {
         });
     }
 
+    handleModal = () => {
+        this.handleShowAddModal()
+        this.handleCloseAddModal()
+        this.handleCloseEditModal()
+        this.handleCloseDeleteModal()
+        this.handleClickOutsideModal()
+    }
+
     handleBlur = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('blur', () => {
@@ -438,6 +477,7 @@ class Todos {
     handleSubmit = (form, apiUrl, method, submitButton, modalCloser) => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault()
+
             const defaultMsg = submitButton.innerHTML
             submitButton.innerHTML = ''
             loadAnimation(submitButton, 'dots')
@@ -461,6 +501,17 @@ class Todos {
                 console.error(err)
             }
         })
+    }
+
+    handleForm = () => {
+        this.handleInput(this.add.form.fields, this.add.form.submit)
+        this.handleInput(this.edit.form.fields, this.edit.form.submit)
+        this.handleBlur(this.add.form.fields)
+        this.handleBlur(this.edit.form.fields)
+        this.handleFocus(this.add.form.fields)
+        this.handleFocus(this.edit.form.fields)
+        this.handleSubmit(this.add.form.form, `/api/users/${this.user}/todos`, sendData, this.add.form.submit, this.closeAddModal)
+        this.handleSubmit(this.edit.form.form, `api/users/${this.user}/todos/`, updateData, this.edit.form.submit, this.closeEditModal)
     }
 }
 

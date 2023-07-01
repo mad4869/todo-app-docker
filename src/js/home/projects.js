@@ -12,6 +12,7 @@ import {
 } from '../components/form'
 import createButton from "../components/button"
 import showNotice from '../components/notice'
+import loadAnimation from "../components/animation"
 class Projects {
     constructor(user) {
         this.user = user
@@ -36,19 +37,6 @@ class Projects {
         }
     }
 
-    attachHandlers = () => {
-        this.handleShowOptions()
-        this.handleShowAddModal()
-        this.handleCloseAddModal()
-
-        this.handleEmpty()
-
-        this.handleInput(this.add.form.fields, this.add.form.submit)
-        this.handleBlur(this.add.form.fields)
-        this.handleFocus(this.add.form.fields)
-        this.handleSubmit(this.add.form.form)
-    }
-
     createOption = (title, data, handler) => {
         const option = document.createElement('li')
         option.className = "w-full text-center border-b border-solid border-violet-500 py-2 cursor-pointer hover:bg-teal-600"
@@ -59,22 +47,68 @@ class Projects {
         return option
     }
 
+    createResetFilter = () => {
+        const oldReset = document.querySelector('li[data-id="0"]')
+        if (oldReset) {
+            oldReset.remove()
+        }
+
+        const handleReset = () => {
+            this.closeOptions()
+
+            this.filter.selected.innerHTML = ''
+            loadAnimation(this.filter.selected, 'dots')
+
+            const todos = new Todos(this.user)
+            const dones = new Dones(this.user)
+
+            todos.resetStack()
+            dones.resetStack()
+
+            todos.handleStack()
+            dones.handleStack()
+
+            this.filter.selected.innerHTML = reset.textContent
+            reset.classList.add('hidden')
+
+            const options = Array.from(reset.parentNode.children).filter(option => option !== reset)
+            options.forEach((option) => option.classList.remove('hidden'))
+        }
+
+        const reset = this.createOption('All Projects', 0, handleReset)
+        reset.classList.add('text-teal-400', 'border-t', 'hover:rounded-b-2xl', 'hover:bg-teal-900')
+        reset.classList.remove('border-b', 'hover:bg-teal-600')
+        this.filter.options.append(reset)
+    }
+
     createOptions = (data) => {
         for (let i = 0; i < data.length; i++) {
-            const handleFilterTasks = () => {
-                this.filter.selected.textContent = option.textContent
-                option.classList.add('hidden')
-
-                const others = Array.from(option.parentNode.children).filter(other => other !== option)
-                others.forEach((other) => other.classList.remove('hidden'))
-
+            const handleFilterTasks = async () => {
                 this.closeOptions()
+
+                this.filter.selected.innerHTML = ''
+                loadAnimation(this.filter.selected, 'dots')
 
                 const todos = new Todos(this.user)
                 const dones = new Dones(this.user)
 
-                todos.filterByProjects(option.dataset.id)
-                dones.filterByProjects(option.dataset.id)
+                try {
+                    const filteredTodos = await todos.filterByProjects(option.dataset.id)
+                    const filteredDones = await dones.filterByProjects(option.dataset.id)
+
+                    if (filteredTodos && filteredDones) {
+                        this.filter.selected.innerHTML = option.textContent
+                        option.classList.add('hidden')
+
+                        const others = Array.from(option.parentNode.children).filter(other => other !== option)
+                        others.forEach((other) => other.classList.remove('hidden'))
+
+                        this.createResetFilter()
+
+                    }
+                } catch (err) {
+                    console.error(err)
+                }
             }
 
             const option = this.createOption(data[i].title, data[i].project_id, handleFilterTasks)
@@ -119,7 +153,7 @@ class Projects {
         this.filter.options.appendChild(emptyBox)
     }
 
-    handleEmpty = async () => {
+    handleOptions = async () => {
         const options = await this.getOptions()
         if (!options) {
             this.emptyState()
@@ -186,6 +220,13 @@ class Projects {
         })
     }
 
+    handleModal = () => {
+        this.handleShowOptions()
+        this.handleShowAddModal()
+        this.handleCloseAddModal()
+        this.handleClickOutsideModal()
+    }
+
     handleBlur = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('blur', () => {
@@ -218,7 +259,8 @@ class Projects {
         form.addEventListener('submit', async (e) => {
             e.preventDefault()
 
-            this.add.form.submit.value = "Adding project..."
+            this.add.form.submit.innerHTML = ''
+            loadAnimation(this.add.form.submit, 'dots')
 
             const formData = new FormData(form)
 
@@ -227,7 +269,7 @@ class Projects {
                 if (res.success) {
                     location.reload()
                 } else {
-                    this.add.form.submit.value = "ADD"
+                    this.add.form.submit.innerHTML = "add"
                     this.closeAddModal()
 
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
@@ -237,6 +279,13 @@ class Projects {
                 console.error(error)
             }
         })
+    }
+
+    handleForm = () => {
+        this.handleInput(this.add.form.fields, this.add.form.submit)
+        this.handleBlur(this.add.form.fields)
+        this.handleFocus(this.add.form.fields)
+        this.handleSubmit(this.add.form.form)
     }
 }
 
