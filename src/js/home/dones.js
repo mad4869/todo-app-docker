@@ -2,7 +2,7 @@ import Todos from './todos'
 
 import { fetchData, updateData, deleteData } from '../components/data'
 import createButton from '../components/button'
-import { todoToDone } from '../components/switch'
+import { getNextElement, todoToDone } from '../components/switch'
 import loadAnimation from '../components/animation'
 
 class Dones {
@@ -132,8 +132,30 @@ class Dones {
             })
         }
 
-        this.handleUndone = () => {
-            this.markAsUndone(doneId)
+        this.handleUndone = async () => {
+            const todo = document.querySelector(`[data-id="${doneId}"]`)
+            const undoneButton = todo.querySelector('button[name="undone-button"]')
+
+            undoneButton.innerHTML = ''
+            loadAnimation(undoneButton, 'dots')
+
+            try {
+                const updatedData = await this.markAsUndone(doneId)
+                if (updatedData) {
+                    const res = await updateData(`/api/users/${this.user
+                        }/todos/${doneId}`, JSON.stringify(updatedData))
+
+                    if (res.success) {
+                        location.reload()
+                    } else {
+                        undoneButton.innerHTML = '<i class="fa-solid fa-arrow-rotate-left"></i>'
+
+                        showNotice(res.message, 'error')
+                    }
+                }
+            } catch (err) {
+                console.error(err)
+            }
         }
 
         const editButton = createButton('px-4 py-px text-xs text-emerald-500 rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-emerald-700', 'Edit', handleEdit, 'edit-button', 'Edit this task')
@@ -190,17 +212,29 @@ class Dones {
         this.stack.container.append(emptyBox)
     }
 
+    checkDone = async (todoId) => {
+        try {
+            const { data } = await fetchData(`/api/users/${this.user
+                }/todos/${todoId}`)
+
+            if (data.is_done) {
+                return data
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
     markAsUndone = async (doneId) => {
         try {
-            const { data } = await fetchData(`/api/users/${this.user}/todos/${doneId}`)
-            const updatedData = {
-                ...data,
-                is_done: false,
-            }
+            const data = await this.checkDone(doneId)
+            if (data) {
+                const updatedData = {
+                    ...data,
+                    is_done: false,
+                }
 
-            const { success } = await updateData(`/api/users/${this.user}/todos/${doneId}`, JSON.stringify(updatedData))
-            if (success) {
-                location.reload()
+                return updatedData
             }
         } catch (err) {
             console.error(err)
@@ -209,11 +243,6 @@ class Dones {
 
     handleDragSender = () => {
         this.handleDragStart = (e) => {
-            // this.stack.container.removeEventListener('dragenter', this.handleDragEnterOver)
-            // this.stack.container.removeEventListener('dragover', this.handleDragEnterOver)
-            // this.stack.container.removeEventListener('dragleave', this.handleDragLeave)
-            // this.stack.container.removeEventListener('drop', this.handleDrop)
-
             e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
 
             e.target.classList.add('opacity-50');
@@ -221,11 +250,6 @@ class Dones {
 
         this.handleDragEnd = (e) => {
             e.target.classList.remove('opacity-50')
-
-            // this.stack.container.addEventListener('dragenter', this.handleDragEnterOver)
-            // this.stack.container.addEventListener('dragover', this.handleDragEnterOver)
-            // this.stack.container.addEventListener('dragleave', this.handleDragLeave)
-            // this.stack.container.addEventListener('drop', this.handleDrop)
         }
 
         const allTasks = document.querySelectorAll('div[draggable="true"]')
@@ -247,11 +271,17 @@ class Dones {
 
             todoToDone(dropped, undoneButton)
 
+            const { nextElement } = getNextElement(this.stack.container, e.clientY)
+
             if (this.stack.container.contains(document.getElementById('empty-state'))) {
                 this.stack.container.replaceChild(dropped, document.getElementById('empty-state'))
             }
 
-            this.stack.container.append(dropped)
+            if (!nextElement) {
+                this.stack.container.append(dropped)
+            } else {
+                this.stack.container.insertBefore(dropped, nextElement)
+            }
 
             const todos = new Todos(this.user)
             if (!todos.stack.heading.nextElementSibling) {
@@ -259,36 +289,32 @@ class Dones {
             }
         }
 
-        // this.handleDragLeave = (e) => {
-        //     e.preventDefault()
-        //     this.stack.container.classList.remove('bg-teal-300')
-        // }
+        this.handleDrop = async (e) => {
+            e.preventDefault()
 
-        // this.handleDrop = (e) => {
-        //     e.preventDefault()
-        //     this.stack.container.classList.remove('bg-teal-300')
+            const data = e.dataTransfer.getData('text/plain')
 
-        //     console.log('hello from done')
+            const todos = new Todos(this.user)
+            const updatedData = await todos.markAsDone(data)
+            if (updatedData) {
+                this.stack.heading.innerHTML = ''
+                loadAnimation(this.stack.heading, 'loading')
 
-        //     const empty = document.getElementById('empty-state')
-        //     if (empty) {
-        //         empty.classList.add('hidden')
-        //     }
+                const res = await updateData(`/api/users/${this.user
+                    }/todos/${data}`, JSON.stringify(updatedData))
 
-        //     const data = e.dataTransfer.getData('text/plain')
+                if (res.success) {
+                    location.reload()
+                } else {
+                    this.stack.heading.innerHTML = 'Done'
 
-        //     const dropped = document.querySelector(`[data-id="${data}"]`)
+                    showNotice(res.message, 'error')
+                }
+            }
+        }
 
-        //     this.stack.container.append(dropped)
-
-        //     const todos = new Todos(this.user)
-        //     // todos.markAsDone(data)
-        // }
-
-        // this.stack.container.addEventListener('dragenter', this.handleDragEnterOver)
         this.stack.container.addEventListener('dragover', this.handleDragEnterOver)
-        // this.stack.container.addEventListener('dragleave', this.handleDragLeave)
-        // this.stack.container.addEventListener('drop', this.handleDrop)
+        this.stack.container.addEventListener('drop', this.handleDrop)
     }
 
     resetDrag = () => {

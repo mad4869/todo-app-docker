@@ -50,4 +50,18 @@ const doneToTodo = (dropped, newButton) => {
     rightButtons.append(newButton)
 }
 
-export { todoToDone, doneToTodo }
+const getNextElement = (container, y) => {
+    const otherElements = [...container.querySelectorAll('div[draggable="true"]:not(.opacity-50)')]
+
+    return otherElements.reduce((next, element) => {
+        const box = element.getBoundingClientRect()
+        const offset = y - (box.top + box.height / 2)
+        if (offset < 0 && offset > next.offset) {
+            return { offset, nextElement: element }
+        } else {
+            return next
+        }
+    }, { offset: Number.NEGATIVE_INFINITY })
+}
+
+export { todoToDone, doneToTodo, getNextElement }

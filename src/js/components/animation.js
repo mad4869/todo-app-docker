@@ -5,6 +5,7 @@ import alertAnimation from '../../animations/alert.json'
 import infoAnimation from '../../animations/info.json'
 import helloAnimation from '../../animations/hello.json'
 import dotsAnimation from '../../animations/dots.json'
+import loadingAnimation from '../../animations/loading.json'
 
 // Use Lottie to load animation based on categories
 
@@ -26,6 +27,9 @@ const loadAnimation = (container, category) => {
             break
         case 'dots':
             animationData = dotsAnimation
+            break
+        case 'loading':
+            animationData = loadingAnimation
             break
         default:
             animationData = null

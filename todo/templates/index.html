@@ -27,10 +27,10 @@
     </section>
     <section id="home-todos-dones" class="flex gap-16 justify-between px-28">
         <div id="home-todos-container" class="flex flex-col gap-4 items-center w-1/2">
-            <h1 id="home-todos-heading" class="text-3xl text-violet-700 font-bold">To Do</h1>
+            <h1 id="home-todos-heading" class="max-h-10 text-3xl text-violet-700 font-bold">To Do</h1>
         </div>
         <div id="home-dones-container" class="flex flex-col gap-4 items-center w-1/2">
-            <h1 id="home-dones-heading" class="text-3xl text-teal-600 font-bold">Done</h1>
+            <h1 id="home-dones-heading" class="max-h-10 text-3xl text-teal-600 font-bold">Done</h1>
         </div>
     </section>
     <section id="home-menu" class="fixed flex flex-col gap-2 justify-center items-center left-0 right-0 bottom-0 py-4 bg-white rounded-t-full transition-transform duration-300 translate-y-full">
@@ -66,5 +66,5 @@
 {% endblock %}
 
 {% block script %}
-    {{static_url_for('static', filename='dist/js/home.bundle.js')}}
+    {{ static_url_for('static', filename='dist/js/home.bundle.js') }}
 {% endblock %}
