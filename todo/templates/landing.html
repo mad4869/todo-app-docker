@@ -5,18 +5,34 @@
 {% endblock %}
 
 {% block header %}
-    <nav class="flex justify-between items-center w-screen px-28 py-4 bg-violet-700">
+    <nav class="flex justify-between items-center w-screen px-10 py-4 bg-violet-700 
+                md:px-16 
+                lg:px-28 
+                xl:px-36">
         <div>
             <a href="{{ url_for('views.home_page') }}">
                 <img src="{{ static_url_for('static', filename='dist/img/text-logo-white.svg') }}" alt="Text Logo" class="h-8"></a>
             </div>
-            <div>
+            <div id="landing-hamburger-button" class="group sm:hidden">
+                <i class="fa-solid fa-bars text-white group-hover:cursor-pointer"></i>
+            </div>
+            <div id="landing-hamburger-menu" class="absolute top-12 right-10 px-4 py-2 bg-white/70 backdrop-blur-sm rounded-xl transition-opacity duration-300 opacity-0">
+                <ul class="text-white text-center uppercase">
+                    <li class="text-teal-600 hover:text-violet-700">
+                        <a href="{{ url_for('views.login_page') }}" title="Log in">login</a>
+                    </li>
+                    <li class="text-teal-600 font-semibold hover:text-violet-700">
+                        <a href="{{ url_for('views.register_page') }}" title="Register your account">create account</a>
+                    </li>
+                </ul>
+            </div>
+            <div id="landing-nav-menu" class="hidden sm:flex">
                 <ul class="flex gap-4 justify-center items-center text-white uppercase">
                     <li class="hover:text-teal-500">
-                        <a href="{{ url_for('views.login_page') }}">login</a>
+                        <a href="{{ url_for('views.login_page') }}" title="Log in">login</a>
                     </li>
                     <li class="bg-teal-500 px-4 py-1 font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] hover:bg-teal-700">
-                        <a href="{{ url_for('views.register_page') }}">create account</a>
+                        <a href="{{ url_for('views.register_page') }}" title="Register your account">create account</a>
                     </li>
                 </ul>
             </div>
@@ -24,25 +40,42 @@
     {% endblock %}
 
     {% block content %}
-        <section class="flex justify-between gap-12 h-screen px-28 bg-violet-700">
-            <article class="flex-1 flex flex-col gap-12 pt-24 text-white">
-                <div class="flex flex-col gap-4">
-                    <h1 class="text-5xl font-bold">All you have
+        <section class="px-4 h-screen bg-violet-700
+                        sm:flex sm:gap-1 sm:px-10 sm:py-8
+                        md:px-16
+                        lg:px-28
+                        xl:gap-20 xl:px-36">
+            <article class="flex flex-col items-center gap-12 pt-16 text-white 
+                            sm:items-start sm:gap-8 sm:pt-8 
+                            xl:gap-16 xl:pt-10">
+                <div class="flex flex-col items-center gap-2 
+                            sm:items-start">
+                    <h1 class="text-4xl font-bold 
+                                lg:text-5xl 
+                                xl:text-6xl">
+                                All you have
                         <span class="text-teal-400">to do</span>
                     </h1>
-                    <h1 class="text-5xl font-bold">All in
+                    <h1 class="text-4xl font-bold 
+                                lg:text-5xl 
+                                xl:text-6xl">
+                                All in
                         <span class="text-rose-400">one place</span>
                     </h1>
-                    <p class="text-xl">A simple app that would help you managing all your projects and tasks</p>
+                    <p class="text-lg text-center 
+                                sm:text-left 
+                                xl:text-xl">
+                                A simple app that would help you managing all your projects and tasks
+                    </p>
                 </div>
-                <a href="{{ url_for('views.register_page') }}" class="w-fit bg-teal-500 px-4 py-1 font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase hover:bg-teal-700">
+                <a href="{{ url_for('views.register_page') }}" class="w-fit bg-teal-500 px-4 py-1 font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase hover:bg-teal-700" title="Register your account">
                     get started</a>
             </article>
-            <aside>
-                <img src="{{ static_url_for('static', filename='dist/img/hero.png') }}" alt="Hero Image" class="max-w-md"></aside>
+            <aside class="hidden sm:block">
+                <img src="{{ static_url_for('static', filename='dist/img/hero.png') }}" alt="Hero Image" class="w-60 md:w-72 lg:w-80 xl:w-96 max-w-sm"></aside>
             </section>
         {% endblock %}
 
         {% block script %}
-            {{ static_url_for('static', filename='dist/js/home.bundle.js') }}
+            {{ static_url_for('static', filename='dist/js/landing.bundle.js') }}
         {% endblock %}
