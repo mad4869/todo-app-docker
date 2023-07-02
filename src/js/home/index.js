@@ -7,7 +7,7 @@ import Dones from './dones'
 
 import { handleFlash } from '../components/notice'
 import handleLogout from '../components/logout'
-import handleFooter from '../components/footer'
+import setFooter from '../components/footer'
 
 // Handle flash
 const flash = document.getElementById('flash')
@@ -44,4 +44,4 @@ dones.handleStack()
 menu.handleMenu()
 
 // Footer
-handleFooter()
+setFooter()

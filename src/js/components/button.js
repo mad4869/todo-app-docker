@@ -1,3 +1,5 @@
+// Create and return a button element
+
 const createButton = (classList, content, handler, name = "", title = "") => {
     const button = document.createElement('button')
 

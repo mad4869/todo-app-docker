@@ -3,8 +3,8 @@ import '../../css/style.css'
 import Projects from './projects'
 import active from '../components/active'
 import { handleFlash } from '../components/notice'
-import handleFooter from '../components/footer'
 import handleLogout from '../components/logout'
+import setFooter from '../components/footer'
 
 
 // Handle flash
@@ -30,4 +30,4 @@ projects.getStack()
 projects.attachHandlers()
 
 // Footer
-handleFooter()
+setFooter()

@@ -16,7 +16,7 @@ class RegisterForm {
         this.submit = document.getElementById('form-register-submit')
     }
 
-    attachEventListeners = () => {
+    handleForm = () => {
         this.handleInput()
         this.handleBlur()
         this.handleFocus()

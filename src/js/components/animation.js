@@ -6,6 +6,8 @@ import infoAnimation from '../../animations/info.json'
 import helloAnimation from '../../animations/hello.json'
 import dotsAnimation from '../../animations/dots.json'
 
+// Use Lottie to load animation based on categories
+
 const loadAnimation = (container, category) => {
     let animationData = null
 

@@ -13,7 +13,7 @@ class LoginForm {
         this.submit = document.getElementById('form-login-submit')
     }
 
-    attachHandlers = () => {
+    handleForm = () => {
         enableSubmit(this.fields, this.submit)
         this.handleInput()
         this.handleBlur()

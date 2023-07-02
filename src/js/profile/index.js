@@ -3,8 +3,8 @@ import '../../css/style.css'
 import User from './user'
 import active from '../components/active'
 import { handleFlash } from '../components/notice'
-import handleFooter from '../components/footer'
 import handleLogout from '../components/logout'
+import setFooter from '../components/footer'
 
 
 // Handle flash
@@ -33,4 +33,4 @@ user.attachHandlers()
 user.getTasksDetails()
 
 // Footer
-handleFooter()
+setFooter()

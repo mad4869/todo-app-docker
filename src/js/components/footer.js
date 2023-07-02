@@ -1,3 +1,4 @@
+// Display a clock
 const setClock = () => {
     const date = new Date()
     const clock = document.getElementById('footer-clock')
@@ -5,19 +6,23 @@ const setClock = () => {
     clock.textContent = date.toLocaleTimeString([], { hour12: false })
 }
 
-const showYear = () => {
+// Display the year dynamically
+const setYear = () => {
     const year = document.getElementById('footer-year')
     year.textContent = new Date().getFullYear()
 }
 
-const handleFooter = () => {
+// Set footer content
+const setFooter = () => {
+    // If a page uses footer, add some space above the footer
     const footer = document.getElementById('footer')
     if (footer.hasChildNodes) {
         footer.classList.add('mt-8')
     }
 
+    // Display the clock and the year
     setInterval(setClock, 1000)
-    showYear()
+    setYear()
 }
 
-export default handleFooter
+export default setFooter

@@ -4,4 +4,4 @@ import LoginForm from './form'
 
 const form = new LoginForm();
 
-form.attachHandlers()
+form.handleForm()

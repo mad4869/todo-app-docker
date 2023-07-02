@@ -196,9 +196,23 @@ class Projects {
             const { data } = await fetchData(`/api/users/${this.user}/projects/${dataId}`)
             this.delete.deleted.textContent = data.title
 
-            this.delete.confirm.addEventListener('click', () => {
-                this.deleteProject(dataId)
-                this.closeDeleteProject()
+            this.delete.confirm.addEventListener('click', async () => {
+                this.delete.confirm.innerHTML = ''
+                loadAnimation(this.delete.confirm, 'dots')
+
+                try {
+                    const res = await deleteData(`/api/users/${this.user}/projects/${dataId}`)
+                    if (res.success) {
+                        location.reload()
+                    } else {
+                        this.delete.confirm.innerHTML = 'Confirm'
+                        this.closeDeleteModal()
+
+                        showNotice(res.message, 'error')
+                    }
+                } catch (err) {
+                    console.error(err)
+                }
             })
 
             this.delete.cancel.addEventListener('click', () => {
@@ -252,18 +266,6 @@ class Projects {
             this.createStack(data)
         } catch (err) {
             console.error(err)
-        }
-    }
-
-    deleteProject = async (projectId) => {
-        try {
-            const { success } = await deleteData(`/api/users/${this.user
-                }/projects/${projectId}`);
-            if (success) {
-                location.reload()
-            }
-        } catch (err) {
-            console.error(err);
         }
     }
 

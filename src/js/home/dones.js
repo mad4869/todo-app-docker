@@ -3,6 +3,7 @@ import Todos from './todos'
 import { fetchData, updateData, deleteData } from '../components/data'
 import createButton from '../components/button'
 import { todoToDone } from '../components/switch'
+import loadAnimation from '../components/animation'
 
 class Dones {
     constructor(user) {
@@ -92,7 +93,7 @@ class Dones {
         const description = this.createDescription(doneDesc)
 
         const handleEdit = async () => {
-            this.showEditDone()
+            this.showEditModal()
 
             const { data } = await fetchData(`/api/users/${this.user}/todos/${doneId}`)
             this.edit.form.fields.id.value = data.todo_id
@@ -102,18 +103,32 @@ class Dones {
         }
 
         const handleDelete = async () => {
-            this.showDeleteDone()
+            this.showDeleteModal()
 
             const { data } = await fetchData(`/api/users/${this.user}/todos/${doneId}`)
             this.delete.deleted.textContent = data.title
 
-            this.delete.confirm.addEventListener('click', () => {
-                this.deleteDone(doneId)
-                this.closeDeleteDone()
+            this.delete.confirm.addEventListener('click', async () => {
+                this.delete.confirm.innerHTML = ''
+                loadAnimation(this.delete.confirm, 'dots')
+
+                try {
+                    const res = await deleteData(`/api/users/${this.user}/todos/${doneId}`)
+                    if (res.success) {
+                        location.reload()
+                    } else {
+                        this.delete.confirm.innerHTML = 'Confirm'
+                        this.closeDeleteModal()
+
+                        showNotice(res.message, 'error')
+                    }
+                } catch (err) {
+                    console.error(err)
+                }
             })
 
             this.delete.cancel.addEventListener('click', () => {
-                this.closeDeleteDone()
+                this.closeDeleteModal()
             })
         }
 
@@ -175,17 +190,6 @@ class Dones {
         this.stack.container.append(emptyBox)
     }
 
-    deleteDone = async (doneId) => {
-        try {
-            const { success } = await deleteData(`/api/users/${this.user}/todos/${doneId}`);
-            if (success) {
-                location.reload()
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
     markAsUndone = async (doneId) => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}/todos/${doneId}`)
@@ -239,11 +243,20 @@ class Dones {
 
             const dropped = document.querySelector(`[data-id="${data}"]`)
 
+            const undoneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', this.handleUndone, 'undone-button', 'Mark as undone')
+
+            todoToDone(dropped, undoneButton)
+
             if (this.stack.container.contains(document.getElementById('empty-state'))) {
                 this.stack.container.replaceChild(dropped, document.getElementById('empty-state'))
             }
 
             this.stack.container.append(dropped)
+
+            const todos = new Todos(this.user)
+            if (!todos.stack.heading.nextElementSibling) {
+                todos.emptyState()
+            }
         }
 
         // this.handleDragLeave = (e) => {
@@ -265,9 +278,6 @@ class Dones {
         //     const data = e.dataTransfer.getData('text/plain')
 
         //     const dropped = document.querySelector(`[data-id="${data}"]`)
-        //     const undoneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', this.handleUndone, 'undone-button', 'Mark as undone')
-
-        //     todoToDone(dropped, undoneButton)
 
         //     this.stack.container.append(dropped)
 
@@ -340,19 +350,19 @@ class Dones {
         }
     }
 
-    showEditDone = () => {
+    showEditModal = () => {
         this.edit.modal.classList.remove('hidden')
     }
 
-    closeEditDone = () => {
+    closeEditModal = () => {
         this.edit.modal.classList.add('hidden')
     }
 
-    showDeleteDone = () => {
+    showDeleteModal = () => {
         this.delete.modal.classList.remove('hidden')
     }
 
-    closeDeleteDone = () => {
+    closeDeleteModal = () => {
         this.delete.modal.classList.add('hidden')
     }
 }

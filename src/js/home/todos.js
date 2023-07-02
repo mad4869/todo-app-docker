@@ -120,9 +120,23 @@ class Todos {
                 }/todos/${todoId}`)
             this.delete.deleted.textContent = data.title
 
-            this.delete.confirm.addEventListener('click', () => {
-                this.closeDeleteModal()
-                this.deleteTodo(todoId)
+            this.delete.confirm.addEventListener('click', async () => {
+                this.delete.confirm.innerHTML = ''
+                loadAnimation(this.delete.confirm, 'dots')
+
+                try {
+                    const res = await deleteData(`/api/users/${this.user}/todos/${todoId}`)
+                    if (res.success) {
+                        location.reload()
+                    } else {
+                        this.delete.confirm.innerHTML = 'Confirm'
+                        this.closeDeleteModal()
+
+                        showNotice(res.message, 'error')
+                    }
+                } catch (err) {
+                    console.error(err)
+                }
             })
 
             this.delete.cancel.addEventListener('click', () => {
@@ -197,17 +211,6 @@ class Todos {
         this.stack.container.append(emptyBox)
     }
 
-    deleteTodo = async (todoId) => {
-        try {
-            const { success } = await deleteData(`/api/users/${this.user}/todos/${todoId}`);
-            if (success) {
-                location.reload()
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
     markAsDone = async (todo_id) => {
         try {
             const { data } = await fetchData(`/api/users/${this.user
@@ -263,11 +266,20 @@ class Todos {
 
             const dropped = document.querySelector(`[data-id="${data}"]`)
 
+            const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-violet-700', '<i class="fa-solid fa-check"></i>', this.handleDone, 'done-button', 'Mark as done')
+
+            doneToTodo(dropped, doneButton)
+
             if (this.stack.container.contains(document.getElementById('empty-state'))) {
                 this.stack.container.replaceChild(dropped, document.getElementById('empty-state'))
             }
 
             this.stack.container.append(dropped)
+
+            const dones = new Dones(this.user)
+            if (!dones.stack.heading.nextElementSibling) {
+                dones.emptyState()
+            }
         }
 
         // this.handleDragLeave = (e) => {
@@ -289,9 +301,6 @@ class Todos {
         //     const data = e.dataTransfer.getData('text/plain')
 
         //     const dropped = document.querySelector(`[data-id="${data}"]`)
-        //     const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-[1px_1px_1px_rgba(0,0,0,0.3)] bg-violet-700', '<i class="fa-solid fa-check"></i>', this.handleDone, 'done-button', 'Mark as done')
-
-        //     doneToTodo(dropped, doneButton)
 
         //     this.stack.container.append(dropped)
 

@@ -11,57 +11,56 @@
 {% block content %}
     <section class="flex w-4/5 mx-auto mt-8 px-8 py-4 rounded-3xl shadow-[5px_7px_10px_rgba(0,0,0,0.3)]">
         <div class="w-1/4">
-            <img src="https://slp-statics.astockcdn.net/static_assets/staging/23winter/home/curated-collections/Card6_564766791.jpg" alt="Profile Photo" class="w-full rounded-lg">
-        </div>
-        <div id="profile-user" class="flex-1 flex flex-col justify-between px-4">
-            <div class="flex flex-col gap-1">
-                <h1 id="profile-user-name" class="text-3xl text-violet-700 font-bold focus:outline-none focus:border-b focus:border-solid focus:border-violet-900" contenteditable="true"></h1>
-                <h3 id="profile-user-role" class="text-lg text-violet-500 font-medium focus:outline-none focus:border-b focus:border-solid focus:border-violet-900" contenteditable="true"></h3>
-            </div>
-            <div>
-                <p id="profile-user-bio" class="text-xs text-slate-800 italic focus:outline-none focus:mb-1 focus:border-b focus:border-solid focus:border-slate-900" contenteditable="true"></p>
-            </div>
-            <div class="text-right">
-                <button id="profile-user-update" class="bg-violet-700 px-4 py-px text-white rounded-lg shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase hidden">
-                    update profile
-                </button>
-            </div>
-        </div>
-    </section>
-    <section class="flex flex-col gap-4 w-4/5 mx-auto mt-8 px-8 py-4">
-        <div class="flex gap-2 w-full items-center">
-            <h6 class="text-slate-400 text-sm font-medium">Tasks Details</h6>
-            <div class="flex-1 w-full h-px bg-slate-400"></div>
-        </div>
-        <div class="flex flex-col gap-1 justify-center items-center w-full py-8 bg-indigo-700 rounded-xl">
-            <h2 class="text-white text-xl">Total Tasks</h2>
-            <h2 id="profile-tasks-total" class="text-white text-3xl font-bold"></h2>
-        </div>
-        <div class="flex justify-between">
-            <div class="w-2/5 rounded-lg shadow-[3px_5px_10px_rgba(0,0,0,0.3)]">
-                <div class="w-full py-2 text-center text-white bg-violet-700 rounded-lg">
-                    <h3>Tasks On Progress</h3>
+            <img src="https://images.unsplash.com/photo-1628260412297-a3377e45006f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" alt="Profile Photo" class="w-full rounded-lg"></div>
+            <div id="profile-user" class="flex-1 flex flex-col justify-between px-4">
+                <div class="flex flex-col gap-1">
+                    <h1 id="profile-user-name" class="text-3xl text-violet-700 font-bold focus:outline-none focus:border-b focus:border-solid focus:border-violet-900" contenteditable="true"></h1>
+                    <h3 id="profile-user-role" class="text-lg text-violet-500 font-medium focus:outline-none focus:border-b focus:border-solid focus:border-violet-900" contenteditable="true"></h3>
                 </div>
-                <div class="py-4 text-center text-2xl text-violet-700 font-bold">
-                    <h3 id="profile-tasks-onprogress"></h3>
+                <div>
+                    <p id="profile-user-bio" class="text-xs text-slate-800 italic focus:outline-none focus:mb-1 focus:border-b focus:border-solid focus:border-slate-900" contenteditable="true"></p>
+                </div>
+                <div class="text-right">
+                    <button id="profile-user-update" class="bg-violet-700 px-4 py-px text-white rounded-lg shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase hidden">
+                        update profile
+                    </button>
                 </div>
             </div>
-            <div class="w-2/5 rounded-lg shadow-[3px_5px_10px_rgba(0,0,0,0.3)]">
-                <div class="w-full py-2 text-center text-white bg-teal-600 rounded-lg">
-                    <h3>Tasks Done</h3>
+        </section>
+        <section class="flex flex-col gap-4 w-4/5 mx-auto mt-8 px-8 py-4">
+            <div class="flex gap-2 w-full items-center">
+                <h6 class="text-slate-400 text-sm font-medium">Tasks Details</h6>
+                <div class="flex-1 w-full h-px bg-slate-400"></div>
+            </div>
+            <div class="flex flex-col gap-1 justify-center items-center w-full py-8 bg-indigo-700 rounded-xl">
+                <h2 class="text-white text-xl">Total Tasks</h2>
+                <h2 id="profile-tasks-total" class="text-white text-3xl font-bold"></h2>
+            </div>
+            <div class="flex justify-between">
+                <div class="w-2/5 rounded-lg shadow-[3px_5px_10px_rgba(0,0,0,0.3)]">
+                    <div class="w-full py-2 text-center text-white bg-violet-700 rounded-lg">
+                        <h3>Tasks On Progress</h3>
+                    </div>
+                    <div class="py-4 text-center text-2xl text-violet-700 font-bold">
+                        <h3 id="profile-tasks-onprogress"></h3>
+                    </div>
                 </div>
-                <div class="py-4 text-center text-2xl text-teal-700 font-bold">
-                    <h3 id="profile-tasks-done"></h3>
+                <div class="w-2/5 rounded-lg shadow-[3px_5px_10px_rgba(0,0,0,0.3)]">
+                    <div class="w-full py-2 text-center text-white bg-teal-600 rounded-lg">
+                        <h3>Tasks Done</h3>
+                    </div>
+                    <div class="py-4 text-center text-2xl text-teal-700 font-bold">
+                        <h3 id="profile-tasks-done"></h3>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-{% endblock %}
+        </section>
+    {% endblock %}
 
-{% block footer %}
-    {% include "components/footer.html" %}
-{% endblock %}
+    {% block footer %}
+        {% include "components/footer.html" %}
+    {% endblock %}
 
-{% block script %}
-    {{static_url_for('static', filename='dist/js/profile.bundle.js')}}
-{% endblock %}
+    {% block script %}
+        {{ static_url_for('static', filename='dist/js/profile.bundle.js') }}
+    {% endblock %}
