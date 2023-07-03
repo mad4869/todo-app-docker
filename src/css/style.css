@@ -20,12 +20,21 @@
     .hello {
         @apply bg-green-600
     }
-
     .error {
         @apply bg-red-600
     }
-
     .info {
         @apply bg-blue-600
     }
+
+    .shadow-button-sm {
+        @apply shadow-[0px_2px_5px_rgba(0,0,0,0.6)]
+    }
+    .shadow-button-lg {
+        @apply shadow-[2px_2px_5px_rgba(0,0,0,0.3)]
+    }
+    .shadow-card {
+        @apply shadow-[5px_7px_10px_rgba(0,0,0,0.3)]
+    }
+
 }

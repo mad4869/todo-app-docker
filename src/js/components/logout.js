@@ -28,16 +28,16 @@ const logout = () => {
 
 // Handle the logout procedure
 const handleLogout = () => {
-    const logoutLink = document.querySelector('a[href="/auth/logout"]')
+    const logoutLinks = [...document.querySelectorAll('a[href="/auth/logout"]')]
 
     // The user clicks the logout link
-    logoutLink.addEventListener('click', async (e) => {
+    logoutLinks.forEach(link => link.addEventListener('click', async (e) => {
         // Prevent the browser to refresh the page
         e.preventDefault()
 
         // Display loading state
-        logoutLink.innerHTML = ''
-        loadAnimation(logoutLink, 'dots')
+        link.innerHTML = ''
+        loadAnimation(link, 'dots-white')
 
         // Make an API call the logout endpoint
         try {
@@ -47,14 +47,14 @@ const handleLogout = () => {
                 window.location.replace('/')
                 // If the user fails to log out, abort the loading state and show a notice
             } else {
-                logoutLink.innerHTML = 'Logout'
+                link.innerHTML = 'Logout'
 
                 showNotice('Failed to log you out. Please try again.', 'error')
             }
         } catch (err) {
             console.error(err)
         }
-    })
+    }))
 }
 
 export default handleLogout

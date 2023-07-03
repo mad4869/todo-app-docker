@@ -1,6 +1,7 @@
 import '../../css/style.css'
 
 import { handleFlash } from '../components/notice'
+import handleHamburger from '../components/hamburger'
 
 // Handle flash
 const flash = document.getElementById('flash')
@@ -9,10 +10,4 @@ if (flash) {
 }
 
 // Mobile screen
-const hamburger = document.getElementById('landing-hamburger-button')
-const menu = document.getElementById('landing-hamburger-menu')
-
-hamburger.addEventListener('click', () => {
-    menu.classList.toggle('opacity-0')
-    menu.classList.toggle('opacity-100')
-})
+handleHamburger()

@@ -221,6 +221,7 @@ class Todos {
 
         const text = document.createElement('h3')
         text.textContent = "you haven't added any tasks yet"
+        text.className = 'text-sm sm:text-base md:text-lg'
 
         const handleCta = () => {
             this.showAddModal()
@@ -344,11 +345,8 @@ class Todos {
             task.removeEventListener('dragstart', this.handleDragStart)
             task.removeEventListener('dragend', this.handleDragEnd)
         })
-
-        // this.stack.container.removeEventListener('dragenter', this.handleDragEnterOver)
         this.stack.container.removeEventListener('dragover', this.handleDragEnterOver)
-        // this.stack.container.removeEventListener('dragleave', this.handleDragLeave)
-        // this.stack.container.removeEventListener('drop', this.handleDrop)
+        this.stack.container.removeEventListener('drop', this.handleDrop)
     }
 
     handleStack = async () => {

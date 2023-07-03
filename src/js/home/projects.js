@@ -143,6 +143,7 @@ class Projects {
 
         const handleCta = () => {
             this.showAddModal()
+            this.closeOptions()
         }
 
         const ctaButton = createButton('bg-white mt-8 px-4 py-1 text-indigo-700 font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase', 'get started', handleCta, 'project-cta-button', 'Create your first project')

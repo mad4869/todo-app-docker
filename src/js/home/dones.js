@@ -206,6 +206,7 @@ class Dones {
 
         const text = document.createElement('h3')
         text.textContent = "you haven't finished any tasks yet"
+        text.className = 'text-sm sm:text-base md:text-lg'
 
         emptyBox.append(illustration, text)
 

@@ -6,6 +6,7 @@ import Todos from './todos'
 import Dones from './dones'
 
 import { handleFlash } from '../components/notice'
+import handleHamburger from '../components/hamburger'
 import handleLogout from '../components/logout'
 import setFooter from '../components/footer'
 
@@ -14,6 +15,8 @@ const flash = document.getElementById('flash')
 if (flash) {
     handleFlash()
 }
+
+handleHamburger()
 
 // Handle Logout
 handleLogout()

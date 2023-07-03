@@ -70,30 +70,6 @@ class Projects {
         }
     }
 
-    attachHandlers = () => {
-        // Handle modals
-        this.handleShowAddModal()
-        this.handleCloseAddModal()
-        this.handleCloseEditModal()
-        this.handleCloseDeleteModal()
-        this.handleCloseTodosModal()
-        this.handleClickOutsideModal()
-
-        // Handle forms
-        this.handleInput(this.add.form.fields, this.add.form.submit)
-        this.handleInput(this.edit.form.fields, this.edit.form.submit)
-        this.handleInput(this.todos.form.fields, this.todos.form.submit)
-        this.handleBlur(this.add.form.fields)
-        this.handleBlur(this.edit.form.fields)
-        this.handleBlur(this.todos.form.fields)
-        this.handleFocus(this.add.form.fields)
-        this.handleFocus(this.edit.form.fields)
-        this.handleFocus(this.todos.form.fields)
-        this.handleSubmit(this.add.form.form, `/api/users/${this.user}/projects`, sendData, this.add.form.submit, this.closeAddModal)
-        this.handleSubmit(this.edit.form.form, `/api/users/${this.user}/projects/`, updateData, this.edit.form.submit, this.closeEditModal)
-        this.handleSubmit(this.todos.form.form, `/api/users/${this.user}/todos`, sendData, this.todos.form.submit, this.closeTodosModal)
-    }
-
     createHeading = () => {
         const heading = document.createElement('div')
         heading.className = 'flex justify-between items-center px-4 bg-indigo-700 text-white rounded-t-2xl group'
@@ -144,7 +120,7 @@ class Projects {
 
     createList = (projectId, todos) => {
         const list = document.createElement('ul')
-        list.className = 'h-full flex flex-col justify-center pl-4 pr-8 py-2'
+        list.className = 'h-full flex flex-col justify-center px-8 py-2'
 
         if (todos.length === 0) {
             const empty = this.createEmptyList(projectId)
@@ -264,8 +240,41 @@ class Projects {
                 } projects</span> so far`
 
             this.createStack(data)
+
+            return data
         } catch (err) {
             console.error(err)
+        }
+    }
+
+    emptyState = () => {
+        const emptyBox = document.createElement('div')
+        emptyBox.className = 'col-span-1 flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-indigo-700 text-indigo-700 text-lg capitalize rounded-2xl sm:text-xl sm:col-span-2 sm:col-span-3'
+        emptyBox.setAttribute('id', 'empty-state')
+
+        const illustration = document.createElement('img')
+        illustration.className = 'w-20'
+        illustration.setAttribute('src', '/static/dist/img/empty-primary.svg')
+        illustration.setAttribute('alt', 'This column is empty')
+
+        const text = document.createElement('h3')
+        text.textContent = "you haven't added any projects yet"
+
+        const handleCta = () => {
+            this.showAddModal()
+        }
+
+        const ctaButton = createButton('bg-indigo-700 mt-8 px-4 py-1 text-white font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase', 'get started', handleCta, 'project-cta-button', 'Create your first project')
+
+        emptyBox.append(illustration, text, ctaButton)
+
+        this.stack.container.append(emptyBox)
+    }
+
+    handleStack = async () => {
+        const stack = await this.getStack()
+        if (stack.length === 0) {
+            this.emptyState()
         }
     }
 
@@ -337,14 +346,18 @@ class Projects {
                 const addTodoButtons = document.querySelectorAll('button[name="add-todo-button"]')
                 const addTodoClicked = this.todos.modal.firstElementChild.contains(e.target) || Array.from(addTodoButtons).some((button) => button.contains(e.target))
                 if (!addTodoClicked) {
-                    this.todos.modal.classList.add('hidden')
+                    this.closeTodosModal()
                 }
             }
 
             if (this.add.modal) {
-                const addProjectClicked = this.add.modal.firstElementChild.contains(e.target) || this.add.show.contains(e.target)
+                const ctaButton = document.querySelector('button[name="project-cta-button"]')
+                let addProjectClicked = this.add.modal.firstElementChild.contains(e.target) || this.add.show.contains(e.target)
+                if (ctaButton) {
+                    addProjectClicked = this.add.modal.firstElementChild.contains(e.target) || this.add.show.contains(e.target) || ctaButton.contains(e.target)
+                }
                 if (!addProjectClicked) {
-                    this.add.modal.classList.add('hidden')
+                    this.closeAddModal()
                 }
             }
 
@@ -352,7 +365,7 @@ class Projects {
                 const editButtons = document.querySelectorAll('button[name="edit-button"]')
                 const editProjectClicked = this.edit.modal.firstElementChild.contains(e.target) || Array.from(editButtons).some((button) => button.contains(e.target))
                 if (!editProjectClicked) {
-                    this.edit.modal.classList.add('hidden')
+                    this.closeEditModal()
                 }
             }
 
@@ -360,10 +373,19 @@ class Projects {
                 const deleteButtons = document.querySelectorAll('button[name="delete-button"]')
                 const deleteProjectClicked = this.delete.modal.firstElementChild.contains(e.target) || Array.from(deleteButtons).some((button) => button.contains(e.target))
                 if (!deleteProjectClicked) {
-                    this.delete.modal.classList.add('hidden')
+                    this.closeDeleteModal()
                 }
             }
         })
+    }
+
+    handleModal = () => {
+        this.handleShowAddModal()
+        this.handleCloseAddModal()
+        this.handleCloseEditModal()
+        this.handleCloseDeleteModal()
+        this.handleCloseTodosModal()
+        this.handleClickOutsideModal()
     }
 
     handleBlur = (fields) => {
@@ -419,6 +441,21 @@ class Projects {
                 console.error(err)
             }
         })
+    }
+
+    handleForm = () => {
+        this.handleInput(this.add.form.fields, this.add.form.submit)
+        this.handleInput(this.edit.form.fields, this.edit.form.submit)
+        this.handleInput(this.todos.form.fields, this.todos.form.submit)
+        this.handleBlur(this.add.form.fields)
+        this.handleBlur(this.edit.form.fields)
+        this.handleBlur(this.todos.form.fields)
+        this.handleFocus(this.add.form.fields)
+        this.handleFocus(this.edit.form.fields)
+        this.handleFocus(this.todos.form.fields)
+        this.handleSubmit(this.add.form.form, `/api/users/${this.user}/projects`, sendData, this.add.form.submit, this.closeAddModal)
+        this.handleSubmit(this.edit.form.form, `/api/users/${this.user}/projects/`, updateData, this.edit.form.submit, this.closeEditModal)
+        this.handleSubmit(this.todos.form.form, `/api/users/${this.user}/todos`, sendData, this.todos.form.submit, this.closeTodosModal)
     }
 }
 

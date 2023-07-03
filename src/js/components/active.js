@@ -1,8 +1,8 @@
 // Give the active link a different color
 
 const active = (url) => {
-    const link = document.querySelector(`a[href="${url}"]`)
-    link.classList.add('text-teal-400')
+    const links = [...document.querySelectorAll(`a[href="${url}"]`)]
+    links.forEach(link => link.classList.add('text-teal-400'))
 }
 
 export default active
