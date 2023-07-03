@@ -8,6 +8,7 @@ if (flash) {
     handleFlash()
 }
 
+// Mobile screen
 const hamburger = document.getElementById('landing-hamburger-button')
 const menu = document.getElementById('landing-hamburger-menu')
 

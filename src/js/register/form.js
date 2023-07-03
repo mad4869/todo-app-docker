@@ -59,19 +59,14 @@ class RegisterForm {
         this.form.addEventListener('submit', async (e) => {
             e.preventDefault()
             this.submit.innerHTML = ''
-            loadAnimation(this.submit, 'dots')
+            loadAnimation(this.submit, 'dots-white')
 
             const formData = new FormData(this.form)
 
             try {
                 const res = await validateSubmit(formData, 'auth/register', sendData)
                 if (res.success) {
-                    this.submit.innerHTML = 'create account'
-
-                    showNotice('Your account has been registered. Please login to proceed.', 'success')
-                    setTimeout(() => {
-                        window.location.replace('/login')
-                    }, 3000)
+                    window.location.replace('/login')
                 } else {
                     this.submit.innerHTML = 'create account'
 

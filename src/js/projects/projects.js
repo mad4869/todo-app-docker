@@ -198,7 +198,7 @@ class Projects {
 
             this.delete.confirm.addEventListener('click', async () => {
                 this.delete.confirm.innerHTML = ''
-                loadAnimation(this.delete.confirm, 'dots')
+                loadAnimation(this.delete.confirm, 'dots-white')
 
                 try {
                     const res = await deleteData(`/api/users/${this.user}/projects/${dataId}`)
@@ -399,7 +399,7 @@ class Projects {
             e.preventDefault()
             const defaultMsg = submitButton.innerHTML
             submitButton.innerHTML = ''
-            loadAnimation(submitButton, 'dots')
+            loadAnimation(submitButton, 'dots-white')
 
             const formData = new FormData(form)
             try {

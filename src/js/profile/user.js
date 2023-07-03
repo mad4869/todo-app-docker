@@ -98,7 +98,7 @@ class User {
     handleUpdateProfile = () => {
         this.profile.update.addEventListener('click', async () => {
             this.profile.update.innerHTML = ''
-            loadAnimation(this.profile.update, 'dots')
+            loadAnimation(this.profile.update, 'dots-white')
 
             try {
                 const res = await this.updateProfile()

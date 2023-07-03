@@ -110,7 +110,7 @@ class Dones {
 
             this.delete.confirm.addEventListener('click', async () => {
                 this.delete.confirm.innerHTML = ''
-                loadAnimation(this.delete.confirm, 'dots')
+                loadAnimation(this.delete.confirm, 'dots-white')
 
                 try {
                     const res = await deleteData(`/api/users/${this.user}/todos/${doneId}`)
@@ -137,7 +137,7 @@ class Dones {
             const undoneButton = todo.querySelector('button[name="undone-button"]')
 
             undoneButton.innerHTML = ''
-            loadAnimation(undoneButton, 'dots')
+            loadAnimation(undoneButton, 'dots-white')
 
             try {
                 const updatedData = await this.markAsUndone(doneId)
@@ -298,7 +298,7 @@ class Dones {
             const updatedData = await todos.markAsDone(data)
             if (updatedData) {
                 this.stack.heading.innerHTML = ''
-                loadAnimation(this.stack.heading, 'loading')
+                loadAnimation(this.stack.heading, 'dots-teal')
 
                 const res = await updateData(`/api/users/${this.user
                     }/todos/${data}`, JSON.stringify(updatedData))

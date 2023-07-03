@@ -57,7 +57,7 @@ class Projects {
             this.closeOptions()
 
             this.filter.selected.innerHTML = ''
-            loadAnimation(this.filter.selected, 'dots')
+            loadAnimation(this.filter.selected, 'dots-white')
 
             const todos = new Todos(this.user)
             const dones = new Dones(this.user)
@@ -87,7 +87,7 @@ class Projects {
                 this.closeOptions()
 
                 this.filter.selected.innerHTML = ''
-                loadAnimation(this.filter.selected, 'dots')
+                loadAnimation(this.filter.selected, 'dots-white')
 
                 const todos = new Todos(this.user)
                 const dones = new Dones(this.user)
@@ -259,7 +259,7 @@ class Projects {
             e.preventDefault()
 
             this.add.form.submit.innerHTML = ''
-            loadAnimation(this.add.form.submit, 'dots')
+            loadAnimation(this.add.form.submit, 'dots-white')
 
             const formData = new FormData(form)
 

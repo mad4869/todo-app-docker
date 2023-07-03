@@ -122,7 +122,7 @@ class Todos {
 
             this.delete.confirm.addEventListener('click', async () => {
                 this.delete.confirm.innerHTML = ''
-                loadAnimation(this.delete.confirm, 'dots')
+                loadAnimation(this.delete.confirm, 'dots-white')
 
                 try {
                     const res = await deleteData(`/api/users/${this.user}/todos/${todoId}`)
@@ -149,7 +149,7 @@ class Todos {
             const doneButton = todo.querySelector('button[name="done-button"]')
 
             doneButton.innerHTML = ''
-            loadAnimation(doneButton, 'dots')
+            loadAnimation(doneButton, 'dots-white')
 
             try {
                 const updatedData = await this.markAsDone(todoId)
@@ -319,7 +319,7 @@ class Todos {
             const updatedData = await dones.markAsUndone(data)
             if (updatedData) {
                 this.stack.heading.innerHTML = ''
-                loadAnimation(this.stack.heading, 'loading')
+                loadAnimation(this.stack.heading, 'dots-violet')
 
                 const res = await updateData(`/api/users/${this.user
                     }/todos/${data}`, JSON.stringify(updatedData))
@@ -522,7 +522,7 @@ class Todos {
 
             const defaultMsg = submitButton.innerHTML
             submitButton.innerHTML = ''
-            loadAnimation(submitButton, 'dots')
+            loadAnimation(submitButton, 'dots-white')
 
             const formData = new FormData(form)
 

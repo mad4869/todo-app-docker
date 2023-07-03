@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, flash
 
 from . import auth_bp, check_if_token_is_revoked
 from ...extensions import db
@@ -35,6 +35,10 @@ def register():
                 500,
             )
         else:
+            flash(
+                "Your account has been registered. Please login to proceed.",
+                category="success",
+            )
             return (
                 jsonify(
                     {

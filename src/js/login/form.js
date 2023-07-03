@@ -53,7 +53,7 @@ class LoginForm {
         this.form.addEventListener('submit', async (e) => {
             e.preventDefault()
             this.submit.innerHTML = ''
-            loadAnimation(this.submit, 'dots')
+            loadAnimation(this.submit, 'dots-white')
 
             const formData = new FormData(this.form)
 
