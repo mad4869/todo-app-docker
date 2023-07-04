@@ -1,16 +1,24 @@
-const todoToDone = (dropped, newButton) => {
-    const heading = dropped.firstElementChild
+// Switch the appearance of a dragged To Do task into a Done task
+// Params: dragged (HTML element) -> the dragged element
+//         newButton (HTML element) -> a button element that would replace the old button inside the dragged element
+// Return: None
+const todoToDone = (dragged, newButton) => {
+    // Switch the heading color
+    const heading = dragged.firstElementChild
     heading.classList.remove('bg-violet-700', 'text-white')
     heading.classList.add('bg-teal-600', 'text-teal-500')
 
+    // Switch the label color
     const label = heading.lastElementChild
     label.classList.remove('border-white')
     label.classList.add('border-teal-500')
 
+    // Change the task description color
     const description = heading.nextElementSibling
     description.classList.add('text-neutral-400')
 
-    const leftButtons = dropped.lastElementChild.firstElementChild
+    // Switch the buttons color
+    const leftButtons = dragged.lastElementChild.firstElementChild
     const editButton = leftButtons.firstElementChild
     editButton.classList.remove('text-white')
     editButton.classList.add('text-emerald-500')
@@ -18,25 +26,35 @@ const todoToDone = (dropped, newButton) => {
     deleteButton.classList.remove('text-white')
     deleteButton.classList.add('text-rose-500')
 
-    const rightButtons = dropped.lastElementChild.lastElementChild
+    // Switch the old button to the new button
+    const rightButtons = dragged.lastElementChild.lastElementChild
     const oldButton = rightButtons.firstElementChild
     oldButton.remove()
     rightButtons.append(newButton)
 }
 
-const doneToTodo = (dropped, newButton) => {
-    const heading = dropped.firstElementChild
+// Switch the appearance of a dragged Done task into a To Do task
+// Params: dragged (HTML element) -> the dragged element
+//         newButton (HTML element) -> a button element that would replace the old button inside the 
+//                                     dragged element
+// Return: None
+const doneToTodo = (dragged, newButton) => {
+    // Switch the heading color
+    const heading = dragged.firstElementChild
     heading.classList.remove('bg-teal-600', 'text-teal-500')
     heading.classList.add('bg-violet-700', 'text-white')
 
+    // Switch the label color
     const label = heading.lastElementChild
     label.classList.remove('border-teal-500')
     label.classList.add('border-white')
 
+    // Change the task description color
     const description = heading.nextElementSibling
     description.classList.remove('text-neutral-400')
 
-    const leftButtons = dropped.lastElementChild.firstElementChild
+    // Switch the buttons color
+    const leftButtons = dragged.lastElementChild.firstElementChild
     const editButton = leftButtons.firstElementChild
     editButton.classList.remove('text-emerald-500')
     editButton.classList.add('text-white')
@@ -44,16 +62,25 @@ const doneToTodo = (dropped, newButton) => {
     deleteButton.classList.remove('text-rose-500')
     deleteButton.classList.add('text-white')
 
-    const rightButtons = dropped.lastElementChild.lastElementChild
+    // Switch the old button to the new button
+    const rightButtons = dragged.lastElementChild.lastElementChild
     const oldButton = rightButtons.firstElementChild
     oldButton.remove()
     rightButtons.append(newButton)
 }
 
+// Get the element that is present next to the dragged element
+// Params: container (HTML element) -> the container of the dragged element
+//         y (float) -> the y axis value of the dragged element position
+// Return: object -> an object containing 
+//                   1) the offset between the dragged element and the next element
+//                   2) the next element
 const getNextElement = (container, y) => {
+    // Target the elements other than the dragged element
     const otherElements = [...container.querySelectorAll('div[draggable="true"]:not(.opacity-50)')]
 
     return otherElements.reduce((next, element) => {
+        // Get the offset of the dragged element and the next element
         const box = element.getBoundingClientRect()
         const offset = y - (box.top + box.height / 2)
         if (offset < 0 && offset > next.offset) {

@@ -10,6 +10,9 @@ import dotsTealAnimation from '../../animations/dots-teal.json'
 import loadingAnimation from '../../animations/loading.json'
 
 // Use Lottie to load animation based on categories
+// Params: container (HTML element) -> The container to which the animation load into
+//         category (string) -> The animation category
+// Return: None
 
 const loadAnimation = (container, category) => {
     let animationData = null

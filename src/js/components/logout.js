@@ -5,7 +5,8 @@ import showNotice from "./notice"
 const accessToken = localStorage.getItem('access_token')
 
 // Handle a POST request to the logout endpoint with access token attached on the header
-// Get the response and return a Promise
+// Params: None
+// Return: Promise -> a promise containing the response of the request
 const logout = () => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
@@ -27,6 +28,8 @@ const logout = () => {
 }
 
 // Handle the logout procedure
+// Params: None
+// Return: None
 const handleLogout = () => {
     const logoutLinks = [...document.querySelectorAll('a[href="/auth/logout"]')]
 
