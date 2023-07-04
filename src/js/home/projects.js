@@ -89,7 +89,7 @@ class Projects {
 
         // Create the reset option
         const reset = this.createOption('All Projects', 0, handleReset)
-        reset.classList.add('text-teal-400', 'hover:text-teal-900')
+        reset.classList.add('text-teal-400', 'hover:text-violet-400')
         reset.classList.remove('border-b', 'hover:text-teal-600')
         if (this.filter.options.hasChildNodes()) {
             this.filter.options.lastElementChild.classList.add('border-b')
@@ -332,10 +332,12 @@ class Projects {
                 const res = await validateSubmit(formData, `/api/users/${this.user}/projects`, sendData)
                 // If success, reload the page
                 if (res.success) {
+                    form.reset()
                     location.reload()
                     // If not, abort the loading state and close the modal
                 } else {
                     this.add.form.submit.innerHTML = "add"
+                    form.reset()
                     this.closeAddModal()
 
                     // Then show a notice with error message

@@ -696,10 +696,12 @@ class Todos {
                     await validateSubmit(formData, apiUrl + formData.get('todo_id'), method)
                 // If success, reload the page
                 if (res.success) {
+                    form.reset()
                     location.reload()
                     // If not, abort the loading state and close the modal
                 } else {
                     submitButton.innerHTML = defaultMsg
+                    form.reset()
                     modalCloser()
 
                     // Then show a notice with error message
