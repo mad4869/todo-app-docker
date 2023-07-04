@@ -23,6 +23,9 @@ class RegisterForm {
         this.handleSubmit()
     }
 
+    // Validate the input field when the user click outside the field and if it's invalid, show the error message
+    // Params: None
+    // Return: None
     handleBlur = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('blur', () => {
@@ -39,6 +42,9 @@ class RegisterForm {
         }
     }
 
+    // Remove the error message if the user gets back to the input field
+    // Params: None
+    // Return: None
     handleFocus = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('focus', () => {
@@ -47,6 +53,9 @@ class RegisterForm {
         }
     }
 
+    // Check if each field is valid while the user make an input and enable the submit button once all the fields are valid
+    // Params: None
+    // Return: None
     handleInput = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('input', () => {
@@ -55,18 +64,29 @@ class RegisterForm {
         }
     }
 
+    // Handle the event after the form being submitted and validated on the server
+    // Params: None
+    // Return: None
     handleSubmit = () => {
+        // If the user has submitted the form:
         this.form.addEventListener('submit', async (e) => {
+            // Prevent the browser to reload the page
             e.preventDefault()
+
+            // Show loading state
             this.submit.innerHTML = ''
             loadAnimation(this.submit, 'dots-white')
 
+            // Create a FormData object
             const formData = new FormData(this.form)
 
+            // Get the response after the request being sent and the form being validated
             try {
                 const res = await validateSubmit(formData, 'auth/register', sendData)
+                // If success, redirect the user to the login page
                 if (res.success) {
                     window.location.replace('/login')
+                    // If not, abort the loading state and show a notice with error message
                 } else {
                     this.submit.innerHTML = 'create account'
 

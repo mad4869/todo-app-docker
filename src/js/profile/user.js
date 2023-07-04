@@ -25,6 +25,9 @@ class User {
         this.loading = document.getElementById('profile-loading')
     }
 
+    // Get and return the user profile data
+    // Params: None
+    // Return: data (object) -> an object of the user data
     getProfile = async () => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}`)
@@ -43,6 +46,9 @@ class User {
         }
     }
 
+    // Show the update button if the user attempts to edit their profile
+    // Params: None
+    // Return: None
     handleShowUpdate = () => {
         this.showUpdate = (e) => {
             if (e.target.hasAttribute('contenteditable')) {
@@ -53,6 +59,9 @@ class User {
         this.profile.profile.addEventListener('focus', this.showUpdate, true)
     }
 
+    // Hide the update button if the user clicked outside of the fields to update their profile
+    // Params: None
+    // Return: None
     handleHideUpdate = () => {
         this.hideUpdate = (e) => {
             if (e.target.hasAttribute('contenteditable')) {
@@ -63,6 +72,9 @@ class User {
         this.profile.profile.addEventListener('blur', this.hideUpdate, true)
     }
 
+    // Disable the function to hide the update button if the user hovers on the update button
+    // Params: None
+    // Return: None
     handleHoverUpdate = () => {
         this.profile.update.addEventListener('mouseenter', () => {
             this.profile.profile.removeEventListener('blur', this.hideUpdate, true)
@@ -75,9 +87,14 @@ class User {
         })
     }
 
+    // Update the user profile
+    // Params: None
+    // Return: res (object) -> a response obtained after sending a request to update the profile
     updateProfile = async () => {
+        // Get the user data
         try {
             const { data } = await fetchData(`/api/users/${this.user}`)
+            // Make an updated data object based on the user input
             const updatedData = {
                 ...data,
                 name: this.profile.fields.name.textContent,
@@ -85,6 +102,7 @@ class User {
                 bio: this.profile.fields.bio.textContent
             }
 
+            // Get and return the response after make an api call to update the data
             const res = await updateData(`/api/users/${this.user}`, JSON.stringify(updatedData))
 
             return res
@@ -93,15 +111,21 @@ class User {
         }
     }
 
+    // Handle the event after updating the profile
     handleUpdateProfile = () => {
+        // If the update button is clicked:
         this.profile.update.addEventListener('click', async () => {
+            // Show loading state
             this.profile.update.innerHTML = ''
             loadAnimation(this.profile.update, 'dots-white')
 
+            // Get the response after the request being sent
             try {
                 const res = await this.updateProfile()
+                // If success, reload the page
                 if (res.success) {
                     location.reload()
+                    // If not, abort the loading state and show a notice with error message
                 } else {
                     this.profile.update.innerHTML = 'update profile'
 
@@ -113,6 +137,9 @@ class User {
         })
     }
 
+    // Get the tasks details of the user
+    // Params: None
+    // Return: None
     getTasksDetails = async () => {
         try {
             const todoTasks = await fetchData(`/api/users/${this.user}/todos`)
@@ -126,12 +153,18 @@ class User {
         }
     }
 
+    // Get the user profile and their tasks details
+    // Params: None
+    // Return: None
     handleProfile = async () => {
+        // Show the loading state
         loadAnimation(this.loading, 'loading')
 
+        // Get the profile
         try {
             const profile = await this.getProfile()
             if (profile) {
+                // After getting the profile, hide the loading state
                 this.loading.classList.add('hidden')
 
                 this.handleShowUpdate()
@@ -139,8 +172,10 @@ class User {
                 this.handleHoverUpdate()
                 this.handleUpdateProfile()
 
+                // Get the user's tasks details
                 this.getTasksDetails()
             } else {
+                // If not success, show a notice with error message
                 this.loading.classList.add('hidden')
                 showNotice('Failed to load your profile', 'error')
             }

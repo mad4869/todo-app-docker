@@ -51,7 +51,10 @@ const loadAnimation = (container, category) => {
         renderer: 'svg',
         loop: true,
         autoplay: true,
-        animationData
+        animationData,
+        rendererSettings: {
+            preserveAspectRatio: 'xMidYMid meet'
+        }
     })
 }
 

@@ -21,6 +21,9 @@ class LoginForm {
         this.handleSubmit()
     }
 
+    // Validate the input field when the user click outside the field and if it's invalid, show the error message
+    // Params: None
+    // Return: None
     handleBlur = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('blur', () => {
@@ -33,6 +36,9 @@ class LoginForm {
         }
     }
 
+    // Remove the error message if the user gets back to the input field
+    // Params: None
+    // Return: None
     handleFocus = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('focus', () => {
@@ -41,6 +47,9 @@ class LoginForm {
         }
     }
 
+    // Check if each field is valid while the user make an input and enable the submit button once all the fields are valid
+    // Params: None
+    // Return: None
     handleInput = () => {
         for (const field in this.fields) {
             this.fields[field].addEventListener('input', () => {
@@ -49,21 +58,33 @@ class LoginForm {
         }
     }
 
+    // Handle the event after the form being submitted and validated on the server
+    // Params: None
+    // Return: None
     handleSubmit = () => {
+        // If the user has submitted the form:
         this.form.addEventListener('submit', async (e) => {
+            // Prevent the browser to reload the page
             e.preventDefault()
+
+            // Show loading state
             this.submit.innerHTML = ''
             loadAnimation(this.submit, 'dots-white')
 
+            // Create a FormData object
             const formData = new FormData(this.form)
 
+            // Get the response after the request being sent and the form being validated
             try {
                 const res = await validateSubmit(formData, '/auth/login', sendData)
+                // If success, get the tokens and store them inside the local storage
                 if (res.success) {
                     localStorage.setItem('access_token', res.access_token)
                     localStorage.setItem('refresh_token', res.refresh_token)
 
+                    // Then redirect the user to the home page
                     window.location.replace('/home')
+                    // If not success, abort the loading state and show a notice with error message
                 } else {
                     this.submit.innerHTML = 'login'
 

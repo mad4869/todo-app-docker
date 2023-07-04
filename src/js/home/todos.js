@@ -201,8 +201,7 @@ class Todos {
                 const updatedData = await this.markAsDone(todoId)
                 if (updatedData) {
                     // After getting the updated data, make an api call to update the data
-                    const res = await updateData(`/api/users/${this.user
-                        }/todos/${todoId}`, JSON.stringify(updatedData))
+                    const res = await updateData(`/api/users/${this.user}/todos/${todoId}`, JSON.stringify(updatedData))
 
                     // If success, reload the page
                     if (res.success) {
@@ -308,8 +307,7 @@ class Todos {
     checkNotDone = async (todoId) => {
         // Get the data from the endpoint
         try {
-            const { data } = await fetchData(`/api/users/${this.user
-                }/todos/${todoId}`)
+            const { data } = await fetchData(`/api/users/${this.user}/todos/${todoId}`)
 
             // If the task is a To Do task, return the data
             if (!data.is_done) {
@@ -430,8 +428,7 @@ class Todos {
 
                 // Make an api call to update the data
                 try {
-                    const res = await updateData(`/api/users/${this.user
-                        }/todos/${data}`, JSON.stringify(updatedData))
+                    const res = await updateData(`/api/users/${this.user}/todos/${data}`, JSON.stringify(updatedData))
 
                     // If success, reload the page
                     if (res.success) {
@@ -474,19 +471,23 @@ class Todos {
         loadAnimation(this.loading, 'loading')
 
         // Get the stack
-        const stack = await this.getStack()
-        if (stack) {
-            // After getting the stack, hide the loading state
-            this.loading.classList.add('hidden')
+        try {
+            const stack = await this.getStack()
+            if (stack) {
+                // After getting the stack, hide the loading state
+                this.loading.classList.add('hidden')
 
-            // If the stack is empty, show the empty state
-            if (stack.length === 0) {
-                this.emptyState()
-                this.handleDragRecipient()
-            } else {
-                this.handleDragSender()
-                this.handleDragRecipient()
+                // If the stack is empty, show the empty state
+                if (stack.length === 0) {
+                    this.emptyState()
+                    this.handleDragRecipient()
+                } else {
+                    this.handleDragSender()
+                    this.handleDragRecipient()
+                }
             }
+        } catch (err) {
+            console.error(err)
         }
     }
 
@@ -512,8 +513,7 @@ class Todos {
 
         // Get the data from the api endpoint
         try {
-            const { data } = await fetchData(`/api/users/${this.user
-                }/todos`)
+            const { data } = await fetchData(`/api/users/${this.user}/todos`)
 
             // Filter the data
             const filtered = data.filter((todo) => {

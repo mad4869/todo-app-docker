@@ -183,8 +183,7 @@ class Dones {
                 const updatedData = await this.markAsUndone(doneId)
                 if (updatedData) {
                     // After getting the updated data, make an api call to update the data
-                    const res = await updateData(`/api/users/${this.user
-                        }/todos/${doneId}`, JSON.stringify(updatedData))
+                    const res = await updateData(`/api/users/${this.user}/todos/${doneId}`, JSON.stringify(updatedData))
 
                     // If success, reload the page
                     if (res.success) {
@@ -282,8 +281,7 @@ class Dones {
     checkDone = async (doneId) => {
         // Get the data from the endpoint
         try {
-            const { data } = await fetchData(`/api/users/${this.user
-                }/todos/${doneId}`)
+            const { data } = await fetchData(`/api/users/${this.user}/todos/${doneId}`)
 
             // If the task is a Done task, return the data
             if (data.is_done) {
@@ -404,8 +402,7 @@ class Dones {
 
                 // Make an api call to update the data
                 try {
-                    const res = await updateData(`/api/users/${this.user
-                        }/todos/${data}`, JSON.stringify(updatedData))
+                    const res = await updateData(`/api/users/${this.user}/todos/${data}`, JSON.stringify(updatedData))
 
                     // If success, reload the page
                     if (res.success) {
@@ -449,19 +446,23 @@ class Dones {
         loadAnimation(this.loading, 'loading')
 
         // Get the stack
-        const stack = await this.getStack()
-        if (stack) {
-            // After getting the stack, hide the loading state
-            this.loading.classList.add('hidden')
+        try {
+            const stack = await this.getStack()
+            if (stack) {
+                // After getting the stack, hide the loading state
+                this.loading.classList.add('hidden')
 
-            // If the stack is empty, show the empty state
-            if (stack.length === 0) {
-                this.emptyState()
-                this.handleDragRecipient()
-            } else {
-                this.handleDragSender()
-                this.handleDragRecipient()
+                // If the stack is empty, show the empty state
+                if (stack.length === 0) {
+                    this.emptyState()
+                    this.handleDragRecipient()
+                } else {
+                    this.handleDragSender()
+                    this.handleDragRecipient()
+                }
             }
+        } catch (err) {
+            console.error(err)
         }
     }
 

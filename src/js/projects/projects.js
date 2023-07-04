@@ -1,11 +1,5 @@
 import { fetchData, sendData, updateData, deleteData } from "../components/data"
-import {
-    validate,
-    showError,
-    resetError,
-    enableSubmit,
-    validateSubmit
-} from '../components/form'
+import { validate, showError, resetError, enableSubmit, validateSubmit } from '../components/form'
 import createButton from "../components/button"
 import showNotice from "../components/notice"
 import loadAnimation from "../components/animation"
@@ -72,6 +66,20 @@ class Projects {
         this.loading = document.getElementById('projects-loading')
     }
 
+    // Create and return a container for a project
+    // Params: projectId (int) -> the project ID
+    // Return: card (HTML element) -> the card container
+    createCard = (projectId) => {
+        const card = document.createElement('div')
+        card.className = 'flex flex-col bg-white rounded-2xl border border-solid border-indigo-700'
+        card.setAttribute('data-id', projectId)
+
+        return card
+    }
+
+    // Create and return the heading part of the card
+    // Params: None
+    // Return: heading (HTML element) -> the heading of the card
     createHeading = () => {
         const heading = document.createElement('div')
         heading.className = 'flex justify-between items-center px-4 bg-indigo-700 text-white rounded-t-2xl group'
@@ -79,22 +87,31 @@ class Projects {
         return heading
     }
 
-    createContent = (dataTitle, dataDescription) => {
+    // Create and return the content of the card
+    // Params: projectTitle (string) -> the project title
+    //         projectDescription (string) -> the project description
+    // Return: content (HTML element) -> the content containing the title and the description
+    createContent = (projectTitle, projectDescription) => {
         const content = document.createElement('div')
         content.className = 'flex-1 pr-4 py-2'
 
         const title = document.createElement('p')
         title.className = 'text-2xl font-semibold'
-        title.textContent = dataTitle
+        title.textContent = projectTitle
 
         const description = document.createElement('p')
-        description.textContent = dataDescription
+        description.textContent = projectDescription
 
         content.append(title, description)
 
         return content
     }
 
+    // Create and return the toolbar part of the card
+    // Params: editButton (HTML element) -> a button element to edit the project
+    //         deleteButton (HTML element) -> a button element to delete the project
+    //         addButton (HTML element) -> a button element to add a task
+    // Return: toolbar (HTML element) -> the toolbar containing all the buttons
     createToolbar = (editButton, deleteButton, addButton) => {
         const toolbar = document.createElement('div')
         toolbar.className = 'flex gap-2'
@@ -103,28 +120,41 @@ class Projects {
         return toolbar
     }
 
+    // Create an empty state if a project hasn't contained any task yet
+    // Params: projectId (int) -> the project ID
+    // Return: emptyList (HTML element) -> an element that represents an empty state
     createEmptyList = (projectId) => {
+        // Create the container
         const emptyList = document.createElement('li')
         emptyList.className = 'mx-auto'
 
+        // Define the handler for an add button
         const handleAdd = () => {
             this.showTodosModal()
 
             this.todos.form.fields.project.value = projectId
         }
 
+        // Create the add button
         const addButton = createButton('flex gap-2 items-center px-4 py-1 text-indigo-700 font-semibold border border-dashed border-indigo-700 rounded-lg shadow-button-lg uppercase', '<i class="fa-solid fa-circle-plus fa-sm text-indigo-700"></i><span>add your first task</span>', handleAdd, 'add-todo-button', 'Create your first task')
 
+        // Put the button inside the container
         emptyList.append(addButton)
 
         return emptyList
     }
 
-    createList = (projectId, todos) => {
+    // Create and return the tasks list
+    // Params: projectId (int) -> the project ID
+    //         tasks (array) -> an array containing tasks data
+    // Return: list (HTML element) -> an element containing all the tasks
+    createList = (projectId, tasks) => {
+        // Create the container
         const list = document.createElement('ul')
         list.className = 'h-full flex flex-col justify-center px-8 py-2'
 
-        if (todos.length === 0) {
+        // If the tasks is empty, put the empty state inside the list container
+        if (tasks.length === 0) {
             const empty = this.createEmptyList(projectId)
 
             list.append(empty)
@@ -132,20 +162,26 @@ class Projects {
             return list
         }
 
-        for (let i = 0; i < todos.length; i++) {
-            const todo = document.createElement('li')
-            todo.className = 'flex gap-4 justify-between items-center border-b border-solid border-slate-300'
+        // Iterate over the array
+        for (let i = 0; i < tasks.length; i++) {
+            // Create the list item
+            const task = document.createElement('li')
+            task.className = 'flex gap-4 justify-between items-center border-b border-solid border-slate-300'
 
+            // Create the title
             const title = document.createElement('h6')
             title.className = 'text-xs'
-            title.textContent = todos[i].title
+            title.textContent = tasks[i].title
 
+            // Put a badge icon according to whether a task is Done or not
             const badge = document.createElement('div')
-            todos[i].is_done === false ? badge.innerHTML = '<i class="fa-regular fa-hourglass fa-xs text-violet-700"></i>' : badge.innerHTML = '<i class="fa-solid fa-circle-check fa-xs text-teal-600"></i>'
+            tasks[i].is_done === false ? badge.innerHTML = '<i class="fa-regular fa-hourglass fa-xs text-violet-700"></i>' : badge.innerHTML = '<i class="fa-solid fa-circle-check fa-xs text-teal-600"></i>'
 
-            todo.append(title, badge)
+            // Put the title and the badge inside the item
+            task.append(title, badge)
 
-            list.append(todo)
+            // Append the item into the list container
+            list.append(task)
         }
 
         list.lastElementChild.classList.remove('border-b')
@@ -153,35 +189,51 @@ class Projects {
         return list
     }
 
-    createCard = (dataId, dataTitle, dataDescription, dataTodos) => {
-        const card = document.createElement('div')
-        card.className = 'flex flex-col bg-white rounded-2xl border border-solid border-indigo-700'
-        card.setAttribute('data-id', dataId)
+    // Create a project card by merging all the components
+    // Params: projectId (int) -> the project ID
+    //         projectTitle (string) -> the project title
+    //         projectDesc (string) -> the project description
+    //         tasks (array) -> an array containing tasks data
+    // Return: card (HTML element) -> the card container
+    createProject = (projectId, projectTitle, projectDesc, tasks) => {
+        const card = this.createCard(projectId)
+        const heading = this.createHeading()
+        const content = this.createContent(projectTitle, projectDesc)
 
+        // Define a handler for the edit button
         const handleEdit = async () => {
-            this.showEditProject()
+            // If the edit button clicked, show the edit modal
+            this.showEditModal()
 
-            const { data } = await fetchData(`/api/users/${this.user}/projects/${dataId}`)
+            // Fill all the fields inside the modal with the relevant data
+            const { data } = await fetchData(`/api/users/${this.user}/projects/${projectId}`)
             this.edit.form.fields.id.value = data.project_id
             this.edit.form.fields.title.value = data.title
             this.edit.form.fields.description.value = data.description
         }
 
-
+        // Define a handler for the delete button
         const handleDelete = async () => {
-            this.showDeleteProject()
+            // If the delete button clicked, show the delete modal
+            this.showDeleteModal()
 
+            // Show the project title to the user
             const { data } = await fetchData(`/api/users/${this.user}/projects/${dataId}`)
             this.delete.deleted.textContent = data.title
 
+            // If the user click confirm:
             this.delete.confirm.addEventListener('click', async () => {
+                // Show the loading state
                 this.delete.confirm.innerHTML = ''
                 loadAnimation(this.delete.confirm, 'dots-white')
 
+                // Make an api call to delete the project using its ID
                 try {
-                    const res = await deleteData(`/api/users/${this.user}/projects/${dataId}`)
+                    const res = await deleteData(`/api/users/${this.user}/projects/${projectId}`)
+                    // If success, reload the page
                     if (res.success) {
                         location.reload()
+                        // If not, abort the loading state and show a notice with error message
                     } else {
                         this.delete.confirm.innerHTML = 'Confirm'
                         this.closeDeleteModal()
@@ -193,50 +245,57 @@ class Projects {
                 }
             })
 
+            // If the user click cancel:
             this.delete.cancel.addEventListener('click', () => {
-                this.closeDeleteProject()
+                // Close the modal
+                this.closeDeleteModal()
             })
         }
 
+        // Define a handler for the add task button
         const handleAdd = () => {
             this.showTodosModal()
 
             this.todos.form.fields.project.value = dataId
         }
 
+        // Create all the buttons
         const editButton = createButton('invisible group-hover:visible hover:text-emerald-500', '<i class="fa-solid fa-pen-to-square fa-sm"></i>', handleEdit, 'edit-button', 'Edit this project')
         const deleteButton = createButton('invisible group-hover:visible hover:text-rose-500', '<i class="fa-solid fa-trash fa-sm"></i>', handleDelete, 'delete-button', 'Delete this project')
         const addButton = createButton('invisible group-hover:visible hover:text-violet-500', '<i class="fa-solid fa-circle-plus fa-sm">', handleAdd, 'add-todo-button', 'Add a new task')
 
-        const content = this.createContent(dataTitle, dataDescription)
+        // Put the buttons inside their container
         const toolbar = this.createToolbar(editButton, deleteButton, addButton)
-        const heading = this.createHeading()
-
+        // Put the content and toolbar into the heading
         heading.append(content, toolbar)
 
-        const todos = this.createList(dataId, dataTodos)
-
-        card.append(heading, todos)
+        // Create the tasks list
+        const tasksList = this.createList(projectId, tasks)
+        // Put all the card components inside the container
+        card.append(heading, tasksList)
 
         return card
     }
 
+    // Create a stack of project cards
+    // Params: data (array) -> an array of projects data
+    // Return: None
     createStack = async (data) => {
         for (let i = 0; i < data.length; i++) {
-            const todos = await fetchData(`/api/users/${this.user
-                }/projects/${data[i].project_id
-                }/todos`)
+            const tasks = await fetchData(`/api/users/${this.user}/projects/${data[i].project_id}/todos`)
 
-            const card = this.createCard(data[i].project_id, data[i].title, data[i].description, todos.data)
+            const card = this.createCard(data[i].project_id, data[i].title, data[i].description, tasks.data)
 
             this.stack.container.append(card)
         }
     }
 
+    // Get the stack using the projects data from the database
+    // Params: None
+    // Return: data (array) -> the projects data from the database
     getStack = async () => {
         try {
-            const { data } = await fetchData(`/api/users/${this.user
-                }/projects`)
+            const { data } = await fetchData(`/api/users/${this.user}/projects`)
 
             this.stack.counter.innerHTML = `You have <span class="text-teal-300 font-bold">${data.length
                 } projects</span> so far`
@@ -249,38 +308,55 @@ class Projects {
         }
     }
 
+    // Create an empty state if the user hasn't got any project yet
+    // Params: None
+    // Return: None
     emptyState = () => {
+        // Create the container
         const emptyBox = document.createElement('div')
         emptyBox.className = 'col-span-1 flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-indigo-700 text-indigo-700 text-lg capitalize rounded-2xl sm:text-xl sm:col-span-2 sm:col-span-3'
         emptyBox.setAttribute('id', 'empty-state')
 
+        // Create the illustration
         const illustration = document.createElement('img')
         illustration.className = 'w-20'
         illustration.setAttribute('src', '/static/dist/img/empty-primary.svg')
         illustration.setAttribute('alt', 'This column is empty')
 
+        // Create the message
         const text = document.createElement('h3')
         text.textContent = "you haven't added any projects yet"
 
+        // Define the handler for a cta button
         const handleCta = () => {
             this.showAddModal()
         }
 
+        // Create the cta button
         const ctaButton = createButton('bg-indigo-700 mt-8 px-4 py-1 text-white font-semibold rounded-xl shadow-button-lg uppercase', 'get started', handleCta, 'project-cta-button', 'Create your first project')
 
+        // Put the components into the container
         emptyBox.append(illustration, text, ctaButton)
 
+        // Append the empty state to the main container
         this.stack.container.append(emptyBox)
     }
 
+    // Get the stack. If there is no stack, show the empty state
+    // Params: None
+    // Return: None
     handleStack = async () => {
+        // Show the loading state
         loadAnimation(this.loading, 'loading')
 
+        // Get the stack
         try {
             const stack = await this.getStack()
             if (stack) {
+                // After getting the stack, hide the loading state
                 this.loading.classList.add('hidden')
 
+                // If the stack is empty, show the empty state
                 if (stack.length === 0) {
                     this.emptyState()
                 }
@@ -289,6 +365,10 @@ class Projects {
             console.error(err)
         }
     }
+
+    // Show and close modals
+    // Params: None
+    // Return: None
 
     showTodosModal = () => {
         this.todos.modal.classList.remove('hidden')
@@ -324,7 +404,7 @@ class Projects {
         })
     }
 
-    showEditProject = () => {
+    showEditModal = () => {
         this.edit.modal.classList.remove('hidden')
     }
 
@@ -338,7 +418,7 @@ class Projects {
         })
     }
 
-    showDeleteProject = () => {
+    showDeleteModal = () => {
         this.delete.modal.classList.remove('hidden')
     }
 
@@ -356,7 +436,7 @@ class Projects {
         document.addEventListener('click', (e) => {
             if (this.todos.modal) {
                 const addTodoButtons = document.querySelectorAll('button[name="add-todo-button"]')
-                const addTodoClicked = this.todos.modal.firstElementChild.contains(e.target) || Array.from(addTodoButtons).some((button) => button.contains(e.target))
+                const addTodoClicked = this.todos.modal.firstElementChild.contains(e.target) || [...addTodoButtons].some((button) => button.contains(e.target))
                 if (!addTodoClicked) {
                     this.closeTodosModal()
                 }
@@ -375,7 +455,7 @@ class Projects {
 
             if (this.edit.modal) {
                 const editButtons = document.querySelectorAll('button[name="edit-button"]')
-                const editProjectClicked = this.edit.modal.firstElementChild.contains(e.target) || Array.from(editButtons).some((button) => button.contains(e.target))
+                const editProjectClicked = this.edit.modal.firstElementChild.contains(e.target) || [...editButtons].some((button) => button.contains(e.target))
                 if (!editProjectClicked) {
                     this.closeEditModal()
                 }
@@ -383,7 +463,7 @@ class Projects {
 
             if (this.delete.modal) {
                 const deleteButtons = document.querySelectorAll('button[name="delete-button"]')
-                const deleteProjectClicked = this.delete.modal.firstElementChild.contains(e.target) || Array.from(deleteButtons).some((button) => button.contains(e.target))
+                const deleteProjectClicked = this.delete.modal.firstElementChild.contains(e.target) || [...deleteButtons].some((button) => button.contains(e.target))
                 if (!deleteProjectClicked) {
                     this.closeDeleteModal()
                 }
@@ -400,6 +480,9 @@ class Projects {
         this.handleClickOutsideModal()
     }
 
+    // Validate the input field when the user click outside the field and if it's invalid, show the error message
+    // Params: fields (object) -> an object containing each field in the form
+    // Return: None
     handleBlur = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('blur', () => {
@@ -412,6 +495,9 @@ class Projects {
         }
     }
 
+    // Remove the error message if the user gets back to the input field
+    // Params: fields (object) -> an object containing each field in the form
+    // Return: None
     handleFocus = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('focus', () => {
@@ -420,6 +506,10 @@ class Projects {
         }
     }
 
+    // Check if each field is valid while the user make an input and enable the submit button once all the fields are valid
+    // Params: fields (object) -> an object containing each field in the form
+    //         submit (HTML element) -> a submit button element
+    // Return: None
     handleInput = (fields, submit) => {
         for (const field in fields) {
             fields[field].addEventListener('input', () => {
@@ -428,24 +518,40 @@ class Projects {
         }
     }
 
+    // Handle the event after the form being submitted and validated on the server
+    // Params: form (HTML element) -> a form element
+    //         apiUrl (string) -> the url of the api endpoint
+    //         method (function) -> the function to make an api call
+    //         submitButton (HTML element) -> a submit button element
+    //         modalCloser (function) -> a function to close the modal
     handleSubmit = (form, apiUrl, method, submitButton, modalCloser) => {
+        // If the user has submitted the form:
         form.addEventListener('submit', async (e) => {
+            // Prevent the browser to reload the page
             e.preventDefault()
+
+            // Show loading state
             const defaultMsg = submitButton.innerHTML
             submitButton.innerHTML = ''
             loadAnimation(submitButton, 'dots-white')
 
+            // Create a FormData object
             const formData = new FormData(form)
+
+            // Get the response after the request being sent and the form being validated
             try {
                 const res = formData.get('_method') !== 'PUT' ?
                     await validateSubmit(formData, apiUrl, method) :
                     await validateSubmit(formData, apiUrl + formData.get('project_id'), method)
+                // If success, reload the page
                 if (res.success) {
                     location.reload()
+                    // If not, abort the loading state and close the modal
                 } else {
                     submitButton.innerHTML = defaultMsg
                     modalCloser()
 
+                    // Then show a notice with error message
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
                     showNotice(errors.join(''), 'error')
                 }
