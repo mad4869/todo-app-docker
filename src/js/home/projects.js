@@ -3,19 +3,14 @@ import Todos from "./todos"
 import Dones from "./dones"
 
 import { fetchData, sendData } from "../components/data"
-import {
-    validate,
-    showError,
-    resetError,
-    enableSubmit,
-    validateSubmit
-} from '../components/form'
+import { validate, showError, resetError, enableSubmit, validateSubmit } from '../components/form'
 import createButton from "../components/button"
 import showNotice from '../components/notice'
 import loadAnimation from "../components/animation"
 class Projects {
     constructor(user) {
         this.user = user
+
         this.filter = {
             dropdown: document.getElementById('home-projects-dropdown'),
             options: document.getElementById('home-projects-options'),
@@ -37,84 +32,116 @@ class Projects {
         }
     }
 
-    createOption = (title, data, handler) => {
+    // Create and return the option for the dropdown menu
+    // Params: projectTitle (string) -> the project title
+    //         projectId (int) -> the project ID
+    //         handler (function) -> a function that would handle the event after the option being clicked
+    createOption = (projectTitle, projectId, handler) => {
         const option = document.createElement('li')
         option.className = "w-full text-center border-b border-solid border-violet-500 py-2 cursor-pointer hover:bg-teal-600"
-        option.textContent = title
-        option.setAttribute('data-id', data)
+        option.textContent = projectTitle
+        option.setAttribute('data-id', projectId)
         option.addEventListener('click', handler)
 
         return option
     }
 
+    // Create an additional option to reset the filter by the dropdown menu
+    // Params: None
+    // Return: None
     createResetFilter = () => {
+        // Remove the old reset option if present
         const oldReset = document.querySelector('li[data-id="0"]')
         if (oldReset) {
             oldReset.remove()
         }
 
+        // Define the handler for the reset option
         const handleReset = () => {
+            // If the reset option is clicked, close the dropdown
             this.closeOptions()
 
+            // Show loading state
             this.filter.selected.innerHTML = ''
             loadAnimation(this.filter.selected, 'dots-white')
 
             const todos = new Todos(this.user)
             const dones = new Dones(this.user)
 
+            // Reset the stacks
             todos.resetStack()
             dones.resetStack()
 
+            // Rebuild the stacks
             todos.handleStack()
             dones.handleStack()
 
+            // Abort the loading state and hide the reset option
             this.filter.selected.innerHTML = reset.textContent
             reset.classList.add('hidden')
 
-            const options = Array.from(reset.parentNode.children).filter(option => option !== reset)
+            // Show all the other options
+            const options = [...reset.parentNode.children].filter(option => option !== reset)
             options.forEach((option) => option.classList.remove('hidden'))
         }
 
+        // Create the reset option
         const reset = this.createOption('All Projects', 0, handleReset)
         reset.classList.add('text-teal-400', 'border-t', 'hover:rounded-b-2xl', 'hover:bg-teal-900')
         reset.classList.remove('border-b', 'hover:bg-teal-600')
+
+        // Append the reset option to the dropdown menu
         this.filter.options.append(reset)
     }
 
+    // Create the options list for the dropdown menu
+    // Params: data (array) -> an array of projects data
+    // Return: None
     createOptions = (data) => {
-        for (let i = 0; i < data.length; i++) {
-            const handleFilterTasks = async () => {
-                this.closeOptions()
+        // Define the handler for filtering the tasks
+        const handleFilterTasks = async () => {
+            // If an option is clicked, close the dropdown
+            this.closeOptions()
 
-                this.filter.selected.innerHTML = ''
-                loadAnimation(this.filter.selected, 'dots-white')
+            // Show loading state
+            this.filter.selected.innerHTML = ''
+            loadAnimation(this.filter.selected, 'dots-white')
 
-                const todos = new Todos(this.user)
-                const dones = new Dones(this.user)
+            const todos = new Todos(this.user)
+            const dones = new Dones(this.user)
 
-                try {
-                    const filteredTodos = await todos.filterByProject(option.dataset.id)
-                    const filteredDones = await dones.filterByProject(option.dataset.id)
+            // Filter the tasks stack
+            try {
+                const filteredTodos = await todos.filterByProject(option.dataset.id)
+                const filteredDones = await dones.filterByProject(option.dataset.id)
 
-                    if (filteredTodos && filteredDones) {
-                        this.filter.selected.innerHTML = option.textContent
-                        option.classList.add('hidden')
+                if (filteredTodos && filteredDones) {
+                    // After the tasks filtered, abort the loading state and hide the clicked option
+                    this.filter.selected.innerHTML = option.textContent
+                    option.classList.add('hidden')
 
-                        const others = Array.from(option.parentNode.children).filter(other => other !== option)
-                        others.forEach((other) => other.classList.remove('hidden'))
+                    // Show all the other options
+                    const others = [...option.parentNode.children].filter(other => other !== option)
+                    others.forEach((other) => other.classList.remove('hidden'))
 
-                        this.createResetFilter()
-                    }
-                } catch (err) {
-                    console.error(err)
+                    // Show the reset filter option
+                    this.createResetFilter()
                 }
+            } catch (err) {
+                console.error(err)
             }
+        }
 
+        // Iterate over the array
+        for (let i = 0; i < data.length; i++) {
+            // Create the option
             const option = this.createOption(data[i].title, data[i].project_id, handleFilterTasks)
 
+            // Append the option to the dropdown menu
             this.filter.options.append(option)
         }
 
+        // Cleaning up the options
         const topOption = this.filter.options.firstElementChild
         topOption.classList.add('hover:rounded-t-2xl')
         const bottomOption = this.filter.options.lastElementChild
@@ -122,6 +149,9 @@ class Projects {
         bottomOption.classList.remove('border-b')
     }
 
+    // Get the options using the projects data from the database
+    // Params: None
+    // Return: data (array) -> the projects data from the database
     getOptions = async () => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}/projects`)
@@ -134,25 +164,35 @@ class Projects {
         }
     }
 
+    // Create an empty state if the user hasn't got any project yet
+    // Params: None
+    // Return: None
     emptyState = () => {
+        // Create the container
         const emptyBox = document.createElement('div')
         emptyBox.className = 'flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-white text-white text-xl capitalize rounded-2xl'
 
+        // Create the message
         const text = document.createElement('h3')
         text.textContent = "you haven't added any projects yet"
 
+        // Define the handler for a cta button
         const handleCta = () => {
             this.showAddModal()
             this.closeOptions()
         }
 
-        const ctaButton = createButton('bg-white mt-8 px-4 py-1 text-indigo-700 font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase', 'get started', handleCta, 'project-cta-button', 'Create your first project')
+        // Create the cta button
+        const ctaButton = createButton('bg-white mt-8 px-4 py-1 text-indigo-700 font-semibold rounded-xl shadow-button-lg uppercase', 'get started', handleCta, 'project-cta-button', 'Create your first project')
 
+        // Put the components into the container
         emptyBox.append(text, ctaButton)
 
+        // Append the empty state to the dropdown
         this.filter.options.append(emptyBox)
     }
 
+    // Get the options. If there is no option, show the empty state
     handleOptions = async () => {
         const options = await this.getOptions()
         if (!options) {
@@ -160,9 +200,13 @@ class Projects {
         }
     }
 
+    // Show and close modals
+    // Params: None
+    // Return: None
+
     showOptions = () => {
         this.filter.options.classList.toggle('hidden')
-        this.filter.options.classList.add('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]')
+        this.filter.options.classList.add('shadow-modal')
     }
 
     handleShowOptions = () => {
@@ -227,6 +271,9 @@ class Projects {
         this.handleClickOutsideModal()
     }
 
+    // Validate the input field when the user click outside the field and if it's invalid, show the error message
+    // Params: fields (object) -> an object containing each field in the form
+    // Return: None
     handleBlur = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('blur', () => {
@@ -239,6 +286,9 @@ class Projects {
         }
     }
 
+    // Remove the error message if the user gets back to the input field
+    // Params: fields (object) -> an object containing each field in the form
+    // Return: None
     handleFocus = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('focus', () => {
@@ -247,6 +297,10 @@ class Projects {
         }
     }
 
+    // Check if each field is valid while the user make an input and enable the submit button once all the fields are valid
+    // Params: fields (object) -> an object containing each field in the form
+    //         submit (HTML element) -> a submit button element
+    // Return: None
     handleInput = (fields, submit) => {
         for (const field in fields) {
             fields[field].addEventListener('input', () => {
@@ -255,23 +309,37 @@ class Projects {
         }
     }
 
+    // Handle the event after the form being submitted and validated on the server
+    // Params: form (HTML element) -> a form element
+    //         apiUrl (string) -> the url of the api endpoint
+    //         method (function) -> the function to make an api call
+    //         submitButton (HTML element) -> a submit button element
+    //         modalCloser (function) -> a function to close the modal
     handleSubmit = (form) => {
+        // If the user has submitted the form:
         form.addEventListener('submit', async (e) => {
+            // Prevent the browser to reload the page
             e.preventDefault()
 
+            // Show loading state
             this.add.form.submit.innerHTML = ''
             loadAnimation(this.add.form.submit, 'dots-white')
 
+            // Create a FormData object
             const formData = new FormData(form)
 
+            // Get the response after the request being sent and the form being validated
             try {
                 const res = await validateSubmit(formData, `/api/users/${this.user}/projects`, sendData)
+                // If success, reload the page
                 if (res.success) {
                     location.reload()
+                    // If not, abort the loading state and close the modal
                 } else {
                     this.add.form.submit.innerHTML = "add"
                     this.closeAddModal()
 
+                    // Then show a notice with error message
                     const errors = res.message.map((error) => `<p class='flex gap-1 items-center text-sm'><i class="fa-solid fa-xmark"></i>${error}</p>`)
                     showNotice(errors.join(''), 'error')
                 }

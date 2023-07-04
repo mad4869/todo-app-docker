@@ -113,7 +113,7 @@ class Projects {
             this.todos.form.fields.project.value = projectId
         }
 
-        const addButton = createButton('flex gap-2 items-center px-4 py-1 text-indigo-700 font-semibold border border-dashed border-indigo-700 rounded-lg shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase', '<i class="fa-solid fa-circle-plus fa-sm text-indigo-700"></i><span>add your first task</span>', handleAdd, 'add-todo-button', 'Create your first task')
+        const addButton = createButton('flex gap-2 items-center px-4 py-1 text-indigo-700 font-semibold border border-dashed border-indigo-700 rounded-lg shadow-button-lg uppercase', '<i class="fa-solid fa-circle-plus fa-sm text-indigo-700"></i><span>add your first task</span>', handleAdd, 'add-todo-button', 'Create your first task')
 
         emptyList.append(addButton)
 
@@ -266,7 +266,7 @@ class Projects {
             this.showAddModal()
         }
 
-        const ctaButton = createButton('bg-indigo-700 mt-8 px-4 py-1 text-white font-semibold rounded-xl shadow-[2px_2px_5px_rgba(0,0,0,0.3)] uppercase', 'get started', handleCta, 'project-cta-button', 'Create your first project')
+        const ctaButton = createButton('bg-indigo-700 mt-8 px-4 py-1 text-white font-semibold rounded-xl shadow-button-lg uppercase', 'get started', handleCta, 'project-cta-button', 'Create your first project')
 
         emptyBox.append(illustration, text, ctaButton)
 
@@ -280,7 +280,7 @@ class Projects {
             const stack = await this.getStack()
             if (stack) {
                 this.loading.classList.add('hidden')
-    
+
                 if (stack.length === 0) {
                     this.emptyState()
                 }
