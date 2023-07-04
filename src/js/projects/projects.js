@@ -218,7 +218,7 @@ class Projects {
             this.showDeleteModal()
 
             // Show the project title to the user
-            const { data } = await fetchData(`/api/users/${this.user}/projects/${dataId}`)
+            const { data } = await fetchData(`/api/users/${this.user}/projects/${projectId}`)
             this.delete.deleted.textContent = data.title
 
             // If the user click confirm:
@@ -256,7 +256,7 @@ class Projects {
         const handleAdd = () => {
             this.showTodosModal()
 
-            this.todos.form.fields.project.value = dataId
+            this.todos.form.fields.project.value = projectId
         }
 
         // Create all the buttons

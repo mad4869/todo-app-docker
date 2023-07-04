@@ -38,7 +38,7 @@ class Projects {
     //         handler (function) -> a function that would handle the event after the option being clicked
     createOption = (projectTitle, projectId, handler) => {
         const option = document.createElement('li')
-        option.className = "w-full text-center border-b border-solid border-violet-500 py-2 cursor-pointer hover:bg-teal-600"
+        option.className = "w-full text-center border-b border-solid border-violet-500 py-2 cursor-pointer hover:text-teal-400"
         option.textContent = projectTitle
         option.setAttribute('data-id', projectId)
         option.addEventListener('click', handler)
@@ -83,12 +83,17 @@ class Projects {
             // Show all the other options
             const options = [...reset.parentNode.children].filter(option => option !== reset)
             options.forEach((option) => option.classList.remove('hidden'))
+
+            this.filter.options.lastElementChild.previousElementSibling.classList.remove('border-b')
         }
 
         // Create the reset option
         const reset = this.createOption('All Projects', 0, handleReset)
-        reset.classList.add('text-teal-400', 'border-t', 'hover:rounded-b-2xl', 'hover:bg-teal-900')
-        reset.classList.remove('border-b', 'hover:bg-teal-600')
+        reset.classList.add('text-teal-400', 'hover:text-teal-900')
+        reset.classList.remove('border-b', 'hover:text-teal-600')
+        if (this.filter.options.hasChildNodes()) {
+            this.filter.options.lastElementChild.classList.add('border-b')
+        }
 
         // Append the reset option to the dropdown menu
         this.filter.options.append(reset)
@@ -98,42 +103,41 @@ class Projects {
     // Params: data (array) -> an array of projects data
     // Return: None
     createOptions = (data) => {
-        // Define the handler for filtering the tasks
-        const handleFilterTasks = async () => {
-            // If an option is clicked, close the dropdown
-            this.closeOptions()
-
-            // Show loading state
-            this.filter.selected.innerHTML = ''
-            loadAnimation(this.filter.selected, 'dots-white')
-
-            const todos = new Todos(this.user)
-            const dones = new Dones(this.user)
-
-            // Filter the tasks stack
-            try {
-                const filteredTodos = await todos.filterByProject(option.dataset.id)
-                const filteredDones = await dones.filterByProject(option.dataset.id)
-
-                if (filteredTodos && filteredDones) {
-                    // After the tasks filtered, abort the loading state and hide the clicked option
-                    this.filter.selected.innerHTML = option.textContent
-                    option.classList.add('hidden')
-
-                    // Show all the other options
-                    const others = [...option.parentNode.children].filter(other => other !== option)
-                    others.forEach((other) => other.classList.remove('hidden'))
-
-                    // Show the reset filter option
-                    this.createResetFilter()
-                }
-            } catch (err) {
-                console.error(err)
-            }
-        }
-
         // Iterate over the array
         for (let i = 0; i < data.length; i++) {
+            // Define the handler for filtering the tasks
+            const handleFilterTasks = async () => {
+                // If an option is clicked, close the dropdown
+                this.closeOptions()
+
+                // Show loading state
+                this.filter.selected.innerHTML = ''
+                loadAnimation(this.filter.selected, 'dots-white')
+
+                const todos = new Todos(this.user)
+                const dones = new Dones(this.user)
+
+                // Filter the tasks stack
+                try {
+                    const filteredTodos = await todos.filterByProject(option.dataset.id)
+                    const filteredDones = await dones.filterByProject(option.dataset.id)
+
+                    if (filteredTodos && filteredDones) {
+                        // After the tasks filtered, abort the loading state and hide the clicked option
+                        this.filter.selected.innerHTML = option.textContent
+                        option.classList.add('hidden')
+
+                        // Show all the other options
+                        const others = [...option.parentNode.children].filter(other => other !== option)
+                        others.forEach((other) => other.classList.remove('hidden'))
+
+                        // Show the reset filter option
+                        this.createResetFilter()
+                    }
+                } catch (err) {
+                    console.error(err)
+                }
+            }
             // Create the option
             const option = this.createOption(data[i].title, data[i].project_id, handleFilterTasks)
 
@@ -141,12 +145,7 @@ class Projects {
             this.filter.options.append(option)
         }
 
-        // Cleaning up the options
-        const topOption = this.filter.options.firstElementChild
-        topOption.classList.add('hover:rounded-t-2xl')
-        const bottomOption = this.filter.options.lastElementChild
-        bottomOption.classList.add('hover:rounded-b-2xl')
-        bottomOption.classList.remove('border-b')
+        this.filter.options.lastElementChild.classList.remove('border-b')
     }
 
     // Get the options using the projects data from the database

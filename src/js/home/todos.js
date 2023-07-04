@@ -397,10 +397,10 @@ class Todos {
 
             // If there is no other element next to the dragged card, append the card to the bottom of the main container
             if (!nextElement) {
-                this.stack.container.append(dropped)
+                this.stack.container.append(dragged)
                 // If there is another element, insert the dragged card before the element
             } else {
-                this.stack.container.insertBefore(dropped, nextElement)
+                this.stack.container.insertBefore(dragged, nextElement)
             }
 
             // If the dragged card was the only card in the original container, show the empty state in the original container
