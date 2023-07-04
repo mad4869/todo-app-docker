@@ -49,7 +49,7 @@ class Dones {
 
     createHeading = (doneTitle, project) => {
         const heading = document.createElement('div')
-        heading.className = 'flex justify-between items-center bg-teal-600 px-4 py-2 text-teal-500 '
+        heading.className = 'flex gap-4 justify-between items-center bg-teal-600 px-4 py-2 text-teal-500 '
 
         const title = document.createElement('h1')
         title.className = 'flex-1 text-xl font-semibold'
@@ -301,15 +301,19 @@ class Dones {
                 this.stack.heading.innerHTML = ''
                 loadAnimation(this.stack.heading, 'dots-teal')
 
-                const res = await updateData(`/api/users/${this.user
-                    }/todos/${data}`, JSON.stringify(updatedData))
+                try {
+                    const res = await updateData(`/api/users/${this.user
+                        }/todos/${data}`, JSON.stringify(updatedData))
 
-                if (res.success) {
-                    location.reload()
-                } else {
-                    this.stack.heading.innerHTML = 'Done'
+                    if (res.success) {
+                        location.reload()
+                    } else {
+                        this.stack.heading.innerHTML = 'Done'
 
-                    showNotice(res.message, 'error')
+                        showNotice(res.message, 'error')
+                    }
+                } catch (err) {
+                    console.error(err)
                 }
             }
         }

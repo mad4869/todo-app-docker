@@ -5,6 +5,7 @@ import showNotice from "../components/notice"
 class User {
     constructor(user) {
         this.user = user
+
         this.profile = {
             profile: document.getElementById('profile-user'),
             fields: {
@@ -20,13 +21,8 @@ class User {
             onProgress: document.getElementById('profile-tasks-onprogress'),
             done: document.getElementById('profile-tasks-done')
         }
-    }
 
-    attachHandlers = () => {
-        this.handleShowUpdate()
-        this.handleHideUpdate()
-        this.handleHoverUpdate()
-        this.handleUpdateProfile()
+        this.loading = document.getElementById('profile-loading')
     }
 
     getProfile = async () => {
@@ -40,6 +36,8 @@ class User {
             } else {
                 this.profile.fields.bio.textContent = 'Describe yourself here...'
             }
+
+            return data
         } catch (err) {
             console.error(err)
         }
@@ -123,6 +121,29 @@ class User {
             this.tasks.total.textContent = todoTasks['data'].length + doneTasks['data'].length
             this.tasks.onProgress.textContent = todoTasks['data'].length
             this.tasks.done.textContent = doneTasks['data'].length
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    handleProfile = async () => {
+        loadAnimation(this.loading, 'loading')
+
+        try {
+            const profile = await this.getProfile()
+            if (profile) {
+                this.loading.classList.add('hidden')
+
+                this.handleShowUpdate()
+                this.handleHideUpdate()
+                this.handleHoverUpdate()
+                this.handleUpdateProfile()
+
+                this.getTasksDetails()
+            } else {
+                this.loading.classList.add('hidden')
+                showNotice('Failed to load your profile', 'error')
+            }
         } catch (err) {
             console.error(err)
         }

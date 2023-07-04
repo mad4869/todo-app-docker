@@ -54,11 +54,13 @@ class Todos {
             cancel: document.getElementById('modal-delete-todo-cancel'),
             close: document.getElementById('modal-delete-todo-close-button')
         }
+
+        this.loading = document.getElementById('home-loading')
     }
 
     createHeading = (todoTitle, project) => {
         const heading = document.createElement('div')
-        heading.className = 'flex justify-between items-center bg-violet-700 px-4 py-2 text-white'
+        heading.className = 'flex gap-4 justify-between items-center bg-violet-700 px-4 py-2 text-white'
 
         const title = document.createElement('h1')
         title.className = 'flex-1 text-xl font-semibold'
@@ -322,15 +324,19 @@ class Todos {
                 this.stack.heading.innerHTML = ''
                 loadAnimation(this.stack.heading, 'dots-violet')
 
-                const res = await updateData(`/api/users/${this.user
-                    }/todos/${data}`, JSON.stringify(updatedData))
+                try {
+                    const res = await updateData(`/api/users/${this.user
+                        }/todos/${data}`, JSON.stringify(updatedData))
 
-                if (res.success) {
-                    location.reload()
-                } else {
-                    this.stack.heading.innerHTML = 'To Do'
+                    if (res.success) {
+                        location.reload()
+                    } else {
+                        this.stack.heading.innerHTML = 'To Do'
 
-                    showNotice(res.message, 'error')
+                        showNotice(res.message, 'error')
+                    }
+                } catch (err) {
+                    console.error(err)
                 }
             }
         }
@@ -350,13 +356,19 @@ class Todos {
     }
 
     handleStack = async () => {
+        loadAnimation(this.loading, 'loading')
+        
         const stack = await this.getStack()
-        if (stack.length === 0) {
-            this.emptyState()
-            this.handleDragRecipient()
-        } else {
-            this.handleDragSender()
-            this.handleDragRecipient()
+        if (stack) {
+            this.loading.classList.add('hidden')
+            
+            if (stack.length === 0) {
+                this.emptyState()
+                this.handleDragRecipient()
+            } else {
+                this.handleDragSender()
+                this.handleDragRecipient()
+            }
         }
     }
 

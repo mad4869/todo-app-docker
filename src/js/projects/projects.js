@@ -68,6 +68,8 @@ class Projects {
             },
             close: document.getElementById('modal-add-todo-close-button')
         }
+
+        this.loading = document.getElementById('projects-loading')
     }
 
     createHeading = () => {
@@ -132,7 +134,7 @@ class Projects {
 
         for (let i = 0; i < todos.length; i++) {
             const todo = document.createElement('li')
-            todo.className = 'flex justify-between items-center border-b border-solid border-slate-300'
+            todo.className = 'flex gap-4 justify-between items-center border-b border-solid border-slate-300'
 
             const title = document.createElement('h6')
             title.className = 'text-xs'
@@ -272,9 +274,19 @@ class Projects {
     }
 
     handleStack = async () => {
-        const stack = await this.getStack()
-        if (stack.length === 0) {
-            this.emptyState()
+        loadAnimation(this.loading, 'loading')
+
+        try {
+            const stack = await this.getStack()
+            if (stack) {
+                this.loading.classList.add('hidden')
+    
+                if (stack.length === 0) {
+                    this.emptyState()
+                }
+            }
+        } catch (err) {
+            console.error(err)
         }
     }
 

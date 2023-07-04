@@ -33,8 +33,10 @@
     .shadow-button-lg {
         @apply shadow-[2px_2px_5px_rgba(0,0,0,0.3)]
     }
-    .shadow-card {
+    .shadow-card-sm {
+        @apply shadow-[3px_5px_10px_rgba(0,0,0,0.3)]
+    }
+    .shadow-card-lg {
         @apply shadow-[5px_7px_10px_rgba(0,0,0,0.3)]
     }
-
 }
