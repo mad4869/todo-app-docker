@@ -21,7 +21,7 @@ class Menu {
 
     closeMenu() {
         this.menu.classList.add('translate-y-full')
-        this.menu.classList.remove('shadow-[0px_0px_0px_9999px_rgba(0,0,0,0.7)]')
+        this.menu.classList.remove('shadow-modal')
     }
 
     handleClickOutside = () => {

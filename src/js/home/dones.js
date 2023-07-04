@@ -442,16 +442,10 @@ class Dones {
     // Params: None
     // Return: None
     handleStack = async () => {
-        // Show the loading state
-        loadAnimation(this.loading, 'loading')
-
-        // Get the stack
         try {
+            // Get the stack
             const stack = await this.getStack()
             if (stack) {
-                // After getting the stack, hide the loading state
-                this.loading.classList.add('hidden')
-
                 // If the stack is empty, show the empty state
                 if (stack.length === 0) {
                     this.emptyState()

@@ -284,7 +284,7 @@ class Projects {
         for (let i = 0; i < data.length; i++) {
             const tasks = await fetchData(`/api/users/${this.user}/projects/${data[i].project_id}/todos`)
 
-            const card = this.createCard(data[i].project_id, data[i].title, data[i].description, tasks.data)
+            const card = this.createProject(data[i].project_id, data[i].title, data[i].description, tasks.data)
 
             this.stack.container.append(card)
         }
