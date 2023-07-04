@@ -9,6 +9,6 @@ if (flash) {
     handleFlash()
 }
 
+// Handle form
 const form = new RegisterForm();
-
 form.handleForm()

@@ -16,6 +16,7 @@ if (flash) {
     handleFlash()
 }
 
+// Mobile screen
 handleHamburger()
 
 // Handle Logout

@@ -29,9 +29,11 @@ const userId = document.getElementById('current-user').dataset.user
 // Project object instance with the logged in user data
 const projects = new Projects(userId)
 
-// Get all the user's projects elements with their event listeners
+// Get the projects stack
 projects.handleStack()
+// Handle modals
 projects.handleModal()
+// Handle form
 projects.handleForm()
 
 // Footer

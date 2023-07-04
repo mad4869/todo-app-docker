@@ -29,7 +29,7 @@ const userId = document.getElementById('current-user').dataset.user
 // User object instance with the logged in user data
 const user = new User(userId)
 
-// Get the user's and their tasks' details
+// Get the user's profile
 user.handleProfile()
 
 // Footer

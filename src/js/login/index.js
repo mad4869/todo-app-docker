@@ -9,5 +9,6 @@ if (flash) {
     handleFlash()
 }
 
+// Handle form
 const form = new LoginForm();
 form.handleForm()
