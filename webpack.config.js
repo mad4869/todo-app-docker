@@ -51,7 +51,7 @@ const prodConfig = {
         minimizer: [new CssMinimizerPlugin(), new TerserPlugin()]
     },
     plugins: [new CleanWebpackPlugin(), new MiniCssExtractPlugin({
-        filename: '[name].css',
+        filename: 'css/style.css',
     })]
 }
 
