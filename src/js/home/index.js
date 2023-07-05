@@ -31,21 +31,32 @@ const todos = new Todos(userId)
 const dones = new Dones(userId)
 const menu = new Menu()
 
-// Projects section
+// Dropdown
 projects.handleOptions()
-projects.handleModal()
-projects.handleForm()
 
-// Todos section
-todos.handleStack()
-todos.handleModal()
-todos.handleForm()
+// Stacks
 
-// Dones section
-dones.handleStack()
+// Show the loading state
+const loading = document.getElementById('home-loading')
+loadAnimation(loading, 'loading')
 
-// Menu section
+const todoStack = todos.handleStack()
+const doneStack = dones.handleStack()
+if (todoStack & doneStack) {
+    // After getting the stacks, hide the loading state
+    loading.classList.add('hidden')
+}
+
+// Menu
 menu.handleMenu()
+
+// Modals
+projects.handleModal()
+todos.handleModal()
+
+// Forms
+todos.handleForm()
+projects.handleForm()
 
 // Footer
 setFooter()

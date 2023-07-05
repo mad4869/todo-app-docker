@@ -139,7 +139,7 @@ class User {
 
     // Get the tasks details of the user
     // Params: None
-    // Return: None
+    // Return: object -> containing arrays of to do tasks and done tasks
     getTasksDetails = async () => {
         try {
             const todoTasks = await fetchData(`/api/users/${this.user}/todos`)
@@ -148,6 +148,8 @@ class User {
             this.tasks.total.textContent = todoTasks['data'].length + doneTasks['data'].length
             this.tasks.onProgress.textContent = todoTasks['data'].length
             this.tasks.done.textContent = doneTasks['data'].length
+
+            return { todoTasks, doneTasks }
         } catch (err) {
             console.error(err)
         }
@@ -160,20 +162,18 @@ class User {
         // Show the loading state
         loadAnimation(this.loading, 'loading')
 
-        // Get the profile
+        // Get the profile and tasks details
         try {
             const profile = await this.getProfile()
-            if (profile) {
-                // After getting the profile, hide the loading state
+            const tasksDetails = await this.getTasksDetails()
+            if (profile && tasksDetails) {
+                // After getting the profile and tasks details, hide the loading state
                 this.loading.classList.add('hidden')
 
                 this.handleShowUpdate()
                 this.handleHideUpdate()
                 this.handleHoverUpdate()
                 this.handleUpdateProfile()
-
-                // Get the user's tasks details
-                this.getTasksDetails()
             } else {
                 // If not success, show a notice with error message
                 this.loading.classList.add('hidden')

@@ -54,8 +54,6 @@ class Todos {
             cancel: document.getElementById('modal-delete-todo-cancel'),
             close: document.getElementById('modal-delete-todo-close-button')
         }
-
-        this.loading = document.getElementById('home-loading')
     }
 
     // Create and return a container for a To Do task
@@ -465,27 +463,21 @@ class Todos {
 
     // Get the stack and the event listeners. If there is no stack, show the empty state
     // Params: None
-    // Return: None
+    // Return: stack (array) -> the tasks data
     handleStack = async () => {
-        // Show the loading state
-        loadAnimation(this.loading, 'loading')
-
         // Get the stack
         try {
             const stack = await this.getStack()
-            if (stack) {
-                // After getting the stack, hide the loading state
-                this.loading.classList.add('hidden')
-
-                // If the stack is empty, show the empty state
-                if (stack.length === 0) {
-                    this.emptyState()
-                    this.handleDragRecipient()
-                } else {
-                    this.handleDragSender()
-                    this.handleDragRecipient()
-                }
+            // If the stack is empty, show the empty state
+            if (stack.length === 0) {
+                this.emptyState()
+                this.handleDragRecipient()
+            } else {
+                this.handleDragSender()
+                this.handleDragRecipient()
             }
+
+            return stack
         } catch (err) {
             console.error(err)
         }

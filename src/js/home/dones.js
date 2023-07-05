@@ -36,8 +36,6 @@ class Dones {
             cancel: document.getElementById('modal-delete-todo-cancel'),
             close: document.getElementById('modal-delete-todo-close-button')
         }
-
-        this.loading = document.getElementById('home-loading')
     }
 
     // Create and return a container for a Done task
@@ -440,21 +438,21 @@ class Dones {
 
     // Get the stack and the event listeners. If there is no stack, show the empty state
     // Params: None
-    // Return: None
+    // Return: stack (array) -> the tasks data
     handleStack = async () => {
         try {
             // Get the stack
             const stack = await this.getStack()
-            if (stack) {
-                // If the stack is empty, show the empty state
-                if (stack.length === 0) {
-                    this.emptyState()
-                    this.handleDragRecipient()
-                } else {
-                    this.handleDragSender()
-                    this.handleDragRecipient()
-                }
+            // If the stack is empty, show the empty state
+            if (stack.length === 0) {
+                this.emptyState()
+                this.handleDragRecipient()
+            } else {
+                this.handleDragSender()
+                this.handleDragRecipient()
             }
+
+            return stack
         } catch (err) {
             console.error(err)
         }
