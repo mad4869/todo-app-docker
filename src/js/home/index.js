@@ -34,7 +34,7 @@ const menu = new Menu()
 // Dropdown
 projects.handleOptions()
 
-// Stacks
+// Tasks Stack
 
 // Show the loading state
 const loading = document.getElementById('home-loading')
