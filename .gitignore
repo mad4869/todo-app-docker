@@ -195,4 +195,9 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/flask
 
+# Docker
+Dockerfile
+.dockerignore
+
+# Flask static digest
 cache_manifest.json
