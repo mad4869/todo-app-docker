@@ -68,8 +68,7 @@ class LoginForm {
             e.preventDefault()
 
             // Show loading state
-            this.submit.innerHTML = ''
-            loadAnimation(this.submit, 'dots-white')
+            this.submit.innerHTML = '...'
 
             // Create a FormData object
             const formData = new FormData(this.form)

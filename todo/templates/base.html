@@ -16,7 +16,7 @@
         {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div id="flash" class="fixed flex gap-1 items-center left-1/2 -translate-x-1/2 bottom-10 px-8 py-1 text-white rounded-2xl {{ category }}" data-category="{{ category }}">
+                <div id="flash" class="fixed flex gap-1 items-center left-1/2 -translate-x-1/2 bottom-10 px-2 md:px-8 py-1 text-sm sm:text-base text-white rounded-2xl {{ category }}" data-category="{{ category }}">
                     <div id="flash-animation" class="h-20"></div>
                     <div>{{ message }}</div>
                 </div>

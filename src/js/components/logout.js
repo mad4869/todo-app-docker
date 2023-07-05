@@ -39,8 +39,7 @@ const handleLogout = () => {
         e.preventDefault()
 
         // Display loading state
-        link.innerHTML = ''
-        loadAnimation(link, 'dots-white')
+        link.innerHTML = '...'
 
         // Make an API call the logout endpoint
         try {

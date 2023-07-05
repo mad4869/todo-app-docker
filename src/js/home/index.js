@@ -9,6 +9,7 @@ import { handleFlash } from '../components/notice'
 import handleHamburger from '../components/hamburger'
 import handleLogout from '../components/logout'
 import setFooter from '../components/footer'
+import loadAnimation from '../components/animation'
 
 // Handle flash
 const flash = document.getElementById('flash')
@@ -40,9 +41,9 @@ projects.handleOptions()
 const loading = document.getElementById('home-loading')
 loadAnimation(loading, 'loading')
 
-const todoStack = todos.handleStack()
-const doneStack = dones.handleStack()
-if (todoStack & doneStack) {
+const todoStack = await todos.handleStack()
+const doneStack = await dones.handleStack()
+if (todoStack && doneStack) {
     // After getting the stacks, hide the loading state
     loading.classList.add('hidden')
 }
