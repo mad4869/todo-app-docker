@@ -143,6 +143,9 @@ class Todos {
             this.edit.form.fields.project.value = data.project_id
             this.edit.form.fields.title.value = data.title
             this.edit.form.fields.description.value = data.description
+
+            this.handleCloseEditModal()
+            this.handleClickOutsideEdit()
         }
 
         // Define a handler for the delete button
@@ -154,35 +157,10 @@ class Todos {
             const { data } = await fetchData(`/api/users/${this.user}/todos/${todoId}`)
             this.delete.deleted.textContent = data.title
 
-            // If the user click confirm:
-            this.delete.confirm.addEventListener('click', async () => {
-                // Show the loading state
-                this.delete.confirm.innerHTML = ''
-                loadAnimation(this.delete.confirm, 'dots-white')
-
-                // Make an api call to delete the task using its ID
-                try {
-                    const res = await deleteData(`/api/users/${this.user}/todos/${todoId}`)
-                    // If success, reload the page
-                    if (res.success) {
-                        location.reload()
-                        // If not, abort the loading state and show a notice with error message
-                    } else {
-                        this.delete.confirm.innerHTML = 'Confirm'
-                        this.closeDeleteModal()
-
-                        showNotice(res.message, 'error')
-                    }
-                } catch (err) {
-                    console.error(err)
-                }
-            })
-
-            // If the user click cancel:
-            this.delete.cancel.addEventListener('click', () => {
-                // Close the modal
-                this.closeDeleteModal()
-            })
+            this.handleDeleteConfirm(todoId)
+            this.handleDeleteCancel()
+            this.handleCloseDeleteModal()
+            this.handleClickOutsideDelete()
         }
 
         // Define a handler for the done button
@@ -228,6 +206,41 @@ class Todos {
         card.append(heading, description, toolbar)
 
         return card
+    }
+
+    handleDeleteConfirm = (todoId) => {
+        this.deleteConfirm = async () => {
+            // Show the loading state
+            this.delete.confirm.innerHTML = ''
+            loadAnimation(this.delete.confirm, 'dots-white')
+
+            // Make an api call to delete the task using its ID
+            try {
+                const res = await deleteData(`/api/users/${this.user}/todos/${todoId}`)
+                // If success, reload the page
+                if (res.success) {
+                    location.reload()
+                    // If not, abort the loading state and show a notice with error message
+                } else {
+                    this.delete.confirm.innerHTML = 'Confirm'
+                    this.closeDeleteModal()
+
+                    showNotice(res.message, 'error')
+                }
+            } catch (err) {
+                console.error(err)
+            }
+        }
+
+        this.delete.confirm.addEventListener('click', this.deleteConfirm)
+    }
+
+    handleDeleteCancel = () => {
+        // If the user click cancel:
+        this.delete.cancel.addEventListener('click', () => {
+            // Close the modal
+            this.closeDeleteModal()
+        })
     }
 
     // Create a stack of task cards
@@ -287,6 +300,9 @@ class Todos {
         // Define the handler for a cta button
         const handleCta = () => {
             this.showAddModal()
+
+            this.handleCloseAddModal()
+            this.handleClickOutsideAdd()
         }
 
         // Create the cta button
@@ -541,12 +557,20 @@ class Todos {
         this.add.show.addEventListener('click', () => {
             this.showAddModal()
 
+            this.handleCloseAddModal()
+            this.handleClickOutsideAdd()
+
             const menu = new Menu()
             menu.closeMenu()
         })
     }
 
     closeAddModal = () => {
+        this.add.close.removeEventListener('click', () => {
+            this.closeAddModal()
+        })
+        document.removeEventListener('click', this.clickOutsideAdd)
+
         this.add.modal.classList.add('hidden')
     }
 
@@ -556,11 +580,20 @@ class Todos {
         })
     }
 
+    handleModal = () => {
+        this.handleShowAddModal()
+    }
+
     showEditModal = () => {
         this.edit.modal.classList.remove('hidden')
     }
 
     closeEditModal = () => {
+        this.edit.close.removeEventListener('click', () => {
+            this.closeEditModal()
+        })
+        document.removeEventListener('click', this.clickOutsideEdit)
+
         this.edit.modal.classList.add('hidden')
     }
 
@@ -575,6 +608,11 @@ class Todos {
     }
 
     closeDeleteModal = () => {
+        this.delete.confirm.removeEventListener('click', this.deleteConfirm)
+        this.delete.close.removeEventListener('click', () => {
+            this.closeDeleteModal()
+        })
+        document.removeEventListener('click', this.clickOutsideDelete)
         this.delete.modal.classList.add('hidden')
     }
 
@@ -584,8 +622,8 @@ class Todos {
         })
     }
 
-    handleClickOutsideModal = () => {
-        document.addEventListener('click', (e) => {
+    handleClickOutsideAdd = () => {
+        this.clickOutsideAdd = (e) => {
             if (this.add.modal) {
                 const ctaButton = document.querySelector('button[name="todo-cta-button"]')
                 let addTodoClicked = this.add.modal.firstElementChild.contains(e.target) || this.add.show.contains(e.target)
@@ -596,7 +634,12 @@ class Todos {
                     this.closeAddModal()
                 }
             }
+        }
+        document.addEventListener('click', this.clickOutsideAdd);
+    }
 
+    handleClickOutsideEdit = () => {
+        this.clickOutsideEdit = (e) => {
             if (this.edit.modal) {
                 const editButtons = document.querySelectorAll('button[name="edit-button"]')
                 const editTodoClicked = this.edit.modal.firstElementChild.contains(e.target) || [...editButtons].some((button) => button.contains(e.target))
@@ -604,7 +647,12 @@ class Todos {
                     this.closeEditModal()
                 }
             }
+        }
+        document.addEventListener('click', this.clickOutsideEdit)
+    }
 
+    handleClickOutsideDelete = () => {
+        this.clickOutsideDelete = (e) => {
             if (this.delete.modal) {
                 const deleteButtons = document.querySelectorAll('button[name="delete-button"]')
                 const deleteTodoClicked = this.delete.modal.firstElementChild.contains(e.target) || [...deleteButtons].some((button) => button.contains(e.target))
@@ -612,15 +660,8 @@ class Todos {
                     this.closeDeleteModal()
                 }
             }
-        });
-    }
-
-    handleModal = () => {
-        this.handleShowAddModal()
-        this.handleCloseAddModal()
-        this.handleCloseEditModal()
-        this.handleCloseDeleteModal()
-        this.handleClickOutsideModal()
+        }
+        document.addEventListener('click', this.clickOutsideDelete)
     }
 
     // Validate the input field when the user click outside the field and if it's invalid, show the error message
