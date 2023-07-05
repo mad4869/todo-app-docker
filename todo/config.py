@@ -23,4 +23,4 @@ class Config:
 
     # Authentication
     JWT_SECRET_KEY = environ.get("JWT_SECRET_KEY")
-    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=1)
+    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(minutes=1)
