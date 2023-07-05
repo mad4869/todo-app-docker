@@ -12,4 +12,4 @@ def refresh_token():
 
     access_token = {"access_token": create_access_token(identity=current_user)}
 
-    return jsonify(access_token), 200
+    return jsonify(access_token), 201
