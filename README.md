@@ -27,6 +27,24 @@ The to-do app should have the following features:
 
 **END** 
 
+## Installation
+1. Clone repo
+```
+gh repo clone mad4869/todo-app
+```
+2. Install dependencies
+```
+npm install
+pip install -r requirements.txt
+```
+3. Build the assets
+```
+npm run build
+```
+4. Run the server
+```
+flask run
+```
 
 ## Code Explanation
 
