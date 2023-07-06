@@ -35,6 +35,7 @@ The to-do app should have the following features:
 
 
 ## Conclusion
-TODO is a simple to-do app that enables the users to keep track of their tasks or projects.<br> A few things that can be done to improve the app are the followings:
-1. Tasks pagination to improve the user experience.
-2. Some optimization on the static files to improve the app performance.
+TODO is a simple to-do app that allows users to track their tasks or projects.<br>However, there are a few things that can be done to enhance the app:
+1. Implement task pagination to improve the user experience.
+2. Optimize the static files to enhance the app's performance.
+By implementing these improvements, the overall functionality and performance of the app can be enhanced.
