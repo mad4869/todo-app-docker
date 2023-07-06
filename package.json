@@ -1,7 +1,7 @@
 {
   "name": "todo-app",
   "version": "1.0.0",
-  "description": "A simple todo app built using HTML, CSS, and Javascript",
+  "description": "A simple todo app built using Javascript, Tailwind CSS, and Flask.",
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode development",
