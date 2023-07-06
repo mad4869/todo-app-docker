@@ -3,6 +3,7 @@ import { validate, showError, resetError, enableSubmit, validateSubmit } from '.
 import createButton from "../components/button"
 import showNotice from "../components/notice"
 import loadAnimation from "../components/animation"
+import emptyPrimary from '../../img/empty-primary.svg'
 
 class Projects {
     constructor(user) {
@@ -133,6 +134,9 @@ class Projects {
             this.showTodosModal()
 
             this.todos.form.fields.project.value = projectId
+
+            this.handleCloseTodosModal()
+            this.handleClickOutsideTodos()
         }
 
         // Create the add button
@@ -336,7 +340,7 @@ class Projects {
         // Create the illustration
         const illustration = document.createElement('img')
         illustration.className = 'w-20'
-        illustration.setAttribute('src', '/static/dist/img/empty-primary.svg')
+        illustration.setAttribute('src', emptyPrimary)
         illustration.setAttribute('alt', 'This column is empty')
 
         // Create the message

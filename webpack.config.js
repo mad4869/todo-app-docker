@@ -22,6 +22,24 @@ const commonConfig = {
         chunkFilename: 'js/[name].bundle.js',
         compareBeforeEmit: true
     },
+    module: {
+        rules: [
+            {
+                test: /\.(png|svg|jpg|jpeg|gif)$/,
+                type: 'asset/resource',
+                generator: {
+                    filename: 'img/[name][ext]'
+                }
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                type: 'asset/resource',
+                generator: {
+                    filename: 'fonts/[name][ext]'
+                }
+            }
+        ]
+    }
 }
 
 const devConfig = {
@@ -50,7 +68,12 @@ const prodConfig = {
     optimization: {
         minimizer: [new CssMinimizerPlugin(), new TerserPlugin()]
     },
-    plugins: [new CleanWebpackPlugin(), new MiniCssExtractPlugin({
+    plugins: [new CleanWebpackPlugin({
+        cleanOnceBeforeBuildPatterns: [
+            '**/*',
+            '!logo/**'
+        ]
+    }), new MiniCssExtractPlugin({
         filename: 'css/style.css',
     })]
 }

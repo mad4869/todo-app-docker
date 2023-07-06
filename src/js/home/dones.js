@@ -4,6 +4,7 @@ import { fetchData, updateData, deleteData } from '../components/data'
 import createButton from '../components/button'
 import { getNextElement, todoToDone } from '../components/switch'
 import loadAnimation from '../components/animation'
+import emptySecondary from '../../img/empty-secondary.svg'
 
 class Dones {
     constructor(user) {
@@ -271,8 +272,8 @@ class Dones {
         // Create the illustration
         const illustration = document.createElement('img')
         illustration.className = 'w-20'
+        illustration.setAttribute('src', emptySecondary)
         illustration.setAttribute('alt', 'This column is empty')
-        illustration.setAttribute('src', '/static/dist/img/empty-secondary.svg')
 
         // Create the message
         const text = document.createElement('h3')
