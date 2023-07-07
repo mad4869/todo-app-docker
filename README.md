@@ -27,24 +27,8 @@ The to-do app should have the following features:
 
 **END** 
 
-## Installation
-1. Clone repo
-```
-gh repo clone mad4869/todo-app
-```
-2. Install dependencies
-```
-npm install
-pip install -r requirements.txt
-```
-3. Build the assets
-```
-npm run build
-```
-4. Run the server
-```
-flask run
-```
+## Demo
+https://mad4869.pythonanywhere.com
 
 ## Code Explanation
 
@@ -56,5 +40,6 @@ flask run
 TODO is a simple to-do app that allows users to track their tasks or projects.<br>However, there are a few things that can be done to enhance the app:
 1. Implement task pagination to improve the user experience.
 2. Optimize the static files to enhance the app's performance.
+3. Clean up the code to improve its overall readability.
 
 By implementing these improvements, the overall functionality and performance of the app can be enhanced.
