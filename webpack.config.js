@@ -28,14 +28,14 @@ const commonConfig = {
                 test: /\.(png|svg|jpg|jpeg|gif)$/,
                 type: 'asset/resource',
                 generator: {
-                    filename: 'img/[name][ext]'
+                    filename: 'img/[name]-[contenthash][ext]'
                 }
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
                 type: 'asset/resource',
                 generator: {
-                    filename: 'fonts/[name][ext]'
+                    filename: 'fonts/[name]-[contenthash][ext]'
                 }
             }
         ]
