@@ -284,7 +284,7 @@ class Todos {
     emptyState = () => {
         // Create the container
         const emptyBox = document.createElement('div')
-        emptyBox.className = 'flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-violet-700 text-violet-700 text-xl capitalize rounded-2xl'
+        emptyBox.className = 'flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-violet-700 text-violet-700 text-lg text-center capitalize rounded-2xl sm:text-xl'
         emptyBox.setAttribute('id', 'empty-state')
 
         // Create the illustration

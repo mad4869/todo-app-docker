@@ -169,7 +169,7 @@ class Projects {
     emptyState = () => {
         // Create the container
         const emptyBox = document.createElement('div')
-        emptyBox.className = 'flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-white text-white text-xl capitalize rounded-2xl'
+        emptyBox.className = 'flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-white text-white text-lg text-center capitalize rounded-2xl sm:text-xl'
 
         // Create the message
         const text = document.createElement('h3')

@@ -334,7 +334,7 @@ class Projects {
     emptyState = () => {
         // Create the container
         const emptyBox = document.createElement('div')
-        emptyBox.className = 'col-span-1 flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-indigo-700 text-indigo-700 text-lg capitalize rounded-2xl sm:text-xl sm:col-span-2 sm:col-span-3'
+        emptyBox.className = 'col-span-1 flex flex-col gap-2 justify-center items-center w-full py-10 border border-dashed border-indigo-700 text-indigo-700 text-lg text-center capitalize rounded-2xl sm:text-xl sm:col-span-2 sm:col-span-3'
         emptyBox.setAttribute('id', 'empty-state')
 
         // Create the illustration
