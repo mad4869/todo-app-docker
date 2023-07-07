@@ -11,12 +11,15 @@ from wtforms import (
 )
 from wtforms.validators import InputRequired, DataRequired, Length, Email, EqualTo
 
+from .extensions import db
 from .models import *
 
 
 class RegisterForm(FlaskForm):
     def validate_email(self, email_input):
-        email_exists = Users.query.filter_by(email=email_input.data).first()
+        email_exists = db.session.execute(
+            db.select(Users).filter(Users.email == email_input.data)
+        ).scalar_one_or_none()
         if email_exists:
             raise ValidationError(
                 "Email address already registered! Please login or use a different one"
@@ -107,7 +110,7 @@ class AddTodoForm(FlaskForm):
     def load_choices(self, user_id):
         with current_app.app_context():
             projects = db.session.execute(
-                db.select(Projects).filter_by(user_id=user_id)
+                db.select(Projects).filter(Projects.user_id == user_id)
             ).scalars()
             self.project.choices = [
                 (project.project_id, project.title) for project in projects
@@ -134,7 +137,9 @@ class EditTodoForm(FlaskForm):
 
     def load_choices(self, user_id):
         with current_app.app_context():
-            projects = Projects.query.filter(Projects.user_id == user_id)
+            projects = db.session.execute(
+                db.select(Projects).filter(Projects.user_id == user_id)
+            ).scalars()
             self.project.choices = [
                 (project.project_id, project.title) for project in projects
             ]
