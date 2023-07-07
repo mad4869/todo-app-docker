@@ -1,6 +1,4 @@
 // Toggle a hamburger menu
-// Params: None
-// Return: None
 const handleHamburger = () => {
     const hamburger = document.getElementById('landing-hamburger-button')
     const menu = document.getElementById('landing-hamburger-menu')

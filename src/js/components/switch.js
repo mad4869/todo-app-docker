@@ -1,7 +1,4 @@
 // Switch the appearance of a dragged To Do task into a Done task
-// Params: dragged (HTML element) -> the dragged element
-//         newButton (HTML element) -> a button element that would replace the old button inside the dragged element
-// Return: None
 const todoToDone = (dragged, newButton) => {
     // Switch the heading color
     const heading = dragged.firstElementChild
@@ -34,10 +31,6 @@ const todoToDone = (dragged, newButton) => {
 }
 
 // Switch the appearance of a dragged Done task into a To Do task
-// Params: dragged (HTML element) -> the dragged element
-//         newButton (HTML element) -> a button element that would replace the old button inside the 
-//                                     dragged element
-// Return: None
 const doneToTodo = (dragged, newButton) => {
     // Switch the heading color
     const heading = dragged.firstElementChild
@@ -70,11 +63,6 @@ const doneToTodo = (dragged, newButton) => {
 }
 
 // Get the element that is present next to the dragged element
-// Params: container (HTML element) -> the container of the dragged element
-//         y (float) -> the y axis value of the dragged element position
-// Return: object -> an object containing 
-//                   1) the offset between the dragged element and the next element
-//                   2) the next element
 const getNextElement = (container, y) => {
     // Target the elements other than the dragged element
     const otherElements = [...container.querySelectorAll('div[draggable="true"]:not(.opacity-50)')]

@@ -1,14 +1,9 @@
 // Inspect if a field satisfies the required value 
-// Params: field (HTML element) -> an input field element
-// Return: boolean -> true if the field satisfies the required value, false if not
 const validate = (field) => {
     return field.checkValidity()
 }
 
 // Inspect if the confirm password field value matches the password field value
-// Params: password (HTML element) -> an input field element containing password data
-//         confirmPassword (HTML element) -> an input field to confirm the password data
-// Return: boolean -> true if the confirmed password matches the password, false if not
 const validatePasswordMatch = (password, confirmPassword) => {
     if (confirmPassword.value !== password.value) {
         confirmPassword.setCustomValidity('Passwords do not match.')
@@ -18,8 +13,6 @@ const validatePasswordMatch = (password, confirmPassword) => {
 }
 
 // Create and return an error message
-// Params: field (HTML element) -> an input field element
-// Return: error (HTML element) -> a 'p' element containing an error message
 const createError = (field) => {
     const error = document.createElement('p')
     error.className = 'mt-1 text-xs text-rose-500 italic'
@@ -30,8 +23,6 @@ const createError = (field) => {
 }
 
 // Attach the error message below the input field
-// Params: field (HTML element) -> an input field element
-// Return: None
 const showError = (field) => {
     field.classList.remove('border-slate-500', 'placeholder:text-slate-400')
     field.classList.add('border-rose-500', 'placeholder:text-rose-300')
@@ -40,8 +31,6 @@ const showError = (field) => {
 }
 
 // Remove the error message below the input field if the error message is present
-// Params: field (HTML element) -> an input field element
-// Return: None
 const resetError = (field) => {
     field.classList.remove('border-rose-500', 'placeholder:text-rose-300')
     field.classList.add('border-slate-500', 'placeholder:text-slate-400')
@@ -51,9 +40,6 @@ const resetError = (field) => {
 }
 
 // Enable the submit button if all the required input field are valid
-// Params: field (HTML element) -> an input field element
-//         submit (HTML element) -> a submit button element
-// Return: None
 const enableSubmit = (fields, submit) => {
     const results = {}
 
@@ -81,10 +67,6 @@ const enableSubmit = (fields, submit) => {
 }
 
 // Send the form data to be validated after it got submitted
-// Params: formData (FormData) -> a FormData object containing the data from the user
-//         apiUrl (string) -> the url/route of the api endpoint
-//         method (function) -> the function to make an api call
-// Return: res (object) -> the response of the request
 const validateSubmit = async (formData, apiUrl, method) => {
     try {
         const res = await method(apiUrl, formData)

@@ -4,6 +4,7 @@ let accessToken = localStorage.getItem('access_token')
 // Attach the token on the header of each request
 // Get the response of each request and return a Promise
 
+// Get a new access token using refresh token if the old one had expired
 const refresh = () => {
     const refreshToken = localStorage.getItem('refresh_token')
 
@@ -29,8 +30,6 @@ const refresh = () => {
 }
 
 // Handle the GET request
-// Params: url (string) -> the url/route of the api endpoint
-// Return: Promise -> a promise containing the response of the request
 const fetchData = (url) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
@@ -58,9 +57,6 @@ const fetchData = (url) => {
 }
 
 // Handle the POST request
-// Params: url (string) -> the url/route of the api endpoint
-//         newData (object) -> an object containing new data from the user
-// Return: Promise -> a promise containing the response of the request
 const sendData = (url, newData) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
@@ -88,9 +84,6 @@ const sendData = (url, newData) => {
 }
 
 // Handle the PUT request
-// Params: url (string) -> the url/route of the api endpoint
-//         updatedData (object) -> an object containing data that has been updated by the user
-// Return: Promise -> a promise containing the response of the request
 const updateData = (url, updatedData) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()
@@ -118,8 +111,6 @@ const updateData = (url, updatedData) => {
 }
 
 // Handle the DELETE request
-// Params: url (string) -> the url/route of the api endpoint
-// Return: Promise -> a promise containing the response of the request
 const deleteData = (url) => {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest()

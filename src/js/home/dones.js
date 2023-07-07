@@ -40,8 +40,6 @@ class Dones {
     }
 
     // Create and return a container for a Done task
-    // Params: doneId (int) -> the task ID
-    // Return: card (HTML element) -> the card container
     createCard = (doneId) => {
         const card = document.createElement('div')
         card.className = 'w-full pb-2 bg-white border border-solid border-slate-700 rounded-2xl shadow-card-sm cursor-move overflow-hidden'
@@ -52,9 +50,6 @@ class Dones {
     }
 
     // Create and return the heading part of the card
-    // Params: doneTitle (string) -> the task title
-    //         project (string) -> the project that the task is a part of
-    // Return: heading (HTML element) -> the heading containing the title and the project
     createHeading = (doneTitle, project) => {
         const heading = document.createElement('div')
         heading.className = 'flex gap-4 justify-between items-center bg-teal-600 px-4 py-2 text-teal-500 '
@@ -73,8 +68,6 @@ class Dones {
     }
 
     // Create and return the description part of the card
-    // Params: doneDesc (string) -> the task description
-    // Return: description (HTML element) -> the description container
     createDescription = (doneDesc) => {
         const description = document.createElement('div')
         description.className = 'bg-white px-4 py-2 text-neutral-400 text-xs'
@@ -84,10 +77,6 @@ class Dones {
     }
 
     // Create and return the toolbar part of the card
-    // Params: editButton (HTML element) -> a button element to edit the task
-    //         deleteButton (HTML element) -> a button element to delete the task
-    //         undoneButton (HTML element) -> a button element to send the task back to the To Do column
-    // Return: toolbar (HTML element) -> the toolbar containing all the buttons
     createToolbar = (editButton, deleteButton, undoneButton) => {
         const toolbar = document.createElement('div')
         toolbar.className = 'flex justify-between bg-white px-4'
@@ -104,11 +93,6 @@ class Dones {
     }
 
     // Create a card by merging all the components
-    // Params: doneId (int) -> the task ID
-    //         doneTitle (string) -> the task title
-    //         project (string) -> the project that the task is a part of
-    //         doneDesc (string) -> the task description
-    // Return: card (HTML element) -> the card container
     createDone = (doneId, doneTitle, project, doneDesc) => {
         // Create all the components
         const card = this.createCard(doneId)
@@ -147,40 +131,16 @@ class Dones {
         }
 
         // Define a handler for the undone button
-        this.handleUndone = async () => {
-            const todo = document.querySelector(`[data-id="${doneId}"]`)
-            const undoneButton = todo.querySelector('button[name="undone-button"]')
-
-            // If the undone button clicked, show the loading state
-            undoneButton.innerHTML = ''
-            loadAnimation(undoneButton, 'dots-white')
-
-            // Get the updated data of the task
-            try {
-                const updatedData = await this.markAsUndone(doneId)
-                if (updatedData) {
-                    // After getting the updated data, make an api call to update the data
-                    const res = await updateData(`/api/users/${this.user}/todos/${doneId}`, JSON.stringify(updatedData))
-
-                    // If success, reload the page
-                    if (res.success) {
-                        location.reload()
-                        // If not, abort the loading state and show a notice with error message
-                    } else {
-                        undoneButton.innerHTML = '<i class="fa-solid fa-arrow-rotate-left"></i>'
-
-                        showNotice(res.message, 'error')
-                    }
-                }
-            } catch (err) {
-                console.error(err)
+        const createHandleUndone = (id) => {
+            return () => {
+                this.handleUndone(id)
             }
         }
 
         // Create all the buttons
         const editButton = createButton('px-4 py-px text-xs text-emerald-500 rounded-lg shadow-button-sm bg-emerald-700', 'Edit', handleEdit, 'edit-button', 'Edit this task')
         const deleteButton = createButton('ml-1 px-4 py-px text-xs text-rose-500 rounded-lg shadow-button-sm bg-rose-700', 'Delete', handleDelete, 'delete-button', 'Delete this task')
-        const undoneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-button-sm bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', this.handleUndone, 'undone-button', 'Mark as undone')
+        const undoneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-button-sm bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', createHandleUndone(doneId), 'undone-button', 'Mark as undone')
 
         // Put the buttons inside their container
         const toolbar = this.createToolbar(editButton, deleteButton, undoneButton)
@@ -191,6 +151,37 @@ class Dones {
         return card
     }
 
+    handleUndone = async (doneId) => {
+        const todo = document.querySelector(`[data-id="${doneId}"]`)
+        const undoneButton = todo.querySelector('button[name="undone-button"]')
+
+        // If the undone button clicked, show the loading state
+        undoneButton.innerHTML = ''
+        loadAnimation(undoneButton, 'dots-white')
+
+        // Get the updated data of the task
+        try {
+            const updatedData = await this.markAsUndone(doneId)
+            if (updatedData) {
+                // After getting the updated data, make an api call to update the data
+                const res = await updateData(`/api/users/${this.user}/todos/${doneId}`, JSON.stringify(updatedData))
+
+                // If success, reload the page
+                if (res.success) {
+                    location.reload()
+                    // If not, abort the loading state and show a notice with error message
+                } else {
+                    undoneButton.innerHTML = '<i class="fa-solid fa-arrow-rotate-left"></i>'
+
+                    showNotice(res.message, 'error')
+                }
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    // If the user confirms to delete the task:
     handleDeleteConfirm = (doneId) => {
         this.deleteConfirm = async () => {
             // Show the loading state
@@ -218,8 +209,8 @@ class Dones {
         this.delete.confirm.addEventListener('click', this.deleteConfirm)
     }
 
+    // If the user cancels the deletion process:
     handleDeleteCancel = () => {
-        // If the user click cancel:
         this.delete.cancel.addEventListener('click', () => {
             // Close the modal
             this.closeDeleteModal()
@@ -227,8 +218,6 @@ class Dones {
     }
 
     // Create a stack of task cards
-    // Params: data (array) -> an array of tasks data
-    // Return: None
     createStack = (data) => {
         // Iterate over the array
         for (let i = 0; i < data.length; i++) {
@@ -246,8 +235,6 @@ class Dones {
     }
 
     // Get the stack using the tasks data from the database
-    // Params: None
-    // Return: data (array) -> the tasks data from the database
     getStack = async () => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}/dones`)
@@ -261,8 +248,6 @@ class Dones {
     }
 
     // Create an empty state if the user hasn't got any task yet
-    // Params: None
-    // Return: None
     emptyState = () => {
         // Create the container
         const emptyBox = document.createElement('div')
@@ -288,8 +273,6 @@ class Dones {
     }
 
     // Check if a task is a Done task or not
-    // Params: doneId (int) -> the task ID
-    // Return: data (object) -> the task data
     checkDone = async (doneId) => {
         // Get the data from the endpoint
         try {
@@ -305,8 +288,6 @@ class Dones {
     }
 
     // Mark a task as undone
-    // Params: doneId (int) -> the task ID
-    // Return: updatedData (object) -> the updated data object
     markAsUndone = async (doneId) => {
         // Get the data if the task is a Done task
         try {
@@ -326,8 +307,6 @@ class Dones {
     }
 
     // Handle the drag start and drag end events
-    // Params: None
-    // Return: None 
     handleDragSender = () => {
         // If the user starts to drag the task card:
         this.handleDragStart = (e) => {
@@ -353,8 +332,6 @@ class Dones {
     }
 
     // Handle the drag over and drop events
-    // Params: None
-    // Return: None 
     handleDragRecipient = () => {
         // If the user drags the card over the main container:
         this.handleDragOver = (e) => {
@@ -367,8 +344,14 @@ class Dones {
             // Target the dragged card using the task ID
             const dragged = document.querySelector(`[data-id="${data}"]`)
 
+            const createHandleUndone = (id) => {
+                return () => {
+                    this.handleUndone(id)
+                }
+            }
+
             // Create an undone button
-            const undoneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-button-sm bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', this.handleUndone, 'undone-button', 'Mark as undone')
+            const undoneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-button-sm bg-teal-600', '<i class="fa-solid fa-arrow-rotate-left"></i>', createHandleUndone(data), 'undone-button', 'Mark as undone')
 
             // Switch the dragged card appearance
             todoToDone(dragged, undoneButton)
@@ -437,8 +420,6 @@ class Dones {
     }
 
     // Remove all drag and drop event listeners
-    // Params: None
-    // Return: None
     resetDrag = () => {
         const allTasks = this.stack.container.querySelectorAll('div[draggable="true"]')
         allTasks.forEach((task) => {
@@ -451,8 +432,6 @@ class Dones {
     }
 
     // Get the stack and the event listeners. If there is no stack, show the empty state
-    // Params: None
-    // Return: stack (array) -> the tasks data
     handleStack = async () => {
         try {
             // Get the stack
@@ -473,8 +452,6 @@ class Dones {
     }
 
     // Remove all the task cards and the event listeners from the main container
-    // Params: None
-    // Return: None
     resetStack = () => {
         this.resetDrag()
 
@@ -486,8 +463,6 @@ class Dones {
     }
 
     // Filter the task cards based on the project they belong to
-    // Params: projectId (int) -> the project ID
-    // Return: filtered (array) -> the filtered tasks data based on the project ID
     filterByProject = async (projectId) => {
         // Reset the stack
         this.resetStack()
@@ -519,8 +494,6 @@ class Dones {
     }
 
     // Show and close modals
-    // Params: None
-    // Return: None
 
     showEditModal = () => {
         this.edit.modal.classList.remove('hidden')

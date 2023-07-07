@@ -26,8 +26,6 @@ class User {
     }
 
     // Get and return the user profile data
-    // Params: None
-    // Return: data (object) -> an object of the user data
     getProfile = async () => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}`)
@@ -47,8 +45,6 @@ class User {
     }
 
     // Show the update button if the user attempts to edit their profile
-    // Params: None
-    // Return: None
     handleShowUpdate = () => {
         this.showUpdate = (e) => {
             if (e.target.hasAttribute('contenteditable')) {
@@ -60,8 +56,6 @@ class User {
     }
 
     // Hide the update button if the user clicked outside of the fields to update their profile
-    // Params: None
-    // Return: None
     handleHideUpdate = () => {
         this.hideUpdate = (e) => {
             if (e.target.hasAttribute('contenteditable')) {
@@ -73,8 +67,6 @@ class User {
     }
 
     // Disable the function to hide the update button if the user hovers on the update button
-    // Params: None
-    // Return: None
     handleHoverUpdate = () => {
         this.profile.update.addEventListener('mouseenter', () => {
             this.profile.profile.removeEventListener('blur', this.hideUpdate, true)
@@ -88,8 +80,6 @@ class User {
     }
 
     // Update the user profile
-    // Params: None
-    // Return: res (object) -> a response obtained after sending a request to update the profile
     updateProfile = async () => {
         // Get the user data
         try {
@@ -138,8 +128,6 @@ class User {
     }
 
     // Get the tasks details of the user
-    // Params: None
-    // Return: object -> containing arrays of to do tasks and done tasks
     getTasksDetails = async () => {
         try {
             const todoTasks = await fetchData(`/api/users/${this.user}/todos`)
@@ -156,8 +144,6 @@ class User {
     }
 
     // Get the user profile and their tasks details
-    // Params: None
-    // Return: None
     handleProfile = async () => {
         // Show the loading state
         loadAnimation(this.loading, 'loading')

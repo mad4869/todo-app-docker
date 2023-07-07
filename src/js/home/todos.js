@@ -58,8 +58,6 @@ class Todos {
     }
 
     // Create and return a container for a To Do task
-    // Params: todoId (int) -> the task ID
-    // Return: card (HTML element) -> the card container
     createCard = (todoId) => {
         const card = document.createElement('div')
         card.className = 'w-full pb-2 bg-white border border-solid border-slate-700 rounded-2xl shadow-card-sm cursor-move overflow-hidden'
@@ -70,9 +68,6 @@ class Todos {
     }
 
     // Create and return the heading part of the card
-    // Params: todoTitle (string) -> the task title
-    //         project (string) -> the project that the task is a part of
-    // Return: heading (HTML element) -> the heading containing the title and the project
     createHeading = (todoTitle, project) => {
         const heading = document.createElement('div')
         heading.className = 'flex gap-4 justify-between items-center bg-violet-700 px-4 py-2 text-white'
@@ -91,8 +86,6 @@ class Todos {
     }
 
     // Create and return the description part of the card
-    // Params: todoDesc (string) -> the task description
-    // Return: description (HTML element) -> the description container
     createDescription = (todoDesc) => {
         const description = document.createElement('div')
         description.className = 'bg-white px-4 py-2 text-xs'
@@ -102,10 +95,6 @@ class Todos {
     }
 
     // Create and return the toolbar part of the card
-    // Params: editButton (HTML element) -> a button element to edit the task
-    //         deleteButton (HTML element) -> a button element to delete the task
-    //         doneButton (HTML element) -> a button element to send the task to the Done column
-    // Return: toolbar (HTML element) -> the toolbar containing all the buttons
     createToolbar = (editButton, deleteButton, doneButton) => {
         const toolbar = document.createElement('div')
         toolbar.className = 'flex justify-between bg-white px-4'
@@ -122,11 +111,6 @@ class Todos {
     }
 
     // Create a card by merging all the components
-    // Params: todoId (int) -> the task ID
-    //         todoTitle (string) -> the task title
-    //         project (string) -> the project that the task is a part of
-    //         todoDesc (string) -> the task description
-    // Return: card (HTML element) -> the card container
     createTodo = (todoId, todoTitle, project, todoDesc) => {
         // Create all the components
         const card = this.createCard(todoId)
@@ -165,40 +149,16 @@ class Todos {
         }
 
         // Define a handler for the done button
-        this.handleDone = async () => {
-            const todo = document.querySelector(`[data-id="${todoId}"]`)
-            const doneButton = todo.querySelector('button[name="done-button"]')
-
-            // If the done button clicked, show the loading state
-            doneButton.innerHTML = ''
-            loadAnimation(doneButton, 'dots-white')
-
-            // Get the updated data of the task
-            try {
-                const updatedData = await this.markAsDone(todoId)
-                if (updatedData) {
-                    // After getting the updated data, make an api call to update the data
-                    const res = await updateData(`/api/users/${this.user}/todos/${todoId}`, JSON.stringify(updatedData))
-
-                    // If success, reload the page
-                    if (res.success) {
-                        location.reload()
-                        // If not, abort the loading state and show a notice with error message
-                    } else {
-                        doneButton.innerHTML = '<i class="fa-solid fa-check"></i>'
-
-                        showNotice(res.message, 'error')
-                    }
-                }
-            } catch (err) {
-                console.error(err)
+        const createHandleDone = (id) => {
+            return () => {
+                this.handleDone(id)
             }
         }
 
         // Create all the buttons
         const editButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-button-sm bg-emerald-700', 'Edit', handleEdit, 'edit-button', 'Edit this task')
         const deleteButton = createButton('ml-1 px-4 py-px text-xs text-white rounded-lg shadow-button-sm bg-rose-700', 'Delete', handleDelete, 'delete-button', 'Delete this task')
-        const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-button-sm bg-violet-700', '<i class="fa-solid fa-check"></i>', this.handleDone, 'done-button', 'Mark as done')
+        const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-button-sm bg-violet-700', '<i class="fa-solid fa-check"></i>', createHandleDone(todoId), 'done-button', 'Mark as done')
 
         // Put the buttons inside their container
         const toolbar = this.createToolbar(editButton, deleteButton, doneButton)
@@ -209,6 +169,37 @@ class Todos {
         return card
     }
 
+    handleDone = async (todoId) => {
+        const todo = document.querySelector(`[data-id="${todoId}"]`)
+        const doneButton = todo.querySelector('button[name="done-button"]')
+
+        // If the done button clicked, show the loading state
+        doneButton.innerHTML = ''
+        loadAnimation(doneButton, 'dots-white')
+
+        // Get the updated data of the task
+        try {
+            const updatedData = await this.markAsDone(todoId)
+            if (updatedData) {
+                // After getting the updated data, make an api call to update the data
+                const res = await updateData(`/api/users/${this.user}/todos/${todoId}`, JSON.stringify(updatedData))
+
+                // If success, reload the page
+                if (res.success) {
+                    location.reload()
+                    // If not, abort the loading state and show a notice with error message
+                } else {
+                    doneButton.innerHTML = '<i class="fa-solid fa-check"></i>'
+
+                    showNotice(res.message, 'error')
+                }
+            }
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
+    // If the user confirms to delete the task:
     handleDeleteConfirm = (todoId) => {
         this.deleteConfirm = async () => {
             // Show the loading state
@@ -236,8 +227,8 @@ class Todos {
         this.delete.confirm.addEventListener('click', this.deleteConfirm)
     }
 
+    // If the user cancels the deletion process:
     handleDeleteCancel = () => {
-        // If the user click cancel:
         this.delete.cancel.addEventListener('click', () => {
             // Close the modal
             this.closeDeleteModal()
@@ -245,8 +236,6 @@ class Todos {
     }
 
     // Create a stack of task cards
-    // Params: data (array) -> an array of tasks data
-    // Return: None
     createStack = (data) => {
         // Iterate over the array
         for (let i = 0; i < data.length; i++) {
@@ -264,8 +253,6 @@ class Todos {
     }
 
     // Get the stack using the tasks data from the database
-    // Params: None
-    // Return: data (array) -> the tasks data from the database
     getStack = async () => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}/todos`)
@@ -279,8 +266,6 @@ class Todos {
     }
 
     // Create an empty state if the user hasn't got any task yet
-    // Params: None
-    // Return: None
     emptyState = () => {
         // Create the container
         const emptyBox = document.createElement('div')
@@ -317,8 +302,6 @@ class Todos {
     }
 
     // Check if a task is a To Do task or not
-    // Params: todoId (int) -> the task ID
-    // Return: data (object) -> the task data
     checkNotDone = async (todoId) => {
         // Get the data from the endpoint
         try {
@@ -334,8 +317,6 @@ class Todos {
     }
 
     // Mark a task as done
-    // Params: todoId (int) -> the task ID
-    // Return: updatedData (object) -> the updated data object
     markAsDone = async (todoId) => {
         // Get the data if the task is a To Do task
         try {
@@ -355,8 +336,6 @@ class Todos {
     }
 
     // Handle the drag start and drag end events
-    // Params: None
-    // Return: None 
     handleDragSender = () => {
         // If the user starts to drag the task card:
         this.handleDragStart = (e) => {
@@ -382,11 +361,9 @@ class Todos {
     }
 
     // Handle the drag over and drop events
-    // Params: None
-    // Return: None 
     handleDragRecipient = () => {
         // If the user drags the card over the main container:
-        this.handleDragEnterOver = (e) => {
+        this.handleDragOver = (e) => {
             // Set the container to be a droppable zone
             e.preventDefault()
 
@@ -396,8 +373,14 @@ class Todos {
             // Target the dragged card using the task ID
             const dragged = document.querySelector(`[data-id="${data}"]`)
 
+            const createHandleDone = (id) => {
+                return () => {
+                    this.handleDone(id)
+                }
+            }
+
             // Create a done button
-            const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-button-sm bg-violet-700', '<i class="fa-solid fa-check"></i>', this.handleDone, 'done-button', 'Mark as done')
+            const doneButton = createButton('px-4 py-px text-xs text-white rounded-lg shadow-button-sm bg-violet-700', '<i class="fa-solid fa-check"></i>', createHandleDone(data), 'done-button', 'Mark as done')
 
             // Switch the dragged card appearance
             doneToTodo(dragged, doneButton)
@@ -461,26 +444,22 @@ class Todos {
         }
 
         // Attach the event listeners to the main container
-        this.stack.container.addEventListener('dragover', this.handleDragEnterOver)
+        this.stack.container.addEventListener('dragover', this.handleDragOver)
         this.stack.container.addEventListener('drop', this.handleDrop)
     }
 
     // Remove all drag and drop event listeners
-    // Params: None
-    // Return: None
     resetDrag = () => {
         const allTasks = this.stack.container.querySelectorAll('div[draggable="true"]')
         allTasks.forEach((task) => {
             task.removeEventListener('dragstart', this.handleDragStart)
             task.removeEventListener('dragend', this.handleDragEnd)
         })
-        this.stack.container.removeEventListener('dragover', this.handleDragEnterOver)
+        this.stack.container.removeEventListener('dragover', this.handleDragOver)
         this.stack.container.removeEventListener('drop', this.handleDrop)
     }
 
     // Get the stack and the event listeners. If there is no stack, show the empty state
-    // Params: None
-    // Return: stack (array) -> the tasks data
     handleStack = async () => {
         // Get the stack
         try {
@@ -501,8 +480,6 @@ class Todos {
     }
 
     // Remove all the task cards and the event listeners from the main container
-    // Params: None
-    // Return: None
     resetStack = () => {
         this.resetDrag()
 
@@ -514,8 +491,6 @@ class Todos {
     }
 
     // Filter the task cards based on the project they belong to
-    // Params: projectId (int) -> the project ID
-    // Return: filtered (array) -> the filtered tasks data based on the project ID
     filterByProject = async (projectId) => {
         // Reset the stack
         this.resetStack()
@@ -547,8 +522,6 @@ class Todos {
     }
 
     // Show and close modals
-    // Params: None
-    // Return: None
 
     showAddModal = () => {
         this.add.modal.classList.remove('hidden')
@@ -666,8 +639,6 @@ class Todos {
     }
 
     // Validate the input field when the user click outside the field and if it's invalid, show the error message
-    // Params: fields (object) -> an object containing each field in the form
-    // Return: None
     handleBlur = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('blur', () => {
@@ -681,8 +652,6 @@ class Todos {
     }
 
     // Remove the error message if the user gets back to the input field
-    // Params: fields (object) -> an object containing each field in the form
-    // Return: None
     handleFocus = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('focus', () => {
@@ -692,9 +661,6 @@ class Todos {
     }
 
     // Check if each field is valid while the user make an input and enable the submit button once all the fields are valid
-    // Params: fields (object) -> an object containing each field in the form
-    //         submit (HTML element) -> a submit button element
-    // Return: None
     handleInput = (fields, submit) => {
         for (const field in fields) {
             fields[field].addEventListener('input', () => {
@@ -704,11 +670,6 @@ class Todos {
     }
 
     // Handle the event after the form being submitted and validated on the server
-    // Params: form (HTML element) -> a form element
-    //         apiUrl (string) -> the url of the api endpoint
-    //         method (function) -> the function to make an api call
-    //         submitButton (HTML element) -> a submit button element
-    //         modalCloser (function) -> a function to close the modal
     handleSubmit = (form, apiUrl, method, submitButton, modalCloser) => {
         // If the user has submitted the form:
         form.addEventListener('submit', async (e) => {

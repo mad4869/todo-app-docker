@@ -2,8 +2,6 @@ import loadAnimation from "./animation"
 import showNotice from "./notice"
 
 // Handle a POST request to the logout endpoint with access token attached on the header
-// Params: None
-// Return: Promise -> a promise containing the response of the request
 const logout = () => {
     // Get the JWT access token from the local storage
     const accessToken = localStorage.getItem('access_token')
@@ -28,8 +26,6 @@ const logout = () => {
 }
 
 // Handle the logout procedure
-// Params: None
-// Return: None
 const handleLogout = () => {
     const logoutLinks = [...document.querySelectorAll('a[href="/auth/logout"]')]
 

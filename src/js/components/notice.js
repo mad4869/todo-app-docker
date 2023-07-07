@@ -1,9 +1,6 @@
 import loadAnimation from './animation'
 
 // Create and show a notice containing a feedback to the user
-// Params: message (string) -> the feedback message
-//         category (string) -> the category of the notice (error, success, info, etc.)
-// Return: None
 const showNotice = (message, category) => {
     // Create the container
     const mainContainer = document.createElement('div')
@@ -30,8 +27,6 @@ const showNotice = (message, category) => {
 }
 
 // Handle the flash notice sent by the Flask server
-// Params: None
-// Return: None
 const handleFlash = () => {
     // Target the flash element
     const flash = document.getElementById('flash')

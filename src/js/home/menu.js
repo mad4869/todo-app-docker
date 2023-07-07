@@ -4,10 +4,6 @@ class Menu {
         this.show = document.getElementById('home-show-menu-button')
     }
 
-    // Show and close the menu
-    // Params: None
-    // Return: None
-
     showMenu() {
         this.menu.classList.remove('translate-y-full')
         this.menu.classList.add('shadow-modal')

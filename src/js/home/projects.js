@@ -33,9 +33,6 @@ class Projects {
     }
 
     // Create and return the option for the dropdown menu
-    // Params: projectTitle (string) -> the project title
-    //         projectId (int) -> the project ID
-    //         handler (function) -> a function that would handle the event after the option being clicked
     createOption = (projectTitle, projectId, handler) => {
         const option = document.createElement('li')
         option.className = "w-full text-center border-b border-solid border-violet-500 py-2 cursor-pointer hover:text-teal-400"
@@ -47,8 +44,6 @@ class Projects {
     }
 
     // Create an additional option to reset the filter by the dropdown menu
-    // Params: None
-    // Return: None
     createResetFilter = () => {
         // Remove the old reset option if present
         const oldReset = document.querySelector('li[data-id="0"]')
@@ -100,8 +95,6 @@ class Projects {
     }
 
     // Create the options list for the dropdown menu
-    // Params: data (array) -> an array of projects data
-    // Return: None
     createOptions = (data) => {
         // Iterate over the array
         for (let i = 0; i < data.length; i++) {
@@ -149,8 +142,6 @@ class Projects {
     }
 
     // Get the options using the projects data from the database
-    // Params: None
-    // Return: data (array) -> the projects data from the database
     getOptions = async () => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}/projects`)
@@ -164,8 +155,6 @@ class Projects {
     }
 
     // Create an empty state if the user hasn't got any project yet
-    // Params: None
-    // Return: None
     emptyState = () => {
         // Create the container
         const emptyBox = document.createElement('div')
@@ -200,8 +189,6 @@ class Projects {
     }
 
     // Show and close modals
-    // Params: None
-    // Return: None
 
     showOptions = () => {
         this.filter.options.classList.toggle('hidden')
@@ -271,8 +258,6 @@ class Projects {
     }
 
     // Validate the input field when the user click outside the field and if it's invalid, show the error message
-    // Params: fields (object) -> an object containing each field in the form
-    // Return: None
     handleBlur = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('blur', () => {
@@ -286,8 +271,6 @@ class Projects {
     }
 
     // Remove the error message if the user gets back to the input field
-    // Params: fields (object) -> an object containing each field in the form
-    // Return: None
     handleFocus = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('focus', () => {
@@ -297,9 +280,6 @@ class Projects {
     }
 
     // Check if each field is valid while the user make an input and enable the submit button once all the fields are valid
-    // Params: fields (object) -> an object containing each field in the form
-    //         submit (HTML element) -> a submit button element
-    // Return: None
     handleInput = (fields, submit) => {
         for (const field in fields) {
             fields[field].addEventListener('input', () => {
@@ -309,11 +289,6 @@ class Projects {
     }
 
     // Handle the event after the form being submitted and validated on the server
-    // Params: form (HTML element) -> a form element
-    //         apiUrl (string) -> the url of the api endpoint
-    //         method (function) -> the function to make an api call
-    //         submitButton (HTML element) -> a submit button element
-    //         modalCloser (function) -> a function to close the modal
     handleSubmit = (form) => {
         // If the user has submitted the form:
         form.addEventListener('submit', async (e) => {

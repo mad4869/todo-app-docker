@@ -68,8 +68,6 @@ class Projects {
     }
 
     // Create and return a container for a project
-    // Params: projectId (int) -> the project ID
-    // Return: card (HTML element) -> the card container
     createCard = (projectId) => {
         const card = document.createElement('div')
         card.className = 'flex flex-col bg-white rounded-2xl border border-solid border-indigo-700'
@@ -79,8 +77,6 @@ class Projects {
     }
 
     // Create and return the heading part of the card
-    // Params: None
-    // Return: heading (HTML element) -> the heading of the card
     createHeading = () => {
         const heading = document.createElement('div')
         heading.className = 'flex justify-between items-center px-4 bg-indigo-700 text-white rounded-t-2xl group'
@@ -89,9 +85,6 @@ class Projects {
     }
 
     // Create and return the content of the card
-    // Params: projectTitle (string) -> the project title
-    //         projectDescription (string) -> the project description
-    // Return: content (HTML element) -> the content containing the title and the description
     createContent = (projectTitle, projectDescription) => {
         const content = document.createElement('div')
         content.className = 'flex-1 pr-4 py-2'
@@ -109,10 +102,6 @@ class Projects {
     }
 
     // Create and return the toolbar part of the card
-    // Params: editButton (HTML element) -> a button element to edit the project
-    //         deleteButton (HTML element) -> a button element to delete the project
-    //         addButton (HTML element) -> a button element to add a task
-    // Return: toolbar (HTML element) -> the toolbar containing all the buttons
     createToolbar = (editButton, deleteButton, addButton) => {
         const toolbar = document.createElement('div')
         toolbar.className = 'flex gap-2'
@@ -122,8 +111,6 @@ class Projects {
     }
 
     // Create an empty state if a project hasn't contained any task yet
-    // Params: projectId (int) -> the project ID
-    // Return: emptyList (HTML element) -> an element that represents an empty state
     createEmptyList = (projectId) => {
         // Create the container
         const emptyList = document.createElement('li')
@@ -149,9 +136,6 @@ class Projects {
     }
 
     // Create and return the tasks list
-    // Params: projectId (int) -> the project ID
-    //         tasks (array) -> an array containing tasks data
-    // Return: list (HTML element) -> an element containing all the tasks
     createList = (projectId, tasks) => {
         // Create the container
         const list = document.createElement('ul')
@@ -194,11 +178,6 @@ class Projects {
     }
 
     // Create a project card by merging all the components
-    // Params: projectId (int) -> the project ID
-    //         projectTitle (string) -> the project title
-    //         projectDesc (string) -> the project description
-    //         tasks (array) -> an array containing tasks data
-    // Return: card (HTML element) -> the card container
     createProject = (projectId, projectTitle, projectDesc, tasks) => {
         const card = this.createCard(projectId)
         const heading = this.createHeading()
@@ -262,6 +241,7 @@ class Projects {
         return card
     }
 
+    // If the user confirms to delete the task:
     handleDeleteConfirm = (projectId) => {
         this.deleteConfirm = async () => {
             // Show the loading state
@@ -289,8 +269,8 @@ class Projects {
         this.delete.confirm.addEventListener('click', this.deleteConfirm)
     }
 
+    // If the user cancels the deletion process:
     handleDeleteCancel = () => {
-        // If the user click cancel:
         this.delete.cancel.addEventListener('click', () => {
             // Close the modal
             this.closeDeleteModal()
@@ -298,8 +278,6 @@ class Projects {
     }
 
     // Create a stack of project cards
-    // Params: data (array) -> an array of projects data
-    // Return: None
     createStack = async (data) => {
         for (let i = 0; i < data.length; i++) {
             const tasks = await fetchData(`/api/users/${this.user}/projects/${data[i].project_id}/todos`)
@@ -311,8 +289,6 @@ class Projects {
     }
 
     // Get the stack using the projects data from the database
-    // Params: None
-    // Return: data (array) -> the projects data from the database
     getStack = async () => {
         try {
             const { data } = await fetchData(`/api/users/${this.user}/projects`)
@@ -329,8 +305,6 @@ class Projects {
     }
 
     // Create an empty state if the user hasn't got any project yet
-    // Params: None
-    // Return: None
     emptyState = () => {
         // Create the container
         const emptyBox = document.createElement('div')
@@ -366,8 +340,6 @@ class Projects {
     }
 
     // Get the stack. If there is no stack, show the empty state
-    // Params: None
-    // Return: None
     handleStack = async () => {
         // Show the loading state
         loadAnimation(this.loading, 'loading')
@@ -390,8 +362,6 @@ class Projects {
     }
 
     // Show and close modals
-    // Params: None
-    // Return: None
 
     showTodosModal = () => {
         this.todos.modal.classList.remove('hidden')
@@ -539,8 +509,6 @@ class Projects {
     }
 
     // Validate the input field when the user click outside the field and if it's invalid, show the error message
-    // Params: fields (object) -> an object containing each field in the form
-    // Return: None
     handleBlur = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('blur', () => {
@@ -554,8 +522,6 @@ class Projects {
     }
 
     // Remove the error message if the user gets back to the input field
-    // Params: fields (object) -> an object containing each field in the form
-    // Return: None
     handleFocus = (fields) => {
         for (const field in fields) {
             fields[field].addEventListener('focus', () => {
@@ -565,9 +531,6 @@ class Projects {
     }
 
     // Check if each field is valid while the user make an input and enable the submit button once all the fields are valid
-    // Params: fields (object) -> an object containing each field in the form
-    //         submit (HTML element) -> a submit button element
-    // Return: None
     handleInput = (fields, submit) => {
         for (const field in fields) {
             fields[field].addEventListener('input', () => {
@@ -577,11 +540,6 @@ class Projects {
     }
 
     // Handle the event after the form being submitted and validated on the server
-    // Params: form (HTML element) -> a form element
-    //         apiUrl (string) -> the url of the api endpoint
-    //         method (function) -> the function to make an api call
-    //         submitButton (HTML element) -> a submit button element
-    //         modalCloser (function) -> a function to close the modal
     handleSubmit = (form, apiUrl, method, submitButton, modalCloser) => {
         // If the user has submitted the form:
         form.addEventListener('submit', async (e) => {
