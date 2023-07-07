@@ -12,6 +12,10 @@ from ...forms import AddProjectForm, EditProjectForm
 )
 @jwt_required()
 def access_projects(user_id):
+    """
+    GET: Get the data of all projects from a single user
+    POST: Create a new project
+    """
     if current_user.user_id != user_id and current_user.role.upper() != "ADMIN":
         return jsonify({"success": False, "message": "Unauthorized action"}), 403
 
@@ -59,6 +63,11 @@ def access_projects(user_id):
 )
 @jwt_required()
 def access_project(user_id, project_id):
+    """
+    GET: Get the data of a single project from a single user
+    PUT: Update the data
+    DELETE: Delete the data
+    """
     if current_user.user_id != user_id and current_user.role.upper() != "ADMIN":
         return jsonify({"success": False, "message": "Unauthorized action"}), 403
 

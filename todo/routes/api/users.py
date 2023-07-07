@@ -10,6 +10,7 @@ from ...models import Users
 @api_bp.route("/users", methods=["GET"], strict_slashes=False)
 @jwt_required()
 def get_users():
+    """Get all the registered users data"""
     if current_user.role.upper() != "ADMIN":
         return jsonify({"success": False, "message": "Unauthorized action"}), 403
 
@@ -22,6 +23,10 @@ def get_users():
 @api_bp.route("/users/<int:user_id>", methods=["GET", "PUT"], strict_slashes=False)
 @jwt_required()
 def access_user(user_id):
+    """
+    GET: Get the data of a single user
+    PUT: Update the data
+    """
     if current_user.user_id != user_id and current_user.role.upper() != "ADMIN":
         return jsonify({"success": False, "message": "Unauthorized action"}), 403
 

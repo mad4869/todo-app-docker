@@ -13,13 +13,16 @@ from ...forms import LoginForm
 
 @auth_bp.route("/login", methods=["POST"], strict_slashes=False)
 def login():
+    """Authenticate the user"""
     form = LoginForm(email=request.form["email"], password=request.form["password"])
 
     if form.validate():
+        # If the form is valid, check if user is registered and if the password is correct
         user_registered = db.session.execute(
             db.select(Users).filter_by(email=form.email.data)
         ).scalar_one_or_none()
 
+        # If one of them fails, throw an error message
         if not user_registered or not user_registered.password_auth(
             password_input=form.password.data
         ):
@@ -28,8 +31,11 @@ def login():
                 400,
             )
 
+        # If the user passes the validation process, log them in:
+        # 1. Put the user into the Flask session
         login_user(user_registered)
 
+        # 2. Give the user access and refresh token
         access_token = create_access_token(identity=user_registered.user_id)
         refresh_token = create_refresh_token(identity=user_registered.user_id)
 

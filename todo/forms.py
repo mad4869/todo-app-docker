@@ -17,6 +17,9 @@ from .models import *
 
 class RegisterForm(FlaskForm):
     def validate_email(self, email_input):
+        """
+        Check if the email entered by the user already taken or not. If already taken, raise an error.
+        """
         email_exists = db.session.execute(
             db.select(Users).filter(Users.email == email_input.data)
         ).scalar_one_or_none()
@@ -108,6 +111,9 @@ class AddTodoForm(FlaskForm):
     )
 
     def load_choices(self, user_id):
+        """
+        Fill the options on the select field based on the projects data in the database
+        """
         with current_app.app_context():
             projects = db.session.execute(
                 db.select(Projects).filter(Projects.user_id == user_id)
@@ -136,6 +142,9 @@ class EditTodoForm(FlaskForm):
     )
 
     def load_choices(self, user_id):
+        """
+        Fill the options on the select field based on the projects data in the database
+        """
         with current_app.app_context():
             projects = db.session.execute(
                 db.select(Projects).filter(Projects.user_id == user_id)

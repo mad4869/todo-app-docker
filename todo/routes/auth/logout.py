@@ -10,6 +10,8 @@ from ...models import BlocklistToken
 @auth_bp.route("/logout", methods=["POST"], strict_slashes=False)
 @jwt_required()
 def logout():
+    # If the user logs out:
+    # 1. Get them out of the session
     logout_user()
 
     jwt = get_jwt()
@@ -17,6 +19,7 @@ def logout():
 
     token = BlocklistToken(jti=jti)
 
+    # 2. Add their token on the blocklist
     try:
         db.session.add(token)
         db.session.commit()

@@ -15,6 +15,10 @@ from ...forms import AddTodoForm, EditTodoForm
 )
 @jwt_required()
 def access_all_todos(user_id):
+    """
+    GET: Get the data of all To-Do (unfinished) tasks from a single user
+    POST: Create a new task
+    """
     if current_user.user_id != user_id and current_user.role.upper() != "ADMIN":
         return jsonify({"success": False, "message": "Unauthorized action"}), 403
 
@@ -73,6 +77,7 @@ def access_all_todos(user_id):
 )
 @jwt_required()
 def get_todos(user_id, project_id):
+    """Get the data of all tasks (unfinished and finished) of a single project from a single user"""
     if current_user.user_id != user_id and current_user.role.upper() != "ADMIN":
         return jsonify({"success": False, "message": "Unauthorized action"}), 403
 
@@ -98,6 +103,11 @@ def get_todos(user_id, project_id):
 )
 @jwt_required()
 def access_todo(user_id, todo_id):
+    """
+    GET: Get the data of a single task from a single user
+    PUT: Update the data
+    DELETE: Delete the data
+    """
     if current_user.user_id != user_id and current_user.role.upper() != "ADMIN":
         return jsonify({"success": False, "message": "Unauthorized action"}), 403
 
