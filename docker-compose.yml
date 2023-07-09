@@ -1,0 +1,43 @@
+version: '3'
+services:
+  todo-app:
+    image: todo-app:latest
+    container_name: todo-app-container
+    ports:
+      - 5000:5000
+    command: flask run --host=0.0.0.0
+    environment:
+      - ENVIRONMENT=development
+      - FLASK_APP=run.py
+      - FLASK_DEBUG=1
+      - POSTGRES_USER=postgres
+      - POSTGRES_HOST=postgres-container
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=todo-db
+    env_file:
+      - todo.env
+    depends_on:
+      - postgres
+    networks:
+      - todo-network
+  postgres:
+    image: postgres:latest
+    container_name: postgres-container
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=todo-db
+    env_file:
+      - postgres.env
+    networks:
+      - todo-network
+networks:
+  todo-network:
+    external: true
+volumes:
+  postgres-volume:
+    external: true

@@ -1,0 +1,45 @@
+# NPM
+**/node_modules/
+.git
+.gitignore
+npm-debug.log
+.coverage
+.coverage.*
+.aws
+
+# Flask/python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# Virtual Env
+todo-venv
+
+# Meta
+Dockerfile
+.dockerignore
+*.yml
+*.yaml
+
+# Misc
+.vscode
+utils/
+LICENSE
+*.md

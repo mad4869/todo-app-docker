@@ -32,7 +32,7 @@ migrations/
 instance/*
 !instance/.gitignore
 .webassets-cache
-.env
+*.env
 
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files
@@ -47,8 +47,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-**/dist/*
-!**/dist/logo/
 downloads/
 eggs/
 .eggs/
