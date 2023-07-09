@@ -1,4 +1,4 @@
-// import '../../css/style.css'
+import '../../css/style.css'
 
 import User from './user'
 import active from '../components/active'

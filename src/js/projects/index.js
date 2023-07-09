@@ -1,4 +1,4 @@
-// import '../../css/style.css'
+import '../../css/style.css'
 
 import Projects from './projects'
 import active from '../components/active'

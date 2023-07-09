@@ -1,4 +1,4 @@
-// import '../../css/style.css'
+import '../../css/style.css'
 
 import LoginForm from './form'
 import { handleFlash } from '../components/notice'
