@@ -75,7 +75,7 @@ const prodConfig = {
             '!logo/**'
         ]
     }), new MiniCssExtractPlugin({
-        filename: 'css/[name].css',
+        filename: 'css/style.css',
     })]
 }
 
