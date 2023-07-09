@@ -28,6 +28,7 @@ node_modules/
 # Edit at https://www.toptal.com/developers/gitignore?templates=flask
 
 ### Flask ###
+migrations/
 instance/*
 !instance/.gitignore
 .webassets-cache
