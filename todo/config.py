@@ -10,9 +10,9 @@ class Config:
     """Set Flask config variables."""
 
     # General Config
-    FLASK_APP = "run.py"
+    FLASK_APP = environ.get("FLASK_APP")
+    FLASK_DEBUG = environ.get("FLASK_DEBUG")
     ENVIRONMENT = environ.get("ENVIRONMENT")
-    DEBUG = environ.get("DEBUG")
     SECRET_KEY = environ.get("SECRET_KEY")
     STATIC_FOLDER = "static"
     TEMPLATES_FOLDER = "templates"
