@@ -1,5 +1,3 @@
-import '../../css/style.css'
-
 import { handleFlash } from '../components/notice'
 import handleHamburger from '../components/hamburger'
 

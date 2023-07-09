@@ -1,5 +1,3 @@
-import '../../css/style.css'
-
 import Projects from './projects'
 import active from '../components/active'
 import { handleFlash } from '../components/notice'

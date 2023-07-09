@@ -1,5 +1,3 @@
-import '../../css/style.css'
-
 import User from './user'
 import active from '../components/active'
 import { handleFlash } from '../components/notice'

@@ -8,6 +8,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 const commonConfig = {
     entry: {
+        base: './src/js/index.js',
         home: './src/js/home/index.js',
         landing: './src/js/landing/index.js',
         profile: './src/js/profile/index.js',
@@ -74,7 +75,7 @@ const prodConfig = {
             '!logo/**'
         ]
     }), new MiniCssExtractPlugin({
-        filename: 'css/style.css',
+        filename: 'css/[name].css',
     })]
 }
 

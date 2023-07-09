@@ -1,5 +1,3 @@
-import '../../css/style.css'
-
 import Menu from './menu'
 import Projects from './projects'
 import Todos from './todos'
