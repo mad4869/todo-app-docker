@@ -62,7 +62,7 @@ class Todos {
         const card = document.createElement('div')
         card.className = 'w-full pb-2 bg-white border border-solid border-slate-700 rounded-2xl shadow-card-sm cursor-move overflow-hidden'
         card.setAttribute('draggable', true)
-        card.setAttribute('data-id', todoId)
+        card.setAttribute('data-todoid', todoId)
 
         return card
     }
@@ -170,7 +170,7 @@ class Todos {
     }
 
     handleDone = async (todoId) => {
-        const todo = document.querySelector(`[data-id="${todoId}"]`)
+        const todo = this.stack.container.querySelector(`[data-todoid="${todoId}"]`)
         const doneButton = todo.querySelector('button[name="done-button"]')
 
         // If the done button clicked, show the loading state
@@ -340,7 +340,7 @@ class Todos {
         // If the user starts to drag the task card:
         this.handleDragStart = (e) => {
             // Set the data using the task ID
-            e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
+            e.dataTransfer.setData('text/plain', e.target.getAttribute('data-todoid'))
 
             // Make the card half transparent
             e.target.classList.add('opacity-50');
@@ -371,7 +371,7 @@ class Todos {
             const data = e.dataTransfer.getData('text/plain')
 
             // Target the dragged card using the task ID
-            const dragged = document.querySelector(`[data-id="${data}"]`)
+            const dragged = document.querySelector(`[data-todoid="${data}"]`)
 
             const createHandleDone = (id) => {
                 return () => {

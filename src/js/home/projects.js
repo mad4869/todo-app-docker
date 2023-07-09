@@ -37,7 +37,7 @@ class Projects {
         const option = document.createElement('li')
         option.className = "w-full text-center border-b border-solid border-violet-500 py-2 cursor-pointer hover:text-teal-400"
         option.textContent = projectTitle
-        option.setAttribute('data-id', projectId)
+        option.setAttribute('data-projectid', projectId)
         option.addEventListener('click', handler)
 
         return option
@@ -46,7 +46,7 @@ class Projects {
     // Create an additional option to reset the filter by the dropdown menu
     createResetFilter = () => {
         // Remove the old reset option if present
-        const oldReset = document.querySelector('li[data-id="0"]')
+        const oldReset = document.querySelector('li[data-projectid="0"]')
         if (oldReset) {
             oldReset.remove()
         }
@@ -112,8 +112,8 @@ class Projects {
 
                 // Filter the tasks stack
                 try {
-                    const filteredTodos = await todos.filterByProject(option.dataset.id)
-                    const filteredDones = await dones.filterByProject(option.dataset.id)
+                    const filteredTodos = await todos.filterByProject(option.dataset.projectid)
+                    const filteredDones = await dones.filterByProject(option.dataset.projectid)
 
                     if (filteredTodos && filteredDones) {
                         // After the tasks filtered, abort the loading state and hide the clicked option

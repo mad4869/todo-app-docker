@@ -44,7 +44,7 @@ class Dones {
         const card = document.createElement('div')
         card.className = 'w-full pb-2 bg-white border border-solid border-slate-700 rounded-2xl shadow-card-sm cursor-move overflow-hidden'
         card.setAttribute('draggable', true)
-        card.setAttribute('data-id', doneId)
+        card.setAttribute('data-todoid', doneId)
 
         return card
     }
@@ -152,8 +152,8 @@ class Dones {
     }
 
     handleUndone = async (doneId) => {
-        const todo = document.querySelector(`[data-id="${doneId}"]`)
-        const undoneButton = todo.querySelector('button[name="undone-button"]')
+        const done = this.stack.container.querySelector(`[data-todoid="${doneId}"]`)
+        const undoneButton = done.querySelector('button[name="undone-button"]')
 
         // If the undone button clicked, show the loading state
         undoneButton.innerHTML = ''
@@ -311,7 +311,7 @@ class Dones {
         // If the user starts to drag the task card:
         this.handleDragStart = (e) => {
             // Set the data using the task ID
-            e.dataTransfer.setData('text/plain', e.target.getAttribute('data-id'))
+            e.dataTransfer.setData('text/plain', e.target.getAttribute('data-todoid'))
 
             // Make the card half transparent
             e.target.classList.add('opacity-50');
@@ -342,7 +342,7 @@ class Dones {
             const data = e.dataTransfer.getData('text/plain')
 
             // Target the dragged card using the task ID
-            const dragged = document.querySelector(`[data-id="${data}"]`)
+            const dragged = document.querySelector(`[data-todoid="${data}"]`)
 
             const createHandleUndone = (id) => {
                 return () => {
