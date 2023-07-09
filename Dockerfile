@@ -12,9 +12,7 @@ ENV FLASK_DEBUG=1
 ENV ENVIRONMENT="development"
 
 ENV POSTGRES_USER="postgres"
-ENV POSTGRES_HOST="postgres-container"
 ENV POSTGRES_PORT="5432"
-ENV POSTGRES_DB="todo-db"
 
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
 RUN apt-get install -y nodejs
