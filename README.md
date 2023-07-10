@@ -60,16 +60,21 @@ After setting up the `.env` file, the next step is to execute the `docker build`
 docker build --no-cache -t todo-app:latest .
 ```
 This command will build the Docker image based on the instructions provided in the Dockerfile and the context of the current directory.
+![Build a Docker image with Dockerfile](https://i.imgur.com/UAqIsSk.png)
 
 This custom base image can also be pulled from the Docker Hub registry using `docker pull` command:
 ```
 docker pull mad4869/todo-app:latest
 ```
+![Pull a Docker image from Docker Hub](https://i.imgur.com/tmJ9Vgb.png)
+
 ### 2. Pull the Postgres Image
 Since the web app requires a database connection, we will be using the PostgreSQL base image. We can pull the image from the Docker registry using the `docker pull` command:
 ```
 docker pull postgres:latest
 ```
+![Pull a Docker image from Docker Hub](https://i.imgur.com/bXiGQ7B.png)
+
 ### 3. Run the Containers
 Now that we have obtained the required images, it's time to run the containers using the `docker run` command. While running the containers, we also need to set up the volume, network, ports, and environmental variables to ensure that both the Flask app and Postgres containers can work together seamlessly.
 
@@ -102,7 +107,13 @@ docker exec todo-app-container flask db init
 docker exec todo-app-container flask db migrate
 docker exec todo-app-container flask db upgrade
 ```
+![Run docker containers](https://i.imgur.com/AUOmx05.png)
+
 And now, the Flask app will run inside the `todo-app-container` and establish a connection to the `postgres-container` as its database.
+![Accessing the web app in the port 5000](https://i.imgur.com/wphOnWJ.png)
+*The Flask to-do app in the port 5000*
+![Checking connection to Postgres database in the port 5432 via dbeaver](https://i.imgur.com/QdOzUHR.png)
+*Postgres in the port 5432, checked using dbeaver*
 
 ### 4. Run the Containers with Docker-Compose
 Another option is to run the containers simultaneously using the `docker compose` command. To do this, we first need to create a `docker-compose.yml` file:
@@ -167,6 +178,8 @@ If all the components are ready, we run the `docker compose` command:
 ```
 docker compose up -d
 ```
+[Running containers using docker compose](https://i.imgur.com/8PEWHF3.png)
+
 If there are no issues during the running of the containers, we run the `flask db` commands inside the Flask app container:
 ```
 docker exec todo-app-container flask db init
@@ -189,6 +202,7 @@ docker exec postgres-container pg_dumpall -U postgres > "$BACKUP"
 ```
 0 0 * * * /home/user/path/to/backup.sh
 ```
+[Setting up cron job to backup database data](https://i.imgur.com/ZDStfgT.png)
 *cron job runs once a day every midnight*
 
 In case of emergency where data needs to be restored, the backup data can be inserted into a running container and be executed to restore the missing data.
