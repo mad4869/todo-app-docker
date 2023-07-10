@@ -193,12 +193,17 @@ Once the containers are set up, it's important to create scripts for data backup
 
 The backup script will run as a **cron job** once a day and will generate backup data using `pg_dumpall` command.
 
+**backup.sh**
 ```
 #!/bin/bash
 
 BACKUP="path/to/backups/backup_$(date +%d-%m-%Y).sql"
 
 docker exec postgres-container pg_dumpall -U postgres > "$BACKUP"
+```
+Setting up the cron:
+```
+crontab -e
 ```
 ```
 0 0 * * * /home/user/path/to/backup.sh
@@ -207,6 +212,8 @@ docker exec postgres-container pg_dumpall -U postgres > "$BACKUP"
 *cron job runs once a day every midnight*
 
 In case of emergency where data needs to be restored, the backup data can be inserted into a running container and be executed to restore the missing data.
+
+**insert_backup.sh**
 ```
 #!/bin/bash
 
@@ -215,6 +222,8 @@ BACKUP="path/to/backups/backup_$(date +%d-%m-%Y).sql"
 docker cp "$BACKUP" postgres-container:/var/backups
 ```
 *insert backup data to a running postgres container*
+
+**restore.sh**
 ```
 #!/bin/bash
 
@@ -225,4 +234,4 @@ docker exec postgres-container psql -U postgres -d todo-db -f "$BACKUP"
 *execute the command to restore data inside a running postgres container*
 
 ## Conclusion
-That concludes the overview of the process for building Docker containers for a Flask web application and PostgreSQL. You have the option to run them separately and establish the connection between them, or you can run them simultaneously using `docker-compose`. Additionally, it is important to implement a backup and restore mechanism to ensure data integrity in case of any issues or data loss.
+That concludes the overview of the process for building Docker containers for a Flask web application and PostgreSQL. We have the option to run them separately and establish the connection between them, or we can run them simultaneously using `docker-compose`. Additionally, it is important to implement a backup and restore mechanism to ensure data integrity in case of any issues or data loss.
