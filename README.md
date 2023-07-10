@@ -88,11 +88,11 @@ First, we run the PostgreSQL container with the following command:
 ```
 docker run --name postgres-container -v postgres-volume --network todo-network -p 5432:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=todo-db -d postgres
 ```
-In this command, the PostgreSQL container is named `postgres-container` We create a volume named `postgres-volume` to store the data. The container is connected to the `todo-network` network. Port **5432** is mapped from the container to the host machine. The environment variables `POSTGRES_PASSWORD` and `POSTGRES_DB` are set to `password` and `todo-db`, respectively. Adjust the values as per your requirements.
+In this command, the PostgreSQL container is named `postgres-container` We create a volume named `postgres-volume` to store the data. The container is connected to the `todo-network` network. Port **5432** is mapped from the container to the host machine. Adjust it if you have another service running in the same port. The environment variables `POSTGRES_PASSWORD` and `POSTGRES_DB` are set to `password` and `todo-db`, respectively. Adjust the values as per your requirements.
 
 Next, we run the Flask app container with the following command:
 ```
-docker run --name todo-app-container -p 5000:5000 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=todo-db -e POSTGRES_HOST=postgres-container -d todo-app
+docker run --name todo-app-container -v todo-volume --network todo-network -p 5000:5000 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=todo-db -e POSTGRES_HOST=postgres-container -d todo-app
 ```
 In this command, the Flask app container is named `todo-app-container` Port 5000 is mapped from the container to the host machine. The environment variables `POSTGRES_PASSWORD`, `POSTGRES_DB`, and `POSTGRES_HOST` are set to the values according to the Postgres setup.
 
