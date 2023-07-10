@@ -112,6 +112,7 @@ docker exec todo-app-container flask db upgrade
 And now, the Flask app will run inside the `todo-app-container` and establish a connection to the `postgres-container` as its database.
 ![Accessing the web app in the port 5000](https://i.imgur.com/wphOnWJ.png)
 *The Flask to-do app in the port 5000*
+
 ![Checking connection to Postgres database in the port 5432 via dbeaver](https://i.imgur.com/QdOzUHR.png)
 *Postgres in the port 5432, checked using dbeaver*
 
@@ -178,7 +179,7 @@ If all the components are ready, we run the `docker compose` command:
 ```
 docker compose up -d
 ```
-[Running containers using docker compose](https://i.imgur.com/8PEWHF3.png)
+![Running containers using docker compose](https://i.imgur.com/8PEWHF3.png)
 
 If there are no issues during the running of the containers, we run the `flask db` commands inside the Flask app container:
 ```
@@ -202,7 +203,7 @@ docker exec postgres-container pg_dumpall -U postgres > "$BACKUP"
 ```
 0 0 * * * /home/user/path/to/backup.sh
 ```
-[Setting up cron job to backup database data](https://i.imgur.com/ZDStfgT.png)
+![Setting up cron job to backup database data](https://i.imgur.com/ZDStfgT.png)
 *cron job runs once a day every midnight*
 
 In case of emergency where data needs to be restored, the backup data can be inserted into a running container and be executed to restore the missing data.
