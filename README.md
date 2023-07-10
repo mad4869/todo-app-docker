@@ -114,7 +114,7 @@ And now, the Flask app will run inside the `todo-app-container` and establish a 
 *The Flask to-do app in the port 5000*
 
 ![Checking connection to Postgres database in the port 5432 via dbeaver](https://i.imgur.com/QdOzUHR.png)
-*Postgres in the port 5432, checked using dbeaver*
+*Postgres in the port 5432, inspected using dbeaver*
 
 ### 4. Run the Containers with Docker-Compose
 Another option is to run the containers simultaneously using the `docker compose` command. To do this, we first need to create a `docker-compose.yml` file:
