@@ -167,7 +167,7 @@ If all the components are ready, we run the `docker compose` command:
 ```
 docker compose up -d
 ```
-If there are no issues during the running of the containers, we run the same `flask db` commands inside the Flask app container:
+If there are no issues during the running of the containers, we run the `flask db` commands inside the Flask app container:
 ```
 docker exec todo-app-container flask db init
 docker exec todo-app-container flask db migrate
