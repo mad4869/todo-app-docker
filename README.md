@@ -105,7 +105,7 @@ docker exec todo-app-container flask db upgrade
 And now, the Flask app will run inside the `todo-app-container` and establish a connection to the `postgres-container` as its database.
 
 ### 4. Run the Containers with Docker-Compose
-TAnother option is to run the containers simultaneously using the `docker compose` command. To do this, we first need to create a `docker-compose.yml` file:
+Another option is to run the containers simultaneously using the `docker compose` command. To do this, we first need to create a `docker-compose.yml` file:
 ```
 version: '3'
 services:
