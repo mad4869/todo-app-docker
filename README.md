@@ -12,7 +12,7 @@ Imagine yourself as a software engineer who needs to deploy a Flask-based to-do 
 
 The initial step involves creating a **Dockerfile** that consolidates the necessary steps to build a custom image of the web app.
 
-```docker
+```dockerfile
 FROM python:3.10
 
 LABEL version="1.0"
